@@ -1,0 +1,86 @@
+/*
+ * Design tokens.
+ *
+ * The twelve colours below are not chosen — they are sampled from the mascot's
+ * frozen palette (art/animation/atlas-contract.json, `pixel_rules.palette_hex`).
+ * Nothing here is invented, and nothing outside this list may be introduced:
+ * the page is coloured from its own sprite, which is what makes it cohere.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* ---- the twelve, verbatim from the atlas contract ---- */
+  --ink: #111219;
+  --paper: #f6f3e4;
+  --grey-1: #b5b6b8;
+  --grey-2: #7e8085;
+  --grey-3: #3e3d43;
+  --grey-4: #25252b;
+  --navy-1: #122f68;
+  --navy-2: #0d234e;
+  --navy-3: #1b428b;
+  --amber-1: #ffbe4b;
+  --amber-2: #e18b30;
+  --rust: #a75221;
+
+  /* ---- light theme roles (default) ---- */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --accent: var(--rust);
+  --accent-strong: var(--navy-1);
+  --muted: var(--grey-2);
+  --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+  --surface: color-mix(in srgb, var(--paper) 78%, #fff);
+  --surface-raised: #fffdf3;
+  --shadow: color-mix(in srgb, var(--ink) 10%, transparent);
+  --on-accent: var(--paper);
+  --selection: color-mix(in srgb, var(--amber-1) 55%, transparent);
+
+  /* ---- type ---- */
+  /* --font-display / --font-body are emitted by Astro's font pipeline
+     (see astro.config.mjs) and already include metric-matched fallbacks. */
+  --step--1: clamp(0.78rem, 0.75rem + 0.15vw, 0.86rem);
+  --step-0: clamp(0.92rem, 0.88rem + 0.2vw, 1rem);
+  --step-1: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  --step-2: clamp(1.45rem, 1.25rem + 1vw, 2rem);
+  --step-3: clamp(1.9rem, 1.5rem + 2vw, 3rem);
+  --step-4: clamp(2.6rem, 1.8rem + 4vw, 4.75rem);
+
+  --leading-tight: 1.12;
+  --leading-body: 1.65;
+  --tracking-label: 0.14em;
+
+  /* ---- spacing / measure ---- */
+  --space-2xs: 0.35rem;
+  --space-xs: 0.6rem;
+  --space-s: 1rem;
+  --space-m: 1.6rem;
+  --space-l: 2.6rem;
+  --space-xl: 4.2rem;
+  --space-2xl: 6.5rem;
+
+  --measure: 62ch;
+  --page-max: 68rem;
+  --gutter: clamp(1.15rem, 4vw, 3.5rem);
+
+  --radius: 3px;
+  --border: 1px solid var(--rule);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: var(--ink);
+  --fg: var(--paper);
+  /* Rust disappears against ink — dark accent is amber. Locked decision #12. */
+  --accent: var(--amber-1);
+  --accent-strong: var(--amber-2);
+  --muted: var(--grey-1);
+  --rule: color-mix(in srgb, var(--paper) 18%, transparent);
+  --surface: var(--grey-4);
+  --surface-raised: #1b1c23;
+  --shadow: rgb(0 0 0 / 0.4);
+  --on-accent: var(--ink);
+  --selection: color-mix(in srgb, var(--amber-1) 35%, transparent);
+}

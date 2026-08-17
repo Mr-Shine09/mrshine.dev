@@ -1,0 +1,39 @@
+{
+  "id": "reading-fire",
+  "label": "Oak reading on a couch beside a warm wood stove",
+  "frameSize": [
+    384,
+    320
+  ],
+  "frameCount": 12,
+  "durationsMs": [
+    420,
+    180,
+    120,
+    120,
+    180,
+    130,
+    130,
+    130,
+    180,
+    220,
+    220,
+    260
+  ],
+  "atlas": "reading-fire-atlas.png",
+  "animatedWebp": "reading-fire.webp",
+  "frames": [
+    "frames/reading-fire/reading-fire-00.png",
+    "frames/reading-fire/reading-fire-01.png",
+    "frames/reading-fire/reading-fire-02.png",
+    "frames/reading-fire/reading-fire-03.png",
+    "frames/reading-fire/reading-fire-04.png",
+    "frames/reading-fire/reading-fire-05.png",
+    "frames/reading-fire/reading-fire-06.png",
+    "frames/reading-fire/reading-fire-07.png",
+    "frames/reading-fire/reading-fire-08.png",
+    "frames/reading-fire/reading-fire-09.png",
+    "frames/reading-fire/reading-fire-10.png",
+    "frames/reading-fire/reading-fire-11.png"
+  ]
+}

@@ -1,0 +1,126 @@
+---
+import sceneContract from "../../public/animations/oak-scenes/scene-contract.json";
+
+type SceneId = (typeof sceneContract.scenes)[number]["id"];
+
+interface Props {
+  scene: SceneId;
+  class?: string;
+  label?: string;
+}
+
+const { scene, class: className, label } = Astro.props;
+const metadata = sceneContract.scenes.find((item) => item.id === scene);
+
+if (!metadata) {
+  throw new Error(`Unknown Oak animation scene: ${scene}`);
+}
+
+const frameCount = sceneContract.layout.frameCount;
+const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
+---
+
+<span
+  class:list={["oak-scene", className]}
+  role="img"
+  aria-label={label ?? metadata.label}
+  data-oak-scene={payload}
+>
+  <img
+    class="oak-scene__atlas"
+    data-oak-scene-atlas
+    src={`/animations/oak-scenes/${scene}-atlas.png`}
+    alt=""
+    width={sceneContract.layout.outputFrameSize[0] * frameCount}
+    height={sceneContract.layout.outputFrameSize[1]}
+    loading="lazy"
+    decoding="async"
+  />
+</span>
+
+<style>
+  .oak-scene {
+    display: block;
+    max-width: 100%;
+    aspect-ratio: 6 / 5;
+    overflow: hidden;
+  }
+
+  .oak-scene__atlas {
+    display: block;
+    width: 1200%;
+    max-width: none;
+    height: 100%;
+    image-rendering: pixelated;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+</style>
+
+<script>
+  type SceneSpec = { durations: number[]; frameCount: number };
+
+  const reduceSceneMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function playScene(el: HTMLElement, spec: SceneSpec) {
+    if (el.dataset.ready === "true") return;
+    el.dataset.ready = "true";
+
+    const atlas = el.querySelector<HTMLElement>("[data-oak-scene-atlas]");
+    if (!atlas) return;
+
+    let frame = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let visible = true;
+
+    const show = () => {
+      const percent = (frame * 100) / spec.frameCount;
+      atlas.style.transform = `translate3d(-${percent}%, 0, 0)`;
+    };
+
+    const stop = () => {
+      clearTimeout(timer);
+      timer = undefined;
+    };
+
+    const schedule = () => {
+      if (!visible || reduceSceneMotion.matches || timer) return;
+      timer = setTimeout(() => {
+        timer = undefined;
+        frame = (frame + 1) % spec.frameCount;
+        show();
+        schedule();
+      }, spec.durations[frame] ?? 180);
+    };
+
+    const applyMotionPreference = () => {
+      stop();
+      if (reduceSceneMotion.matches) {
+        frame = 0;
+        show();
+      } else {
+        schedule();
+      }
+    };
+
+    reduceSceneMotion.addEventListener("change", applyMotionPreference);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        visible = entries.some((entry) => entry.isIntersecting);
+        if (visible) schedule();
+        else stop();
+      },
+      { rootMargin: "160px" }
+    );
+    observer.observe(el);
+
+    show();
+    schedule();
+  }
+
+  for (const el of document.querySelectorAll<HTMLElement>("[data-oak-scene]")) {
+    const raw = el.dataset.oakScene;
+    if (raw) playScene(el, JSON.parse(raw) as SceneSpec);
+  }
+</script>

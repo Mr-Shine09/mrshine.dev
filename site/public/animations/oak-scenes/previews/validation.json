@@ -1,0 +1,60 @@
+{
+  "ok": true,
+  "errors": [],
+  "scenes": [
+    {
+      "id": "reading-fire",
+      "frameCount": 12,
+      "animatedWebpFrames": 12,
+      "transparentCornerChecksPassed": 48,
+      "transparentCornerChecksTotal": 48,
+      "opaquePixels": 591346,
+      "greenishOpaquePixels": 0
+    },
+    {
+      "id": "run-trip-recover",
+      "frameCount": 12,
+      "animatedWebpFrames": 12,
+      "transparentCornerChecksPassed": 48,
+      "transparentCornerChecksTotal": 48,
+      "opaquePixels": 245110,
+      "greenishOpaquePixels": 0
+    },
+    {
+      "id": "workbench-zap",
+      "frameCount": 12,
+      "animatedWebpFrames": 12,
+      "transparentCornerChecksPassed": 48,
+      "transparentCornerChecksTotal": 48,
+      "opaquePixels": 534929,
+      "greenishOpaquePixels": 0
+    },
+    {
+      "id": "computer-working",
+      "frameCount": 12,
+      "animatedWebpFrames": 12,
+      "transparentCornerChecksPassed": 48,
+      "transparentCornerChecksTotal": 48,
+      "opaquePixels": 541398,
+      "greenishOpaquePixels": 0
+    },
+    {
+      "id": "thinking-cloud",
+      "frameCount": 12,
+      "animatedWebpFrames": 12,
+      "transparentCornerChecksPassed": 48,
+      "transparentCornerChecksTotal": 48,
+      "opaquePixels": 319125,
+      "greenishOpaquePixels": 0
+    },
+    {
+      "id": "walking",
+      "frameCount": 12,
+      "animatedWebpFrames": 12,
+      "transparentCornerChecksPassed": 48,
+      "transparentCornerChecksTotal": 48,
+      "opaquePixels": 203794,
+      "greenishOpaquePixels": 0
+    }
+  ]
+}

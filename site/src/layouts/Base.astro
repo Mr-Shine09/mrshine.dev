@@ -1,0 +1,83 @@
+---
+import { Font } from "astro:assets";
+import { site } from "../data/site";
+import ScrollTripMascot from "../components/ScrollTripMascot.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.seo.description } = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+
+    {/* Set the theme before first paint — otherwise dark visitors get a flash
+        of the paper background. Inline and blocking on purpose. */}
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          if (stored === "dark" || stored === "light") {
+            document.documentElement.dataset.theme = stored;
+            return;
+          }
+        } catch (e) {
+          /* storage blocked — fall through to the OS preference */
+        }
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#about">Skip to content</a>
+    <slot />
+    <ScrollTripMascot />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: var(--space-s);
+    top: var(--space-s);
+    z-index: 100;
+    padding: 0.7rem 1.1rem;
+    background: var(--accent);
+    color: var(--on-accent);
+    text-decoration: none;
+    border-radius: var(--radius);
+    transform: translateY(-200%);
+    transition: transform 0.15s ease;
+  }
+
+  /* `:focus`, not `:focus-visible` — this link is only ever reached by
+     keyboard, and it must appear for every way a browser can focus it. */
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+</style>

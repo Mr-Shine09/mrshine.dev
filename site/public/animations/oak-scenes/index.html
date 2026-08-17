@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Oak animation scenes</title>
+    <style>
+      :root { color-scheme: dark; font-family: ui-monospace, monospace; }
+      body { margin: 0; padding: clamp(20px, 5vw, 64px); background: #10131a; color: #f4f0e7; }
+      main { max-width: 1120px; margin: auto; }
+      h1 { font-family: Georgia, serif; font-size: clamp(2rem, 6vw, 4.5rem); margin: 0 0 8px; }
+      p { color: #b8b5b0; line-height: 1.6; }
+      .grid { display: grid; gap: 24px; margin-top: 36px; }
+      figure { margin: 0; padding: 16px; border: 1px solid #3b3e46; background: #191c23; }
+      img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+      figcaption { margin-top: 12px; color: #f1bd58; text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; }
+      @media (min-width: 800px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Oak scene studies</h1>
+      <p>Six web-ready 12-frame loops. The production WebP files keep transparency; this page provides a dark backing for review.</p>
+      <div class="grid">
+        <figure><img src="reading-fire.webp" alt="Oak reading on a couch beside a warm stove" /><figcaption>Reading by the fire</figcaption></figure>
+        <figure><img src="run-trip-recover.webp" alt="Oak running, tripping, recovering, and running again" /><figcaption>Run, trip, recover</figcaption></figure>
+        <figure><img src="workbench-zap.webp" alt="Oak testing electronics and getting zapped" /><figcaption>Workbench zap</figcaption></figure>
+        <figure><img src="computer-working.webp" alt="Oak seated at a computer and typing" /><figcaption>Computer work</figcaption></figure>
+        <figure><img src="thinking-cloud.webp" alt="Oak sitting and ideating beneath a thought cloud" /><figcaption>Thinking / ideating</figcaption></figure>
+        <figure><img src="walking.webp" alt="Oak walking toward the right in a three-quarter view" /><figcaption>Walking</figcaption></figure>
+      </div>
+    </main>
+  </body>
+</html>

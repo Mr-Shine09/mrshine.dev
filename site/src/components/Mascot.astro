@@ -1,0 +1,204 @@
+---
+import { atlas, buildTimeline, type MascotState } from "../data/mascot";
+
+interface Props {
+  /** Row of the atlas to play. */
+  state: MascotState;
+  /** Override the frame order, e.g. [0,1,2,3,2,1] to ping-pong a one-shot row. */
+  sequence?: number[];
+  /** Override every frame's duration, in milliseconds. */
+  frameDuration?: number;
+  /**
+   * Integer multiplier of the 96x112 cell. Non-integers make uneven pixels.
+   *
+   * This is the default only: any ancestor may set `--mascot-scale` to
+   * override it at a breakpoint, which is how the hero shrinks its sprite on
+   * narrow screens without a second component.
+   */
+  scale?: number;
+  /**
+   * Accessible name. Omit for decorative sprites (the default), which are
+   * hidden from assistive tech — the surrounding text already says everything.
+   */
+  label?: string;
+  class?: string;
+}
+
+const {
+  state,
+  sequence,
+  frameDuration,
+  scale = 1,
+  label,
+  class: className,
+} = Astro.props;
+
+const timeline = buildTimeline(state, { sequence, frameDuration });
+
+// `Infinity` is not JSON — a held frame is serialised as null and read back as
+// "stop here" by the player.
+const payload = JSON.stringify({
+  frames: timeline.frames,
+  durations: timeline.durations.map((d) => (Number.isFinite(d) ? d : null)),
+  loop: timeline.loop,
+});
+
+---
+
+<div
+  class:list={["mascot", className]}
+  data-mascot={payload}
+  style={{
+    /* Default only — an ancestor's `--mascot-scale` takes precedence, because
+       the sizes below read that first and fall back to this. */
+    "--mascot-scale-default": scale,
+    "--mascot-cell-px": `${atlas.cellWidth}px`,
+    "--mascot-cell-py": `${atlas.cellHeight}px`,
+    "--mascot-sheet-px": `${atlas.width}px`,
+    "--mascot-sheet-py": `${atlas.height}px`,
+    "--mascot-row": timeline.row,
+    "--mascot-frame": timeline.frames[0],
+  }}
+  role={label ? "img" : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : "true"}
+>
+</div>
+
+<style>
+  .mascot {
+    /* Not declared as its own custom property: reading the ancestor value
+       inline is what lets a breakpoint override the per-instance default. */
+    --s: var(--mascot-scale, var(--mascot-scale-default));
+    --cw: calc(var(--mascot-cell-px) * var(--s));
+    --ch: calc(var(--mascot-cell-py) * var(--s));
+
+    width: var(--cw);
+    height: var(--ch);
+    background-image: url("/sprites/atlas.png");
+    background-size: calc(var(--mascot-sheet-px) * var(--s))
+      calc(var(--mascot-sheet-py) * var(--s));
+    background-repeat: no-repeat;
+    background-position: calc(var(--mascot-frame) * var(--cw) * -1)
+      calc(var(--mascot-row) * var(--ch) * -1);
+    /* Acceptance criterion — every sprite instance, no exceptions. */
+    image-rendering: pixelated;
+    flex: none;
+  }
+</style>
+
+<script>
+  type Payload = {
+    frames: number[];
+    durations: (number | null)[];
+    loop: boolean;
+  };
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function play(el: HTMLElement, spec: Payload) {
+    let step = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let done = false;
+
+    // Looping sprites animate straight away and are only *paused* when the
+    // observer confirms they are off screen. A one-shot row (the poof divider)
+    // is the opposite: it waits for its first on-screen moment, so it does not
+    // burn through its eight frames before anyone can see them.
+    //
+    // Failing open matters — where IntersectionObserver never delivers (a
+    // page rendered while hidden, for instance) a gated loop would sit frozen
+    // on frame 0 forever.
+    let visible = true;
+    let started = spec.loop;
+
+    const show = (index: number) => {
+      el.style.setProperty("--mascot-frame", String(spec.frames[index]));
+    };
+
+    const stop = () => {
+      clearTimeout(timer);
+      timer = undefined;
+    };
+
+    const tick = () => {
+      timer = undefined;
+      if (done) return;
+
+      const last = step >= spec.frames.length - 1;
+      if (last && !spec.loop) {
+        done = true; // held final frame: the state never changes on this page
+        return;
+      }
+
+      step = last ? 0 : step + 1;
+      show(step);
+      schedule();
+    };
+
+    const schedule = () => {
+      if (done || !started || !visible || reduceMotion.matches) return;
+      const ms = spec.durations[step];
+      if (ms === null) {
+        // A hold that is not the end of a loop still needs to advance.
+        if (!spec.loop) {
+          done = true;
+          return;
+        }
+        timer = setTimeout(tick, 200);
+        return;
+      }
+      timer = setTimeout(tick, ms);
+    };
+
+    const reset = () => {
+      stop();
+      step = 0;
+      done = false;
+      show(0);
+    };
+
+    // Reduced motion freezes on frame 0 — the contract lists the first frame of
+    // idle/sleeping/waiting/paused as an approved static substitution.
+    const applyMotionPreference = () => {
+      if (reduceMotion.matches) {
+        reset();
+      } else if (!timer) {
+        schedule();
+      }
+    };
+
+    reduceMotion.addEventListener("change", applyMotionPreference);
+
+    // Don't burn timers on sprites nobody is looking at.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visible = entry.isIntersecting;
+          if (visible) {
+            started = true;
+            if (!timer) schedule();
+          } else {
+            stop();
+          }
+        }
+      },
+      { rootMargin: "120px" }
+    );
+    observer.observe(el);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else if (!timer) schedule();
+    });
+
+    show(0);
+    schedule();
+  }
+
+  for (const el of document.querySelectorAll<HTMLElement>("[data-mascot]")) {
+    const raw = el.dataset.mascot;
+    if (!raw) continue;
+    play(el, JSON.parse(raw) as Payload);
+  }
+</script>

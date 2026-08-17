@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none" shape-rendering="crispEdges" aria-hidden="true" focusable="false">
+  <title>Pixel-square shockwave for a light theme</title>
+  <g id="ring-outer" stroke="#18213D" stroke-width="4" opacity="0.28">
+    <path d="M20 12H48M80 12H108M116 20V48M116 80V108M108 116H80M48 116H20M12 108V80M12 48V20"/>
+  </g>
+  <g id="ring-middle" stroke="#2563EB" stroke-width="4" opacity="0.55">
+    <path d="M36 28H52M76 28H92M100 36V52M100 76V92M92 100H76M52 100H36M28 92V76M28 52V36"/>
+  </g>
+  <g id="ring-inner" stroke="#0891B2" stroke-width="4" opacity="0.9">
+    <path d="M52 44H60M68 44H76M84 52V60M84 68V76M76 84H68M60 84H52M44 76V68M44 60V52"/>
+  </g>
+  <rect id="origin" x="60" y="60" width="8" height="8" fill="#0E7490"/>
+</svg>

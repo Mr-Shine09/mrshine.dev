@@ -1,0 +1,39 @@
+{
+  "id": "computer-working",
+  "label": "Oak typing and working at a computer",
+  "frameSize": [
+    384,
+    320
+  ],
+  "frameCount": 12,
+  "durationsMs": [
+    150,
+    90,
+    90,
+    90,
+    120,
+    150,
+    220,
+    130,
+    90,
+    90,
+    120,
+    150
+  ],
+  "atlas": "computer-working-atlas.png",
+  "animatedWebp": "computer-working.webp",
+  "frames": [
+    "frames/computer-working/computer-working-00.png",
+    "frames/computer-working/computer-working-01.png",
+    "frames/computer-working/computer-working-02.png",
+    "frames/computer-working/computer-working-03.png",
+    "frames/computer-working/computer-working-04.png",
+    "frames/computer-working/computer-working-05.png",
+    "frames/computer-working/computer-working-06.png",
+    "frames/computer-working/computer-working-07.png",
+    "frames/computer-working/computer-working-08.png",
+    "frames/computer-working/computer-working-09.png",
+    "frames/computer-working/computer-working-10.png",
+    "frames/computer-working/computer-working-11.png"
+  ]
+}

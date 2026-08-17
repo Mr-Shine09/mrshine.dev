@@ -1,0 +1,39 @@
+{
+  "id": "thinking-cloud",
+  "label": "Oak sitting and ideating beneath a thought cloud",
+  "frameSize": [
+    384,
+    320
+  ],
+  "frameCount": 12,
+  "durationsMs": [
+    260,
+    180,
+    180,
+    180,
+    220,
+    300,
+    260,
+    220,
+    180,
+    180,
+    180,
+    260
+  ],
+  "atlas": "thinking-cloud-atlas.png",
+  "animatedWebp": "thinking-cloud.webp",
+  "frames": [
+    "frames/thinking-cloud/thinking-cloud-00.png",
+    "frames/thinking-cloud/thinking-cloud-01.png",
+    "frames/thinking-cloud/thinking-cloud-02.png",
+    "frames/thinking-cloud/thinking-cloud-03.png",
+    "frames/thinking-cloud/thinking-cloud-04.png",
+    "frames/thinking-cloud/thinking-cloud-05.png",
+    "frames/thinking-cloud/thinking-cloud-06.png",
+    "frames/thinking-cloud/thinking-cloud-07.png",
+    "frames/thinking-cloud/thinking-cloud-08.png",
+    "frames/thinking-cloud/thinking-cloud-09.png",
+    "frames/thinking-cloud/thinking-cloud-10.png",
+    "frames/thinking-cloud/thinking-cloud-11.png"
+  ]
+}

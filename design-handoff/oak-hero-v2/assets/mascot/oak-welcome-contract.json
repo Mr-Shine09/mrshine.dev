@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "asset": "oak-welcome-atlas.png",
+  "atlas": {
+    "columns": 13,
+    "rows": 1,
+    "pixel_size": [
+      2080,
+      208
+    ],
+    "cell_pixel_size": [
+      160,
+      208
+    ]
+  },
+  "anchor": {
+    "x": 80,
+    "baseline_y": 204
+  },
+  "body_height": 192,
+  "sequence": {
+    "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "durations_ms": [
+      700,
+      180,
+      180,
+      180,
+      160,
+      120,
+      140,
+      140,
+      260,
+      260,
+      160,
+      160,
+      1100
+    ],
+    "loop": true
+  },
+  "speech_bubble": {
+    "text": "WELCOME",
+    "visible_frames": [
+      3,
+      11
+    ]
+  },
+  "reduced_motion_frame": 11,
+  "frame_intents": [
+    "open-eyed relaxed pose",
+    "waving arm begins lifting away from the hip",
+    "waving hand reaches waist height",
+    "waving hand reaches shoulder height",
+    "waving hand reaches head height",
+    "high wave outward arc",
+    "high wave with warm smile",
+    "eyes closing and smile broadening",
+    "eyes closed with toothy smile",
+    "closed-eye toothy smile with sparkle",
+    "eyes reopening with sparkle",
+    "open-eyed final wave",
+    "open-eyed settled pose"
+  ]
+}

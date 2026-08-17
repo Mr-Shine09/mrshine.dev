@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" shape-rendering="crispEdges" aria-hidden="true" focusable="false">
+  <title>Pixel arrow cursor for light surfaces</title>
+  <desc>Thirty-two pixel cursor with its interaction hotspot at x 3, y 3.</desc>
+  <path d="M2 2H6V6H10V10H14V14H24V18H16V20H18V28H12V22H10V20H6V24H2V2Z" fill="#0B1020" stroke="#F8FAFC" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M4 4H6V6H8V8H10V10H12V12H14V14H16V16H12V18H10V16H8V18H6V20H4V4Z" fill="#FFFFFF"/>
+  <path d="M12 18H14V20H16V26H14V22H12V18Z" fill="#38E8FF"/>
+</svg>

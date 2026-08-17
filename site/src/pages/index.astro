@@ -1,0 +1,283 @@
+---
+import { getCollection } from "astro:content";
+
+import Base from "../layouts/Base.astro";
+import Nav from "../components/Nav.astro";
+import Hero from "../components/Hero.astro";
+import Mascot from "../components/Mascot.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import BookCard from "../components/BookCard.astro";
+import HobbyCard from "../components/HobbyCard.astro";
+import ContactCard from "../components/ContactCard.astro";
+import SectionTransition from "../components/SectionTransition.astro";
+import AnimatedScene from "../components/AnimatedScene.astro";
+
+const allProjects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+// The three weights are laid out as three bands rather than one grid: mixing a
+// tall image card and a two-line text card in the same grid row leaves the
+// short one stranded in white space.
+const featured = allProjects.filter((p) => p.data.weight === "featured");
+const standard = allProjects.filter((p) => p.data.weight === "standard");
+const textOnly = allProjects.filter((p) => p.data.weight === "text-only");
+
+const books = await getCollection("books");
+const currentBook = books.find((book) => book.data.status === "current");
+const pastBooks = books.filter((book) => book.data.status === "past");
+
+const hobbies = (await getCollection("hobbies")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<Base>
+  <Nav />
+
+  <main>
+    <Hero />
+
+    {/* ---------- Built ---------- */}
+    <section class="section" id="built">
+      <div class="wrap">
+        <div class="built__intro">
+          <div class="section-head">
+            <h2>Built</h2>
+            <p class="lede">
+              Things I have finished, roughly in the order they mattered.
+            </p>
+          </div>
+
+          <AnimatedScene
+            scene="workbench-zap"
+            class="projects__workbench"
+            label="Oak working intensely on electronics, getting zapped, and recovering"
+          />
+        </div>
+
+        {
+          featured.map((project) => (
+            <div class="projects__band">
+              <ProjectCard project={project} />
+            </div>
+          ))
+        }
+
+        {
+          standard.length > 0 && (
+            <div class="projects__band projects__grid">
+              {standard.map((project) => (
+                <ProjectCard project={project} />
+              ))}
+            </div>
+          )
+        }
+
+        {
+          textOnly.length > 0 && (
+            <div class="projects__band">
+              <p class="label projects__index-label">Also</p>
+              <div class="projects__index">
+                {textOnly.map((project) => (
+                  <ProjectCard project={project} />
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <SectionTransition />
+
+    {/* ---------- Current ---------- */}
+    <section class="section" id="current">
+      <div class="wrap">
+        <div class="section-head">
+          <Mascot state="ideating" scale={1} class="section-head__sprite" />
+          <h2>Current</h2>
+          <p class="lede">What has my attention this month.</p>
+        </div>
+
+        {
+          currentBook && (
+            <div class="reading">
+              <p class="label reading__label">Reading now</p>
+              <BookCard book={currentBook} variant="current" />
+            </div>
+          )
+        }
+
+        {
+          pastBooks.length > 0 && (
+            <div class="reading-past">
+              <p class="label reading__label">Read before</p>
+              <div class="reading-past__grid">
+                {pastBooks.map((book) => (
+                  <BookCard book={book} variant="past" />
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        {
+          hobbies.length > 0 && (
+            <div class="hobbies">
+              <p class="label reading__label">Away from the desk</p>
+              <div class="hobbies__grid">
+                {hobbies.map((hobby) => (
+                  <HobbyCard hobby={hobby} />
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    {/* ---------- Ahead ---------- */}
+    <section class="section" id="ahead">
+      <div class="wrap ahead">
+        <div class="section-head">
+          <h2>Ahead</h2>
+        </div>
+
+        <div class="ahead__body">
+          {/*
+            TODO(owner): replace with the real "three episodes of time" writing.
+            Deliberately short — this section is a direction, not a roadmap, and
+            the plan calls for prose here rather than a card grid.
+          */}
+          <p class="ahead__lead">
+            I think about time in three episodes: what I have already built,
+            what has my hands right now, and the thing I am not yet good enough
+            to attempt.
+          </p>
+          <p>
+            The third one is the interesting one. Right now it is the place
+            where systems engineering meets the older question of what we owe
+            the people who use what we make — the Classics half of my head
+            arguing with the engineering half.
+          </p>
+          <p>
+            If you are working on something in that seam, I would like to hear
+            about it.
+          </p>
+        </div>
+
+        <div class="ahead__mascot">
+          <Mascot state="walk-right" scale={2} />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ContactCard />
+</Base>
+
+<style>
+  .section-head__sprite {
+    /* The motif sits at the section head, once — not on every card. */
+    margin-right: calc(var(--space-xs) * -1);
+  }
+
+  .built__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 24rem);
+    align-items: end;
+    gap: var(--space-m);
+    margin-bottom: var(--space-l);
+  }
+
+  .built__intro .section-head {
+    margin-bottom: 0;
+  }
+
+  .projects__workbench {
+    width: min(100%, 24rem);
+    justify-self: end;
+  }
+
+  .projects__band + .projects__band {
+    margin-top: var(--space-l);
+  }
+
+  .projects__grid {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .projects__index-label {
+    margin-bottom: var(--space-xs);
+  }
+
+  .projects__index {
+    display: grid;
+  }
+
+  .reading__label {
+    margin-bottom: var(--space-s);
+  }
+
+  .reading-past,
+  .hobbies {
+    margin-top: var(--space-l);
+  }
+
+  .reading-past__grid {
+    display: grid;
+    gap: var(--space-s) var(--space-m);
+  }
+
+  .hobbies__grid {
+    display: grid;
+    gap: 0 var(--space-m);
+  }
+
+  .ahead {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .ahead__lead {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.3;
+    margin-bottom: var(--space-m);
+  }
+
+  .ahead__body p:not(.ahead__lead) {
+    color: var(--muted);
+  }
+
+  .ahead__mascot {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  @media (min-width: 52rem) {
+    .projects__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reading-past__grid {
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    }
+
+    .hobbies__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 52rem) {
+    .built__intro {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .projects__workbench {
+      width: min(100%, 20rem);
+    }
+  }
+</style>

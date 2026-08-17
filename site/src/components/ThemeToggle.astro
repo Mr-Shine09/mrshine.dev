@@ -1,0 +1,113 @@
+---
+// Paired with the blocking script in Base.astro, which sets the initial theme
+// before first paint so there is no flash of the wrong palette.
+---
+
+<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">
+  <span class="theme-toggle__face" data-theme-label>Light</span>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4em;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex: none;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  /* On a narrow bar the word costs more than it explains — the glyph and the
+     button's aria-label carry it. */
+  @media (max-width: 30rem) {
+    .theme-toggle__face {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .theme-toggle__face::before {
+      display: none;
+    }
+
+    .theme-toggle::after {
+      content: "◐";
+      color: var(--accent);
+      font-size: 1.1em;
+    }
+  }
+
+  .theme-toggle:hover {
+    color: var(--fg);
+    border-color: var(--fg);
+  }
+
+  .theme-toggle__face::before {
+    content: "◐ ";
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "theme";
+
+  const button = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+  const label = document.querySelector<HTMLElement>("[data-theme-label]");
+
+  const current = () =>
+    document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+
+  function render() {
+    const theme = current();
+    if (label) label.textContent = theme === "dark" ? "Dark" : "Light";
+    button?.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+    );
+  }
+
+  button?.addEventListener("click", () => {
+    const next = current() === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    // This is a real deployed site, not a sandboxed artifact — persistence is fine.
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // Private mode or blocked storage: the toggle still works for this visit.
+    }
+    render();
+  });
+
+  // Follow the OS only while the visitor has not made an explicit choice.
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (event) => {
+      let stored: string | null = null;
+      try {
+        stored = localStorage.getItem(STORAGE_KEY);
+      } catch {
+        stored = null;
+      }
+      if (stored) return;
+      document.documentElement.dataset.theme = event.matches ? "dark" : "light";
+      render();
+    });
+
+  render();
+</script>

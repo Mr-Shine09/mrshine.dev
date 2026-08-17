@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="96" viewBox="0 0 192 96" role="img" aria-labelledby="title desc" shape-rendering="crispEdges">
+  <title id="title">Welcome speech bubble for dark backgrounds</title>
+  <desc id="desc">Pixel-art speech bubble containing the word WELCOME.</desc>
+  <path fill="#F8FAFC" d="M16 8h160v8h8v52h-8v8H72L48 92V76H16l-8-8V16l8-8Z"/>
+  <path fill="#111827" d="M20 16h152v8h4v40h-8v4H68L56 80V68H20l-4-4V20l4-4Z"/>
+  <text x="96" y="45" text-anchor="middle" dominant-baseline="middle"
+    fill="#F8FAFC" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+    font-size="20" font-weight="800" letter-spacing="1">WELCOME</text>
+</svg>

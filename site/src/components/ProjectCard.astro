@@ -1,0 +1,267 @@
+---
+import { Image } from "astro:assets";
+import { render, type CollectionEntry } from "astro:content";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+const { title, weight, stack, summary, image, imageAlt, links, metric, year } =
+  project.data;
+
+// Text-only cards are a one-line index entry; the weighted cards carry the
+// longer writeup from the markdown body.
+const showsBody = weight !== "text-only";
+const { Content } = await render(project);
+
+const hasLinks = Boolean(links.github || links.live);
+---
+
+<article class:list={["project", `project--${weight}`]}>
+  {
+    image && (
+      <div class="project__media">
+        <Image
+          src={image}
+          alt={imageAlt ?? ""}
+          widths={weight === "featured" ? [640, 960, 1280] : [400, 640, 800]}
+          sizes={
+            weight === "featured"
+              ? "(max-width: 52rem) 100vw, 60rem"
+              : "(max-width: 52rem) 100vw, 28rem"
+          }
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    )
+  }
+
+  <div class="project__body">
+    <header class="project__head">
+      <h3 class="project__title">{title}</h3>
+      {year && <p class="label project__year">{year}</p>}
+    </header>
+
+    <p class="project__summary">{summary}</p>
+
+    {
+      metric && (
+        <p class="project__metric">
+          <span class="project__metric-mark" aria-hidden="true">
+            ▸
+          </span>
+          {metric}
+        </p>
+      )
+    }
+
+    {
+      showsBody && (
+        <div class="project__prose">
+          <Content />
+        </div>
+      )
+    }
+
+    {
+      stack.length > 0 && (
+        <ul class="project__stack" aria-label="Built with">
+          {stack.map((tool) => (
+            <li>{tool}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      hasLinks && (
+        <p class="project__links">
+          {links.github && (
+            <a href={links.github} rel="noopener">
+              Source
+              <span class="project__arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          )}
+          {links.live && (
+            <a href={links.live} rel="noopener">
+              Live
+              <span class="project__arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          )}
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .project {
+    display: grid;
+    gap: var(--space-m);
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-raised);
+    padding: var(--space-m);
+    transition: border-color 0.18s ease, transform 0.18s ease;
+  }
+
+  .project:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--rule));
+  }
+
+  .project__media {
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+  }
+
+  .project__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 16 / 10;
+  }
+
+  .project__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-bottom: var(--space-xs);
+  }
+
+  .project__title {
+    margin: 0;
+  }
+
+  .project__year {
+    flex: none;
+  }
+
+  .project__summary {
+    color: var(--fg);
+    margin-bottom: var(--space-s);
+  }
+
+  .project__metric {
+    display: flex;
+    gap: 0.5em;
+    align-items: baseline;
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-s);
+  }
+
+  .project__metric-mark {
+    color: var(--accent);
+  }
+
+  .project__prose {
+    color: var(--muted);
+    margin-bottom: var(--space-s);
+  }
+
+  .project__prose :global(p) {
+    margin-bottom: var(--space-xs);
+  }
+
+  .project__prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .project__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-bottom: var(--space-s);
+  }
+
+  .project__stack li {
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+  }
+
+  .project__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin: 0;
+  }
+
+  .project__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    min-height: 44px;
+    font-size: var(--step--1);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .project__links a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .project__arrow {
+    transition: transform 0.15s ease;
+  }
+
+  .project__links a:hover .project__arrow {
+    transform: translate(2px, -2px);
+  }
+
+  /* ---- weights ---- */
+
+  .project--featured {
+    grid-column: 1 / -1;
+  }
+
+  .project--text-only {
+    background: transparent;
+    border-color: transparent;
+    border-top: var(--border);
+    border-radius: 0;
+    padding-inline: 0;
+    padding-bottom: 0;
+  }
+
+  .project--text-only .project__summary {
+    color: var(--muted);
+    margin-bottom: var(--space-xs);
+  }
+
+  @media (min-width: 52rem) {
+    .project--featured {
+      grid-template-columns: 1fr 1fr;
+      /* Top-aligned: the writeup is taller than the image, and centring the
+         image leaves a gap above and below it. */
+      align-items: start;
+      padding: var(--space-l);
+      gap: var(--space-l);
+    }
+
+    .project--featured .project__media {
+      position: sticky;
+      top: calc(var(--nav-h, 3.5rem) + var(--space-m));
+    }
+
+    .project--featured .project__media :global(img) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>
