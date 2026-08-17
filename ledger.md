@@ -4,13 +4,14 @@ Running record of what's settled, what's open, and what to pick up next.
 Update at the end of every session. This is **not** the build plan —
 see `plan.md` for the execution document.
 
-**Last updated:** 2026-08-16 (Hero V2 mascot asset repair and calibration)
-**Stage:** **the built site's page architecture has been superseded.** The
-structural work from 15 Aug is done and still valid at the component level, but
-the site is no longer a single scrolling page — see decisions #18–#21. The
-content pass has started; `docs/about-me.md` is written. A separate, dominant
-13-frame Hero V2 mascot handoff is now saved and QA-passed, but intentionally
-has not been integrated into `site/`.
+**Last updated:** 2026-08-16 (multi-page build executed; content complete)
+**Stage:** **the site described in `HANDOFF.md` is built and content-complete.**
+All seven routes exist, every acceptance criterion was verified by running the
+site (Playwright, four widths, both themes, reduced motion, no-JS), and every
+`TODO(owner)` except the real `.dev` domain and Echo's Devpost URL is resolved.
+The owner supplied 12 photos, 6 project screenshots, `resume.pdf`, the Drake
+phrase, and both books' dates/progress on the evening of 16 Aug. Remaining work
+is deploy, not build.
 
 ---
 
@@ -18,13 +19,13 @@ has not been integrated into `site/`.
 
 | | |
 |---|---|
-| Decisions locked | 47 (4 superseded) |
-| Blocking open items | 10 |
-| Non-blocking open items | 7 |
-| `plan.md` written | **yes** |
-| Build started | **yes — structurally complete** |
-| Deployed | no (needs owner's Cloudflare account) |
-| Under version control | **no** — see Housekeeping |
+| Decisions locked | 51 (4 superseded) |
+| Blocking open items | 0 |
+| Non-blocking open items | 6 |
+| `plan.md` written | **yes — superseded by `HANDOFF.md`; historical** |
+| Build started | **yes — built and content-complete** |
+| Deployed | no (needs owner's Cloudflare account and the `.dev` domain) |
+| Under version control | **yes** — `main`, clean tree at end of 16 Aug session |
 
 ---
 
@@ -79,6 +80,10 @@ has not been integrated into `site/`.
 | 45 | **The mascot is exempt from the theme and keeps its own 12 colours** | Verified by compositing the real atlas onto the new palette: the navy jacket sits comfortably against violet ink and the orange accents read as the second ink. It works as a full-colour object on a duotone page. Recolouring would also break the atlas contract's frozen palette (#15) |
 | 46 | **Mobile: home grid stays two-column masonry; the business card becomes a tab that opens full-screen; each bookshelf scrolls horizontally in its own container** | One column would turn a four-tile front door into a scroll, defeating #18. There is no "centre" worth travelling to on a 375px screen. And the page body must never scroll horizontally — wide content scrolls inside itself |
 | 47 | **The build amends `site/` rather than starting fresh** | The mascot player's fail-open behaviour (#17) was found by running the thing, not by reading it, and a reimplementation would very likely reintroduce the bug. The content collections, validation pattern, theme toggle and vCard endpoint are all hardened too |
+| 48 | **Phrase colours are the three Riso theme tokens — `ink` / `accent` / `muted` — not the mascot's twelve.** Refines #36 | The docs pointed at the mascot palette, but that predates the Riso C2 theme (#44). The theme tokens are already contrast-measured AA in both modes, so a phrase can never silently vanish in either — which was the entire point of #36. The mascot twelve stay on the book spines, where each pairing was checked individually |
+| 49 | **The W Phrases specimen set: Geist Pixel + Space Grotesk (grotesque), Archivo Narrow (condensed), Caveat (hand), Bitter (slab), Playfair Display (serif).** Refines #35 | Playfair returns as a phrase-only face — one weight, Latin subset — not as a site font; #41 stands. All five self-host through the Astro pipeline at build time and their `@font-face` rules are emitted only on pages that render phrases (the wall itself and the home tile) |
+| 50 | **The scroll traveller walks on short pages, runs-trips-recovers on long ones (≥2.5 viewports), flips with travel direction, and does not exist on phones or under reduced motion** | The walking gait is scrubbed from distance travelled so the feet stay planted. On a phone a fixed overlay covers content and controls, and §11.2's own rule — never let the mascot cover a control — outranks having the traveller at all there |
+| 51 | **The owner's 16 Aug content decisions:** the photo set is 12, not 19 — the `.env`-laptop shot, the Anthropic slide, the Campanile, the schoolyard, the fountain and the autumn hills are dropped by choice; Yangon/De Anza/DA Hacks photos carry no dates; the closing line keeps "Leveraging" | Dates render only where supplied rather than showing "date to come" placeholders — an owner decision overriding the spec's every-photo-dated rule. The dropped `.env` photo also closes the key-exposure risk on the website side; the owner reports the keys themselves were rotated long ago |
 
 ---
 
@@ -115,18 +120,16 @@ as bigger than it is.
   placement and the treatment do not
 - `plan.md` §5, the section-by-section spec, and the section order in §6
 
-**Open, not yet decided:**
+**Both former open questions are now closed:**
 
-- Where the mascot lives now. The old sprite-to-section mapping (`waiting` in
-  the hero, `working` at Built, `ideating` at Current, `poof` between sections,
-  `walk-right` at Ahead, `sleeping` in contact) assumed a single scroll. Five
-  separate pages need a new mapping, and the `poof` transition in particular has
-  no obvious home — it existed to cover a scroll boundary that no longer exists.
-  **This is the largest unresolved consequence of #18.**
-- What happened to the "Ahead" section. The past/present/future framing (#5) was
-  a section order on one page; it has no equivalent in a four-tile grid, and
-  "W Phrases" has taken its place in the set. Either it folds into About, or it
-  is dropped deliberately — but it should not just quietly vanish.
+- Where the mascot lives — resolved by #40 and executed 16 Aug: Hero V2 on home,
+  reading-fire on Reading, computer-working + one-shot workbench-zap on
+  Projects, thinking-cloud on W Phrases, walking/run-trip as the scroll
+  traveller (#50). `poof` found no home and is retired with the legacy atlas
+  kept for compatibility (#17, #47).
+- The "Ahead" / past-present-future framing (#5) is **dropped deliberately**.
+  W Phrases took its slot in the four-tile set, and the built site records the
+  decision rather than leaving it to vanish quietly.
 
 ---
 
@@ -134,48 +137,45 @@ as bigger than it is.
 
 ### Blocking
 
-- [ ] **Rotate the API keys visible in a hackathon photo.** One of the photos
-      supplied for the About page shows a `.env` file on screen with a live
-      `ANTHROPIC_API_KEY`, a `BROWSERBASE_API_KEY`, and a `REDIS_URL` containing
-      a password. This is not a website problem — the photo exists independently
-      and the keys should be treated as compromised. See `docs/about-me.md` §4.
-- [ ] Dates for all 19 About-page photos, and captions for the portrait, Yangon
-      and De Anza groups
-- [ ] The photo files themselves, into `site/src/assets/photos/`
-- [ ] A real `resume.pdf`. Every other business-card field was supplied on
-      16 Aug; this is the only one still empty
-- [ ] Six project screenshots into `site/src/assets/projects/`, with alt text —
-      three PokeDesk, three Echo. See `docs/projects.md` §4
-- [ ] Project schema amendment: drop `weight`, add `draft`, `collaborators`,
-      `builtAt`, `links.devpost`
-- [ ] Book schema replacement: `language`, `genre`, three-state `status`,
-      `started`/`ended`, `rating`, `review`. Delete `content/books/current.md`
-      and the `past/` directory
-- [ ] Started dates and progress for Dune and Zero to One
-- [ ] Four new font families for W Phrases, subset and weight-limited
-- [ ] Contrast-check every palette token used as a phrase colour, in both themes
+None. Everything blocking on 16 Aug morning was closed by the evening build:
+
+- [x] API keys in the hackathon photo — photo dropped from the set (#51); owner
+      reports the keys were rotated long ago
+- [x] Photos — 12 supplied, renamed to manifest slugs, wired into About and the
+      home tile; dates render only where supplied (#51)
+- [x] `resume.pdf` — at `site/public/resume.pdf`, Résumé row live
+- [x] Project screenshots — 6 supplied; `pokedesk-hero` and `echo-hero` on the
+      card fronts and the home Projects tile
+- [x] Project schema amendment, book schema replacement — in
+      `src/content.config.ts` with named build failures
+- [x] Dune (started 1 Aug 2026, 73% — p.302/412) and Zero to One (started
+      1 Aug 2026, 43% — ch.6/14)
+- [x] The five specimen families, subset and weight-limited (#49)
+- [x] Phrase-colour contrast — solved structurally by #48 (theme tokens only)
 
 ### Not blocking
-- [x] Dominant Hero V2 wave asset — saved as a separate 13-frame atlas and
-      implementation handoff under `design-handoff/oak-hero-v2/`. Frame 4's
-      short-torso defect was repaired and the slow calibration loop passes.
-      Integration remains intentionally deferred under decision #33.
-- [ ] Reading pose gap for the Current section — the reading card currently shows no sprite at all rather than a wrong one
-- [ ] Mascot mapping for the new page structure — **deliberately deferred per #40**
-      until the new Hero arrives from Codex. `poof` has no home in the new
-      architecture and should be retired unless a use appears
-- [ ] Decide the fate of the "Ahead" / past-present-future framing (#5). It had
-      no slot in the four-tile grid and W Phrases took its place in the set —
-      drop it on purpose rather than by accident
-- [ ] Regenerate `contact.vcf` with the four socials and the Santa Clara location
-- [ ] ~~Real content: role, location, tagline~~ — **supplied 16 Aug**, captured in `docs/about-me.md` §3. Still outstanding: LinkedIn, résumé PDF, real domain
-- [ ] Real project list (4–6), which 2–3 get images, and their writeups. Dock Pet is seeded as the featured project from facts in its own atlas contract — it still needs the owner's voice and a real screenshot
-- [ ] Real book data (current + past) and hobby list
-- [ ] Two generated placeholder images sit in `site/src/assets/projects/` — diagonal stripe patterns, obviously not screenshots. Replace or delete with their projects
+
+- [ ] Real `.dev` domain → `site/src/data/site.ts` `url`, then canonical URLs
+      and the vCard are correct. Owner wants to review the site first
+- [ ] Push the repo to GitHub and deploy to Cloudflare Pages (root `site/`,
+      build `npm run build`, output `dist`) — needs the owner's accounts
+- [ ] Echo's Devpost URL, if the team submitted one — the row simply doesn't
+      render until it exists
+- [ ] Lookout and Wizlet content — both sit as `draft: true`; flipping the flag
+      is the only publish step
+- [ ] A Myanmar-capable font **before** any Burmese book is entered (#32) — the
+      Burmese shelves exist and stay hidden until then
+- [ ] Keystatic panel, last, per #2 — the schemas are strict so it has something
+      clean to bind to
 
 ### Observed during the build, not acted on
-- Dark mode: the mascot's black hair does lose definition against `--ink`, exactly as #12 anticipated. The accent swap is in place as decided; no backing plate or outline was added, since that would change how the character reads and was not a locked decision. Worth an eye on a real screen before deciding it needs anything.
-- **`prefers-reduced-motion` was not verified by execution.** The CSS rule and the player's guard are both in place and were confirmed by inspection, but the build environment could not emulate the media query. This is the one acceptance criterion resting on reading rather than running — check it once on a real machine.
+- Dark mode: the mascot's black hair does lose definition against the dark
+  ground, as #12 anticipated. No backing plate was added — it would change how
+  the character reads. Fine on the screens checked; keep an eye on it.
+- One real-device pass (an actual phone, an actual OS reduced-motion setting)
+  is still worth doing before deploy. Everything was verified in a real browser
+  engine (headless Chromium with emulated viewport/motion/no-JS), which is
+  running-the-thing, but not the same as holding the thing.
 
 ---
 
@@ -194,7 +194,7 @@ The original build files were verified against the working directory on
 | `docs/contact.md` | Content spec for Contact — the fifth of five. The card opened as a page, the full link set, why there is no form, and the vCard regeneration |
 | `HANDOFF.md` | **The build brief.** Self-contained: architecture, routes, the Geist Pixel type system, the Riso C2 theme with measured contrast, per-page component specs, schemas, what to keep and what to delete, and acceptance criteria. Written 16 Aug for a session starting cold |
 | `Geist_Pixel copy/` | Source TTF (3.6 MB, variable, single `ELSH` axis), `OFL.txt`, `README.txt`. **Must be subsetted to woff2 before shipping** |
-| `site/` | **The site.** Astro 7, builds clean (0 errors / 0 warnings / 0 hints), no external JS files — 5 inlined scripts, 3.5 KB total |
+| `site/` | **The site.** Astro 7, built to the HANDOFF architecture 16 Aug, builds clean (0 errors / 0 warnings / 0 hints), content-complete, all assets self-hosted |
 | `site/scripts/strip-clock-overlay.js` | Clears the clock from the `waiting` row so those frames can be re-used as a hero wave. Idempotent, and refuses to run if the source art changes shape |
 | `site/public/assets/animation/ANIMATION_ASSETS.md` | Canonical asset map. Claude should start here before placing or changing any mascot animation |
 | `site/public/assets/animation/scenes/` | Six approved 12-frame runtime atlases plus one shared timing contract |
@@ -218,27 +218,40 @@ landed in the project. Two of them still carry real value if they can be found:
 
 ## Where the build actually stands
 
-Running locally on `:4321`. Everything in §6 of `plan.md` is checked off except
-real content and deploy — **but it is building the superseded structure.** What
-follows describes the 15 Aug build as it exists today, not as it should be.
+**The HANDOFF architecture is built, content-complete, and verified by
+execution** (16 Aug evening session). Running locally on `:4321`; `astro build`
+and `astro check` both clean (0 errors / 0 warnings / 0 hints).
 
-- Sections all present in the now-superseded order: hero → Built → *poof* → Current → Ahead → Contact
-- Sprite mappings as locked: `waiting` wave in the hero, `working` at Built,
-  `ideating` at Current, `poof` between the two, `walk-right` at Ahead,
-  `sleeping` in the contact card
-- Content collections are schema-validated at build time, with custom messages
-  (a `standard` project without an image fails the build by name)
-- vCard is a build-time static endpoint at `/contact.vcf`; verified well-formed
+- Seven routes: `/` (2-col masonry, four tiles, Hero V2 welcome), `/about`,
+  `/projects`, `/reading`, `/w-phrases`, `/contact`, `/contact.vcf`
+- Geist Pixel subset 3.6 MB → 26 KB woff2, ELSH axis kept, default instance 0;
+  `font-synthesis: none`; 4px-multiple scale; five phrase-only families (#49)
+- Riso C2 tokens light/dark (#44); mascot palette preserved as `--px-*` for
+  spines only (#45)
+- Business card on every page: corner card → spin-and-travel dialog; full-screen
+  tab on phones; plain `/contact` link with no JS; Escape closes
+- All six scenes wired per #40, including one-shot workbench-zap that holds the
+  singed pose, and the two-mode scroll traveller (#50)
+- Verified by running: 0 horizontal overflow at 320/375/768/1280 on every
+  route; dark theme; reduced motion (wall static, traveller hidden, scenes
+  frozen); no-JS (shelves, phrases, card faces, contact all render); keyboard
+  flip uses `inert` on the face-down side; no third-party requests — all 7
+  font files self-hosted in `dist/_astro/fonts/`
+- Content: 2 projects live + 2 drafts, 2 books with real dates/progress,
+  4 phrases including the Drake line, 12 photos, live `resume.pdf`
 
 ---
 
 ## Housekeeping
 
-**This directory is not a git repository.** There is no history, no diff, and
-nothing to recover — the missing files above are the first evidence of what that
-costs. A `site/.gitignore` is written and ready, but it is inert until `git init`
-runs. Doing that before the content pass would be cheap insurance, and Cloudflare
-Pages wants a repo to deploy from anyway, so decision #11 needs it regardless.
+**Version control: resolved.** The root is a git repository on `main` with the
+full 16 Aug history: baseline → animation consolidation → build → photo wiring →
+owner facts → this ledger update. Cloudflare Pages (#11) still needs it pushed
+to GitHub, which needs the owner's account.
+
+`.qa/` at the root is a gitignored scratch area holding the Playwright
+screenshot/verification harness (`shoot.mjs`, `verify.mjs`) — useful for
+re-running the acceptance sweep, safe to delete.
 
 The art licence is narrow by design (#16). If the repo is ever made public, the
 sprite atlas travels with it — that is intended for the owner's own portfolio,
@@ -256,9 +269,10 @@ items above are authoritative.
 | Risk | Status | Mitigation / next gate |
 |---|---|---|
 | No version-control history for the site or new art handoff | Resolved | Git repository initialized on `main`; animation cleanup remains recoverable from history |
-| API keys visible in a supplied photograph | Open, high | Rotate all exposed credentials before using or publishing the photograph |
-| Hero V2 exists but its page-level placement is unresolved | Resolved | Mapping and runtime rules are recorded in `ANIMATION_ASSETS.md` and HANDOFF §11 |
-| Motion accessibility not executed on a real browser/device | Open, medium | Run the manual reduced-motion acceptance check before deployment |
+| API keys visible in a supplied photograph | Resolved | Photo dropped from the published set (#51); owner reports the keys were rotated long ago |
+| Hero V2 exists but its page-level placement is unresolved | Resolved | Mapping and runtime rules are recorded in `ANIMATION_ASSETS.md` and HANDOFF §11; executed 16 Aug |
+| Motion accessibility not executed on a real browser/device | Mostly resolved | Verified in headless Chromium with `reducedMotion: reduce` emulation (wall static, traveller hidden, scenes frozen). One pass on a physical device before deploy remains prudent |
+| `url` still `https://example.dev` | Open, low | Canonical URLs and the vCard carry the placeholder until the owner buys the domain and updates `site.ts` |
 
 ## Verification matrix
 
@@ -295,25 +309,38 @@ items above are authoritative.
 - Next: Give `docs/IMPLEMENTATION-GUIDE.md` and the saved atlas contract to the
   implementation agent after the page-level mascot mapping is decided.
 
+### 2026-08-16 (evening) — Build the HANDOFF site, end-to-end
+
+- Objective: Execute `HANDOFF.md` inside the existing `site/`, then land the
+  owner's real content.
+- Completed: All seven routes; Geist Pixel pipeline (26 KB woff2, ELSH kept);
+  Riso C2 theme with light/dark; new/updated components (`NavPill`,
+  `BusinessCard`, `HeroWelcome`, `ProjectCard` flip deck, `BookSpine` shelf,
+  the W Phrases marquee, one-shot support in `AnimatedScene`, two-mode
+  `ScrollTripMascot`); schemas rewritten with named failures; `contact.vcf`
+  regenerated; owner's 12 photos + 6 screenshots wired; Drake phrase, book
+  dates/progress, `resume.pdf` landed. Decisions #48–#51 locked.
+- Verification: `astro build` + `astro check` clean; Playwright sweep across
+  320/375/768/1280 on every route (0 horizontal overflow); dark theme,
+  reduced-motion emulation, no-JS, keyboard-flip `inert`, and the business-card
+  dialog all verified by execution; no third-party requests in `dist/`.
+- Risks or blockers: none blocking. Domain, GitHub push, and Cloudflare deploy
+  are the owner's to run.
+- Next: owner reviews the running site and sends refinements.
+
 ## Next session
 
-1. `git init` and a first commit, before anything else changes. See Housekeeping.
-   This matters more now than it did on 15 Aug: the next session rewrites
-   `index.astro` and `Nav.astro`, and there is still no way to recover them.
-2. ~~Finish the remaining four content docs~~ — **done 16 Aug.** All five specs
-   exist in `docs/`: `about-me`, `projects`, `reading-list`, `w-phrases`,
-   `contact`.
-3. Rewrite `plan.md` §5 for the grid-and-pages architecture. Until that happens
-   `plan.md` and `ledger.md` disagree, and a build session reading only the plan
-   will build the wrong site. **This is now the highest-value remaining task.**
-4. Decide the fate of "Ahead" (#5). The mascot mapping is deferred by #40, not
-   forgotten.
-5. Deploy to Cloudflare Pages and connect the `.dev` domain. Not started: it
-   needs the owner's own Cloudflare account, so it is his to run.
-6. One manual `prefers-reduced-motion` check on a real machine — the single
-   acceptance criterion not verified by running it.
-7. Revisit the reading-pose gap and tall wave frames opportunistically, not as
-   gating work. Look for `mascot-wave-prompts.md` first; without it those frames
-   start from scratch.
-8. Keystatic panel last, per #2 — the schemas in `src/content.config.ts` are
+1. **Owner review pass** — the site runs at `:4321` (`npx astro dev
+   --background` in `site/`). Collect refinements and apply them.
+2. Buy the `.dev` domain, set `url` in `site/src/data/site.ts`.
+3. Push to GitHub, deploy to Cloudflare Pages (root `site/`, build
+   `npm run build`, output `dist`), connect the domain (#11).
+4. One physical-device pass before the domain goes public: a real phone, OS
+   reduced-motion on, both themes.
+5. Echo's Devpost URL if it exists; Lookout/Wizlet whenever the owner is ready
+   (`draft: false` is the only step).
+6. `plan.md` is historical — `HANDOFF.md` and this ledger are the record. No
+   rewrite needed; leave it labelled superseded.
+7. Keystatic panel last, per #2 — the schemas in `src/content.config.ts` are
    written strictly so it has something clean to bind to.
+8. A Myanmar-capable font before the first Burmese book (#32).
