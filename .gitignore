@@ -1,12 +1,5 @@
+node_modules/
+dist/
+.astro/
 .DS_Store
-**/.DS_Store
-**/__pycache__/
-*.py[cod]
-
-# Retired local art/reference scratch material. Canonical assets live under
-# site/public/animations and design-handoff/oak-hero-v2.
-.fonttest/
-art-extract/
-art copy.zip
-Oak's Mascot.png
-ChatGPT Image Aug 15, 2026, 01_10_59 PM.png
+__pycache__/
