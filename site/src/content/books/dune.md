@@ -4,6 +4,8 @@ author: Frank Herbert
 language: en
 genre: fiction
 status: reading
-# TODO(owner): started (ISO date) and progress (0–100).
+started: "2026-08-01"
+# Owner is on page 302 of 412.
+progress: 73
 pageCount: 412
 ---

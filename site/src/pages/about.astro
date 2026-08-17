@@ -112,7 +112,8 @@ const portrait = photo("portrait");
                   )}
                   <figcaption class="gallery__caption">
                     <span>{caption ?? alt}</span>
-                    <span class="label">{date ?? "date to come"}</span>
+                    {/* Dates render only where the owner supplied one. */}
+                    {date && <span class="label">{date}</span>}
                   </figcaption>
                 </figure>
               );

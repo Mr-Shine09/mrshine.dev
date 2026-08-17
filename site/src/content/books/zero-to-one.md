@@ -4,6 +4,8 @@ author: Peter Thiel with Blake Masters
 language: en
 genre: nonfiction
 status: reading
-# TODO(owner): started (ISO date) and progress (0–100).
+started: "2026-08-01"
+# Owner is at chapter 6 of 14.
+progress: 43
 pageCount: 224
 ---
