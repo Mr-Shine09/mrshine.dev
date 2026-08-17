@@ -544,17 +544,57 @@ it unverified — do it properly this time.
 
 ---
 
-## 11. Deliberately unresolved
+## 11. Mascot animation contract — resolved 16 August 2026
 
-**The mascot mapping across the five pages is open, on purpose.** The old
-mapping (`waiting` in the hero, `working` at Built, `poof` between sections,
-`sleeping` at contact) belonged to the scrolling page. The owner is producing a
-new Hero, and a 13-frame Hero V2 atlas is already saved outside `site/` as a
-candidate.
+The owner has approved six scene animations plus the separate 13-frame Hero V2
+welcome animation. The six production scenes are committed under
+`site/public/animations/oak-scenes/`; their shared layout, durations, labels,
+and frame size live in `scene-contract.json`.
 
-**Build the pages with no sprite placements beyond the home grid.** Adding them
-later is a component call. **`poof` has no home in this architecture** — it
-existed to cover a scroll boundary that no longer exists.
+### 11.1 Page mapping
+
+| Animation | Website use |
+|---|---|
+| Hero V2 `oak-welcome` | Home only. It welcomes the visitor around the masonry grid but never replaces any tile's required real image. The canonical candidate remains in `design-handoff/oak-hero-v2/`. |
+| `reading-fire` | `/reading`, beside the shelf introduction. Ambient loop: breathing, blink, fire flicker, and page turn. It pauses when offscreen. |
+| `computer-working` | `/projects`, beside the page introduction. This is the calm looping state while the project deck is being browsed. |
+| `workbench-zap` | `/projects`, beside the project-folder/deck area. Play once on first reveal: concentrated work → full-body blue skeleton zap → singed recovery. Hold the final singed pose; do not repeatedly zap when the user nudges the scroll position. |
+| `thinking-cloud` | `/w-phrases`, beside the introduction to the collected phrases. The blank connected cloud grows, holds, and recedes; do not insert icons or words inside it. |
+| `walking` | The low-speed phase of the site-wide scroll traveller. Scrub its gait from scroll progress so feet remain planted. Horizontally flip it when the traveller is moving right-to-left. |
+| `run-trip-recover` | The intricate beat in the same site-wide scroll traveller on sufficiently long pages. The mascot runs from the right edge to the left edge, catches a toe, stutter-recovers without falling or becoming dizzy, then runs again. Both travel and frames are driven by smoothed document scroll. |
+
+`/about` receives the scroll traveller beside its dated gallery sequence, but no
+additional stationary scene. `/contact` receives no decorative mascot; the
+business card is already the page's motion focus.
+
+The previous scrolling-page mapping (`waiting` in the hero, `working` at Built,
+`poof` between sections, and `sleeping` at contact) is retired. `poof` still has
+no home in the multi-page architecture. Remove those calls when the new routes
+are built, but **keep `Mascot.astro`, the legacy atlas, and
+`atlas-contract.json`** as required in §2.
+
+### 11.2 Playback rules
+
+- Production pages consume each scene's `*-atlas.png` and JSON timing manifest
+  through `AnimatedScene.astro`. The animated WebP and GIF are review/fallback
+  artifacts, not the scroll-scrubbing source.
+- Loops may begin immediately and `IntersectionObserver` may pause them when
+  offscreen. One-shot scenes wait until visible. Preserve the fail-open behavior
+  described in §2.
+- The global traveller is decorative and uses a fixed overlay plus transforms;
+  it must never create layout width or horizontal body scroll. On short pages,
+  use only the walking cycle or omit the traveller.
+- On phones, prefer an inline/clipped traveller treatment instead of letting a
+  fixed mascot cover content or controls. Verify at 320px and 375px.
+- Under `prefers-reduced-motion: reduce`, freeze stationary scenes on a clear
+  representative frame and hide the site-wide traveller. No essential content
+  or navigation may depend on any animation.
+- Keep `image-rendering: pixelated`, integer display scales, the mascot's frozen
+  palette, and the authored three-quarter facial angles. Do not recolour the
+  scenes to the page theme.
+- Source boards, frame PNGs, prompts, contact sheets, and GIFs are retained for
+  authoring and QA. A production optimization pass may move those files outside
+  `public/`; page code should request only atlases and manifests.
 
 Also open: whether the old "Ahead" / past-present-future section is dropped. It
 has no slot in a four-tile grid and W Phrases took its place.
@@ -577,12 +617,16 @@ has no slot in a four-tile grid and W Phrases took its place.
 
 ## 13. Housekeeping
 
-- `.fonttest/` in the project root is a scratch directory from the type and
-  theme exploration (font specimen, theme comparisons). **Delete it.**
+- `.fonttest/` was a scratch directory from the type and theme exploration. It
+  is no longer present.
 - `Geist_Pixel copy/` holds the source TTF, `OFL.txt`, and `README.txt`. Move
   the licence into the site with the font.
-- `art copy.zip` and `art-extract/` are scratch copies of the art package; the
-  canonical art lives in the dock-pet repo.
+- Cleanup completed 16 August 2026: `art copy.zip`, `art-extract/`, the two
+  loose root mascot reference PNGs, and both generated project stripe
+  placeholders were removed from the project. They were moved to
+  `~/.Trash/oak-portfolio-old-assets-2026-08-16/` and remain recoverable until
+  Trash is emptied. Canonical animation art now lives in
+  `site/public/animations/oak-scenes/` and `design-handoff/oak-hero-v2/`.
 - The art licence permits the owner's own personal sites and restricts third
   parties. If this repo goes public, the sprite atlas travels with it. That is
   intended — but be deliberate about it.

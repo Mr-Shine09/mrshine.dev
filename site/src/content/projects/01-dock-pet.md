@@ -1,14 +1,10 @@
 ---
 title: Dock Pet
-weight: featured
+weight: text-only
 order: 1
 year: "2026"
 stack: ["Swift", "AppKit", "Python"]
 summary: A pixel-art mascot that lives on the macOS desktop and reacts to what the machine is doing.
-# TODO(owner): swap for a real screenshot or capture of the mascot on the desktop.
-# The current file is a generated placeholder pattern, not a screenshot.
-image: ../../assets/projects/placeholder-featured.png
-imageAlt: Placeholder artwork — replace with a screenshot of Dock Pet running on the desktop.
 metric: 16 animation states, 12 colours, 0 external art dependencies
 links:
   github: https://github.com/Mr-Shine09/dock-pet
