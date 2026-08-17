@@ -46,7 +46,7 @@ export const site: SiteConfig = {
   },
 
   // TODO(owner): drop the PDF at site/public/resume.pdf, then set "/resume.pdf".
-  resumeUrl: "",
+  resumeUrl: "/resume.pdf",
 
   // TODO(owner): the real .dev domain. Used for canonical URLs and the vCard.
   url: "https://example.dev",

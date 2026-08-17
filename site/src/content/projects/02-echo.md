@@ -10,9 +10,8 @@ links:
   github: https://github.com/aadityad12/Echo
   # TODO(owner): the H4H Devpost submission URL, if there is one.
 draft: false
-# TODO(owner): drop echo-hero into src/assets/projects/ and add
-#   image: ../../assets/projects/echo-hero.png
-#   imageAlt: Alert list with the MESH ACTIVE badge lit and severity chips down the feed.
+image: ../../assets/projects/echo-hero.webp
+imageAlt: Echo's alert list with the MESH ACTIVE badge lit and severity chips down the feed.
 ---
 
 Alert identifiers don't appear consistently in BLE advertisements across

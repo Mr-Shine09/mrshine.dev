@@ -8,9 +8,8 @@ collaborators: []
 links:
   github: https://github.com/Mr-Shine09/PokeDesk
 draft: false
-# TODO(owner): drop pokedesk-hero into src/assets/projects/ and add
-#   image: ../../assets/projects/pokedesk-hero.png
-#   imageAlt: Two pixel mascots on a purple desktop — one working at a desk, one walking.
+image: ../../assets/projects/pokedesk-hero.png
+imageAlt: Two pixel mascots on a purple desktop above the macOS dock — one working at a desk, one walking.
 ---
 
 The hard part was never drawing the character. It was making sixteen separate

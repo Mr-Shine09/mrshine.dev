@@ -24,23 +24,18 @@ const photo = (slot: string): ImageMetadata | undefined =>
     path.includes(`/${slot}.`)
   )?.[1]?.default;
 
-// 🔴 This photo shows a .env with live credentials on the left laptop. It must
-// be cropped or dropped before it ships — and those keys rotated regardless.
-if (photo("hack-berk-03")) {
-  console.warn(
-    "⚠️  hack-berk-03 is present. Confirm the left laptop (.env with live keys) is cropped out and the keys are rotated before publishing."
-  );
-}
-
 type Slot = { slot: string; alt: string; caption?: string; date?: string };
 
+/* The owner's final photo set (16 Aug 2026): the .env-laptop shot, the
+   Anthropic slide, the Campanile, the schoolyard, the fountain, and the
+   autumn hills were dropped by choice. Dates marked "date to come" are
+   TODO(owner). */
 const galleries: { title: string; slots: Slot[] }[] = [
   {
     title: "Yangon",
     slots: [
       { slot: "yangon-01", alt: "River at sunset, boats moored along the far bank" },
       { slot: "yangon-02", alt: "Sun low over the water, city in silhouette" },
-      { slot: "yangon-03", alt: "Row of trees over a dry schoolyard" },
     ],
   },
   {
@@ -48,9 +43,7 @@ const galleries: { title: string; slots: Slot[] }[] = [
     slots: [
       { slot: "deanza-01", alt: "Administration building, flagpole at dusk" },
       { slot: "deanza-02", alt: "A. Robert DeHart Library, low sun on the facade" },
-      { slot: "deanza-03", alt: "The main fountain, clear blue sky" },
-      { slot: "deanza-04", alt: "Parking lot and the hills at sunset" },
-      { slot: "deanza-05", alt: "The hills in autumn colour above the lot" },
+      { slot: "deanza-03", alt: "Parking lot and the hills at sunset" },
     ],
   },
   {
@@ -60,11 +53,8 @@ const galleries: { title: string; slots: Slot[] }[] = [
       { slot: "hack-scu-01", alt: "Hack for Humanity can and a red Lego crab on a picnic table", caption: "SCU Hack for Humanity", date: "2026" },
       { slot: "hack-scu-02", alt: "Red Bull can pyramid with four Lego sea creatures below", caption: "SCU Hack for Humanity", date: "2026" },
       { slot: "hack-berk-01", alt: "Hack@Berk prizes slide, two organisers on stage", caption: "UC Berkeley AI Hackathon", date: "June 2026" },
-      { slot: "hack-berk-02", alt: "Anthropic @ AI Hackathon slide, speaker on stage", caption: "UC Berkeley AI Hackathon", date: "June 2026" },
-      { slot: "hack-berk-03", alt: "Two laptops on a crowded hall table", caption: "UC Berkeley AI Hackathon", date: "20 June 2026" },
-      { slot: "hack-berk-04", alt: "Sproul Hall in late sun", caption: "UC Berkeley campus" },
-      { slot: "hack-berk-05", alt: "The Campanile against a clear sky", caption: "UC Berkeley campus" },
-      { slot: "hack-berk-06", alt: "Berkeley and the Bay from the hills at sunset", caption: "UC Berkeley campus" },
+      { slot: "hack-berk-02", alt: "Sproul Hall in late sun", caption: "UC Berkeley campus" },
+      { slot: "hack-berk-03", alt: "Berkeley and the Bay from the hills at sunset", caption: "UC Berkeley campus" },
     ],
   },
 ];
