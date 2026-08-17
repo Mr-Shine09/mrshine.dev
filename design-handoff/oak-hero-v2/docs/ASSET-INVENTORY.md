@@ -1,5 +1,9 @@
 # Asset Inventory
 
+> Historical record only. Runtime assets moved to
+> `site/public/assets/animation/`; start with `ANIMATION_ASSETS.md`. Paths below
+> may describe removed authoring/QA files and must not be used by page code.
+
 ## Mascot
 
 | File | Format / size | Role |

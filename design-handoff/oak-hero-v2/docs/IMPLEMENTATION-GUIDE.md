@@ -1,5 +1,9 @@
 # Oak Hero V2 — Claude Code Implementation Guide
 
+> Historical record only. Runtime assets moved to
+> `site/public/assets/animation/`; start with `ANIMATION_ASSETS.md`. Paths below
+> may describe removed authoring/QA files and must not be used by page code.
+
 > Status: design handoff only. This document does **not** modify the website.
 > Every filename, dimension, duration, color, breakpoint, and component name
 > labeled **Handoff recommendation** is proposed rather than an existing site

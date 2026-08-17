@@ -1,5 +1,9 @@
 # Generation Notes
 
+> Historical record only. Runtime assets moved to
+> `site/public/assets/animation/`; start with `ANIMATION_ASSETS.md`. Paths below
+> may describe removed authoring/QA files and must not be used by page code.
+
 The raster artwork was created with the built-in image generation path using
 the user-provided `Oak's Mascot.png` as the primary style reference and
 `ChatGPT Image Aug 15, 2026, 01_10_59 PM.png` as a supporting outfit reference.

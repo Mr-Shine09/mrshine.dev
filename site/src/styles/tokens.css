@@ -2,7 +2,7 @@
  * Design tokens.
  *
  * The twelve colours below are not chosen — they are sampled from the mascot's
- * frozen palette (art/animation/atlas-contract.json, `pixel_rules.palette_hex`).
+ * frozen palette (`public/assets/animation/legacy/mascot-contract.json`).
  * Nothing here is invented, and nothing outside this list may be introduced:
  * the page is coloured from its own sprite, which is what makes it cohere.
  */

@@ -1,5 +1,5 @@
 ---
-import sceneContract from "../../public/animations/oak-scenes/scene-contract.json";
+import sceneContract from "../../public/assets/animation/scenes/scene-contract.json";
 
 type SceneId = (typeof sceneContract.scenes)[number]["id"];
 
@@ -29,7 +29,7 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
   <img
     class="oak-scene__atlas"
     data-oak-scene-atlas
-    src={`/animations/oak-scenes/${scene}-atlas.png`}
+    src={`/assets/animation/scenes/${scene}-atlas.png`}
     alt=""
     width={sceneContract.layout.outputFrameSize[0] * frameCount}
     height={sceneContract.layout.outputFrameSize[1]}

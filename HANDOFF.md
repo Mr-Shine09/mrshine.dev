@@ -47,11 +47,11 @@ Work inside the existing **`site/`** Astro project.
 | Keep | Why |
 |---|---|
 | The Astro project, config, and build pipeline | Builds clean today |
-| `Mascot.astro` + the atlas/`atlas-contract.json` sprite system | **Especially this.** The player "fails open": looping sprites animate immediately and `IntersectionObserver` only *pauses* them; only one-shot rows wait to be seen. Gating everything on IO looked tidier and froze every mascot on frame 0 where IO never fires. **Do not "optimise" this into a gate.** |
+| `Mascot.astro` + the legacy atlas/contract system in `public/assets/animation/legacy/` | **Especially this.** The player "fails open": looping sprites animate immediately and `IntersectionObserver` only *pauses* them; only one-shot rows wait to be seen. Gating everything on IO looked tidier and froze every mascot on frame 0 where IO never fires. **Do not "optimise" this into a gate.** |
 | `ThemeToggle.astro` + `localStorage` persistence | Works; only its colour values change |
 | Content collections + build-time schema validation with named failures | The pattern is good — extend it |
 | `contact.vcf` as a build-time static endpoint | A real file, so right-click-save works with no JS |
-| `scripts/strip-clock-overlay.js`, `scripts/atlas-source.png` | Idempotent asset tooling |
+| `scripts/strip-clock-overlay.js`, `public/assets/animation/authoring/legacy-atlas-source.png` | Idempotent asset tooling |
 
 ### Delete
 
@@ -547,15 +547,16 @@ it unverified — do it properly this time.
 ## 11. Mascot animation contract — resolved 16 August 2026
 
 The owner has approved six scene animations plus the separate 13-frame Hero V2
-welcome animation. The six production scenes are committed under
-`site/public/animations/oak-scenes/`; their shared layout, durations, labels,
-and frame size live in `scene-contract.json`.
+welcome animation. **Start with
+`site/public/assets/animation/ANIMATION_ASSETS.md`.** Every approved animation
+file is consolidated under that one directory. The six scene atlases share
+`scenes/scene-contract.json` for layout, durations, labels, and frame size.
 
 ### 11.1 Page mapping
 
 | Animation | Website use |
 |---|---|
-| Hero V2 `oak-welcome` | Home only. It welcomes the visitor around the masonry grid but never replaces any tile's required real image. The canonical candidate remains in `design-handoff/oak-hero-v2/`. |
+| Hero V2 `oak-welcome` | Home only. It welcomes the visitor around the masonry grid but never replaces any tile's required real image. Use `public/assets/animation/hero/`. |
 | `reading-fire` | `/reading`, beside the shelf introduction. Ambient loop: breathing, blink, fire flicker, and page turn. It pauses when offscreen. |
 | `computer-working` | `/projects`, beside the page introduction. This is the calm looping state while the project deck is being browsed. |
 | `workbench-zap` | `/projects`, beside the project-folder/deck area. Play once on first reveal: concentrated work → full-body blue skeleton zap → singed recovery. Hold the final singed pose; do not repeatedly zap when the user nudges the scroll position. |
@@ -571,13 +572,13 @@ The previous scrolling-page mapping (`waiting` in the hero, `working` at Built,
 `poof` between sections, and `sleeping` at contact) is retired. `poof` still has
 no home in the multi-page architecture. Remove those calls when the new routes
 are built, but **keep `Mascot.astro`, the legacy atlas, and
-`atlas-contract.json`** as required in §2.
+legacy mascot contract** as required in §2.
 
 ### 11.2 Playback rules
 
-- Production pages consume each scene's `*-atlas.png` and JSON timing manifest
-  through `AnimatedScene.astro`. The animated WebP and GIF are review/fallback
-  artifacts, not the scroll-scrubbing source.
+- Production pages consume each scene's `*-atlas.png` plus the shared
+  `scene-contract.json` through `AnimatedScene.astro`. GIF, WebP, raw-board,
+  frame, contact-sheet, and per-scene-manifest duplicates were removed.
 - Loops may begin immediately and `IntersectionObserver` may pause them when
   offscreen. One-shot scenes wait until visible. Preserve the fail-open behavior
   described in §2.
@@ -592,9 +593,9 @@ are built, but **keep `Mascot.astro`, the legacy atlas, and
 - Keep `image-rendering: pixelated`, integer display scales, the mascot's frozen
   palette, and the authored three-quarter facial angles. Do not recolour the
   scenes to the page theme.
-- Source boards, frame PNGs, prompts, contact sheets, and GIFs are retained for
-  authoring and QA. A production optimization pass may move those files outside
-  `public/`; page code should request only atlases and manifests.
+- Page code requests only the canonical runtime atlases and contracts described
+  in `ANIMATION_ASSETS.md`. Do not regenerate redundant preview formats unless
+  the owner explicitly starts a new animation-authoring pass.
 
 Also open: whether the old "Ahead" / past-present-future section is dropped. It
 has no slot in a four-tile grid and W Phrases took its place.
@@ -626,7 +627,7 @@ has no slot in a four-tile grid and W Phrases took its place.
   placeholders were removed from the project. They were moved to
   `~/.Trash/oak-portfolio-old-assets-2026-08-16/` and remain recoverable until
   Trash is emptied. Canonical animation art now lives in
-  `site/public/animations/oak-scenes/` and `design-handoff/oak-hero-v2/`.
+  `site/public/assets/animation/`.
 - The art licence permits the owner's own personal sites and restricts third
   parties. If this repo goes public, the sprite atlas travels with it. That is
   intended — but be deliberate about it.

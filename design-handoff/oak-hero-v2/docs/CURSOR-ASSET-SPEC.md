@@ -1,5 +1,9 @@
 # Cursor and Star-Grid Asset Specification
 
+> Historical record only. Runtime assets moved to
+> `site/public/assets/animation/`; start with `ANIMATION_ASSETS.md`. Paths below
+> may describe removed authoring/QA files and must not be used by page code.
+
 This package is a visual handoff only. It does not modify or prescribe changes to the live portfolio.
 
 ## Asset inventory

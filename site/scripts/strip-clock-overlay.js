@@ -13,8 +13,8 @@
  *
  *   node scripts/strip-clock-overlay.js
  *
- * Reads  scripts/atlas-source.png  (pristine, never served)
- * Writes public/sprites/atlas.png  (what the site loads)
+ * Reads  public/assets/animation/authoring/legacy-atlas-source.png
+ * Writes public/assets/animation/legacy/mascot-atlas.png
  */
 
 import fs from "node:fs";
@@ -26,11 +26,28 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(HERE, "..");
 
 const contract = JSON.parse(
-  fs.readFileSync(path.join(ROOT, "src", "data", "atlas-contract.json"), "utf8")
+  fs.readFileSync(
+    path.join(ROOT, "public", "assets", "animation", "legacy", "mascot-contract.json"),
+    "utf8"
+  )
 );
 
-const SOURCE = path.join(HERE, "atlas-source.png");
-const OUTPUT = path.join(ROOT, "public", "sprites", "atlas.png");
+const SOURCE = path.join(
+  ROOT,
+  "public",
+  "assets",
+  "animation",
+  "authoring",
+  "legacy-atlas-source.png"
+);
+const OUTPUT = path.join(
+  ROOT,
+  "public",
+  "assets",
+  "animation",
+  "legacy",
+  "mascot-atlas.png"
+);
 
 const [CELL_W, CELL_H] = contract.atlas.cell_pixel_size;
 const BODY_TOP = contract.bounds.normal_body_inclusive[1]; // y=25

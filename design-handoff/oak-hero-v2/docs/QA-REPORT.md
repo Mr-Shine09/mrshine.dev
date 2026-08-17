@@ -1,5 +1,9 @@
 # QA Report
 
+> Historical record only. Runtime assets moved to
+> `site/public/assets/animation/`; start with `ANIMATION_ASSETS.md`. Paths below
+> may describe removed authoring/QA files and must not be used by page code.
+
 Date: 2026-08-16
 
 ## Automated checks

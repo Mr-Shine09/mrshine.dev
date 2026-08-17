@@ -1,9 +1,0 @@
-Create one pixel-art animation source board with exactly 12 equal cells in an invisible 4 by 3 layout, read left-to-right then top-to-bottom.
-
-Reference image role: strict character identity, outfit, palette, proportions, and pixel-cluster style.
-
-Scene lock for every cell: Oak is shown full-body moving toward the viewer's left, with his head, face, and torso held in a clear three-quarter front-left view rather than a flat side profile. Both glasses lenses and the nearer cheek remain visible. Keep the same scale, camera, body proportions, black tousled hair, black rectangular glasses, navy quarter-zip with white side panels, gray wide-leg trousers, black belt, and blue-white sneakers.
-
-Twelve-frame story loop with no fall: 1 left-moving contact stride; 2 passing stride; 3 airborne stride; 4 opposite contact stride; 5 front toe catches and torso pitches forward; 6 quick stutter-step with arms opening for balance; 7 deeper stumble with one foot reaching under the body; 8 low but still upright recovery crouch, both feet under him; 9 shoulders lift and balance returns; 10 short determined restart step; 11 full running passing stride; 12 left-moving contact stride that flows cleanly into frame 1.
-
-Sprite-production constraints: crisp deliberate pixel art, strong readable silhouette, hard-edged opaque shapes, no antialias blur, no fall, no tumble, no body touching the ground, no dizziness, no spiral eyes, no injury, no detached sweat, dust, speed lines, motion arcs, impact burst, cast shadow, scenery, props, or extra characters. Keep the three-quarter face consistent in every frame. Perfectly flat solid #00ff00 chroma background everywhere outside Oak, with no gradient, texture, grid, borders, guides, labels, frame numbers, text, watermark, cropping, or overlap between cells. Do not use #00ff00 in Oak.

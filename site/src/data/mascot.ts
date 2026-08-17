@@ -1,4 +1,4 @@
-import contract from "./atlas-contract.json";
+import contract from "../../public/assets/animation/legacy/mascot-contract.json";
 
 /**
  * Typed view over the atlas contract.
@@ -13,7 +13,7 @@ const [ATLAS_W, ATLAS_H] = contract.atlas.pixel_size;
 const [CELL_W, CELL_H] = contract.atlas.cell_pixel_size;
 
 export const atlas = {
-  src: "/sprites/atlas.png",
+  src: "/assets/animation/legacy/mascot-atlas.png",
   width: ATLAS_W,
   height: ATLAS_H,
   columns: contract.atlas.columns,

@@ -46,7 +46,7 @@ has not been integrated into `site/`.
 | 12 | **Light and dark, with a toggle** | Sprite outlines lose definition on dark; dark accent must become amber, rust disappears |
 | 13 | ~~**Layout skeleton adapted from afig.dev**~~ **SUPERSEDED by #18/#19 (16 Aug 2026)** | Was: sticky anchor nav, minimal hero, weighted project cards, split "Current" section, footer contact card. The whole skeleton assumed one scrolling page. `plan.md` §5 goes with it |
 | 14 | ~~**Type: Playfair Display + JetBrains Mono**~~ **SUPERSEDED by #41 (16 Aug 2026)** | Was: satisfies #10, self-hosted, no layout shift. Both families are removed from `astro.config.mjs`. What survives is the *method* — self-hosted at build time, metric-matched fallback, no third-party request |
-| 15 | **Sprites render from the single atlas**, driven by `atlas-contract.json` | The contract is the machine-readable source of truth for geometry, row order and timing; `manifest.json` is only a checksum map. One request instead of ~88, and the site can never drift from the art |
+| 15 | **Sprites render from canonical atlases**, driven by contracts in `site/public/assets/animation/` | The contract is the machine-readable source of truth for geometry, row order and timing. One request per active animation, and the site can never drift from the art |
 | 16 | **Art licence amended, not gutted** — the owner's own personal sites are named as permitted; the third-party restriction stands | The plan said "remove the no-other-website clause". Removing it outright would have licensed the character to anyone for any product, against the file's stated intent. The owner never needed permission from himself — the file just needed to stop saying it |
 | 17 | **The mascot player fails open**: looping sprites animate immediately and `IntersectionObserver` only *pauses* them; one-shot rows (`poof`) are the only ones that wait to be seen | Gating every sprite on IO looked tidier and was wrong — where IO never delivers (a page rendered while hidden), every mascot froze on frame 0 permanently. Found by testing, not by reading. **Do not "optimise" this back into a gate.** |
 | 18 | **Structure: a home grid of tiles, each block its own page.** Replaces #4 | The owner found the layout he actually wanted — `alectear.com/lettering`: a masonry grid of full-bleed image tiles, sticky pill nav top-left, every tile navigating to its own page. Five blocks of content do not read as one scroll; they read as a set of rooms |
@@ -64,14 +64,14 @@ has not been integrated into `site/`.
 | 30 | **Books are organised language → genre, never by status.** English/Burmese sections, each holding Non-fiction and Fiction shelves; status is a marker on the spine | A real shelf is organised by subject, not by whether you finished the book. Supersedes an earlier decision this session to shelve by status — that split the Burmese books across three shelves and made the language distinction invisible |
 | 31 | **Empty shelves do not render**, and neither do draft projects | Two books across four shelves means two empty racks. An empty shelf reads as broken rather than aspirational. Consistent with #26: the data holds the structure, the page shows only what exists |
 | 32 | **A Myanmar-capable font must be self-hosted before any Burmese content ships** | Playfair Display and JetBrains Mono have no Myanmar coverage. Burmese titles render as tofu boxes and **the build still succeeds** — this is the one failure on the site that is silent. Noto Sans Myanmar or Padauk, through the same Astro font pipeline as #14, with `lang="my"` markup and extra line-height for stacked diacritics |
-| 33 | **The calibrated Hero V2 mascot handoff is the saved implementation candidate; keep it separate from `site/` until the owner starts the implementation pass** | The owner explicitly requested assets and Claude Code documentation without changing the website. The production candidate is the 13-frame `design-handoff/oak-hero-v2/assets/mascot/oak-welcome-atlas.png` plus its JSON contract. Displayed frame 4 was repaired to match frames 2–3 at the waist and baseline before this decision was locked |
+| 33 | **The calibrated Hero V2 mascot is the approved home animation** | Its runtime atlas, contract, and static fallback are consolidated in `site/public/assets/animation/hero/`. Displayed frame 4 was repaired to match frames 2–3 at the waist and baseline before this decision was locked |
 | 34 | **W Phrases are styled per-entry in the content file, not through a live editor** | "Customizable" resolved to author-time, not runtime. A live editor needs auth and a backend, or localStorage — which only changes the owner's own browser. Per-phrase `font`/`size`/`colour` fields keep the site fully static, and the Keystatic panel already planned in #2 turns that file into a visual editor for free |
 | 35 | **The `font` field validates against six named self-hosted families**; free-text font names are rejected | A typo in a free-text field falls back to a system default with no error anywhere. A closed set fails the build by name, bounds the page weight, and becomes a dropdown in Keystatic. Four families are new — subset and weight-limited, no third-party requests, and **no pixel font** per #10 |
 | 36 | **Per-phrase colour must be a palette token, never a raw hex** | The failure is silent and theme-dependent: a near-black phrase vanishes on the dark background, a pale one vanishes in light. Nothing errors — the phrase is simply gone. Palette tokens only, each contrast-checked in **both** themes. #12 already records rust as the known trap |
 | 37 | **The W Phrases marquee pauses on hover and on focus, and does not move at all under reduced motion** | A phrase that cannot be stopped cannot be read, and reading them is the entire point. The static wall is also the no-JS fallback — same principle as #23 and the Reading List search |
 | 38 | **`/contact` renders the business card in its opened state, from the same data file** | One source, two presentations, so the card and the page can never drift out of sync. It is also what makes keeping the page cheap — it is a second layout of data that already exists, not a second copy of it |
 | 39 | **No contact form.** An email address, plus a copy-to-clipboard control beside it | A form needs somewhere to POST. This site is static with no backend — a form means either a third-party service (new external dependency, and a privacy question about where messages go) or a Cloudflare Function (a backend to maintain and a spam problem on day one). The email is published plainly: obfuscation that defeats scrapers also defeats screen readers and copy-paste |
-| 40 | **The mascot mapping stays open until the new Hero lands** | The old mapping (`waiting` hero, `working` at Built, `poof` between sections, `sleeping` at contact) belonged to the single scrolling page. The owner is producing a new Hero on Codex, and #33 already holds the Hero V2 atlas as a candidate. Deciding the five-surface mapping now would mean revising it the moment that asset arrives. **`poof` has no home in the new architecture** — it existed to cover a scroll boundary that no longer exists |
+| 40 | **Mascot mapping is resolved in `ANIMATION_ASSETS.md`** | Hero V2 is home-only; reading-fire maps to Reading; computer-working and workbench-zap map to Projects; thinking-cloud maps to W Phrases; walking and run-trip-recover form the scroll traveller. The old waiting/working/poof/sleeping page mapping is retired |
 | 41 | **Type: Geist Pixel, one family for the whole site.** Replaces #10 and #14 | SIL OFL, self-hosted, subsetted. The owner's choice, and the reasoning inverts the old rule: the mascot is pixel art (#8), so a pixel face is more coherent with the signature element than a serif was. Verified by rendering: it is a fine technical monospace, not a chunky arcade face, and reads cleanly at 16px |
 | 42 | **There is no bold. Emphasis is size, accent colour, and letterspaced uppercase** — and `font-synthesis: none` globally | Geist Pixel's only axis is `ELSH` ("Element Shape"), which changes pixel shape, not weight. Verified by rendering: **mid-axis values 20–80 are hollow and low-contrast**, so any real text is locked to `ELSH` 0 or 100. Without `font-synthesis: none` a browser fakes a bold and smears the pixel edges |
 | 43 | **Type scale is built on 4px multiples with a 16px floor for prose** | Pixel faces are crisp at integer multiples of their grid and muddy between. The font is also monospaced and therefore wide — the same sentence takes more horizontal room than the old proportional face, which makes 375px the real test |
@@ -196,11 +196,11 @@ The original build files were verified against the working directory on
 | `Geist_Pixel copy/` | Source TTF (3.6 MB, variable, single `ELSH` axis), `OFL.txt`, `README.txt`. **Must be subsetted to woff2 before shipping** |
 | `site/` | **The site.** Astro 7, builds clean (0 errors / 0 warnings / 0 hints), no external JS files — 5 inlined scripts, 3.5 KB total |
 | `site/scripts/strip-clock-overlay.js` | Clears the clock from the `waiting` row so those frames can be re-used as a hero wave. Idempotent, and refuses to run if the source art changes shape |
-| `site/scripts/atlas-source.png` | Pristine atlas, never served. `public/sprites/atlas.png` is generated from it |
-| `art copy.zip` | The art package as delivered. `art-extract/` is its unpacked copy |
-| `art-extract/` | Unpacked `art copy.zip`. Scratch — the canonical art lives in the dock-pet repo |
-| `Oak's Mascot.png`, `ChatGPT Image Aug 15…png` | Loose reference images in the project root, not used by the site. Unrecorded until now |
-| `design-handoff/oak-hero-v2/` | Saved Hero V2 implementation package: 13-frame dominant mascot atlas and JSON contract, individual transparent frames, compact WELCOME bubble references, light/dark pixel cursor and star-grid assets, slow inspection previews, deterministic rebuild tool, QA report, and Claude Code implementation guide. This directory is not wired into `site/` |
+| `site/public/assets/animation/ANIMATION_ASSETS.md` | Canonical asset map. Claude should start here before placing or changing any mascot animation |
+| `site/public/assets/animation/scenes/` | Six approved 12-frame runtime atlases plus one shared timing contract |
+| `site/public/assets/animation/hero/` | Hero V2 runtime atlas, contract, and static fallback |
+| `site/public/assets/animation/legacy/` | Existing multi-state mascot atlas and contract, retained for component compatibility |
+| `site/public/assets/animation/authoring/legacy-atlas-source.png` | Pristine legacy atlas input used only by `strip-clock-overlay.js`; never reference from page code |
 
 ### Listed in an earlier session but **not present** in this directory
 
@@ -255,9 +255,9 @@ items above are authoritative.
 
 | Risk | Status | Mitigation / next gate |
 |---|---|---|
-| No version-control history for the site or new art handoff | Open, high | Run `git init`, review scope, and create the first intentional commit before page rewrites |
+| No version-control history for the site or new art handoff | Resolved | Git repository initialized on `main`; animation cleanup remains recoverable from history |
 | API keys visible in a supplied photograph | Open, high | Rotate all exposed credentials before using or publishing the photograph |
-| Hero V2 exists but its page-level placement is unresolved | Open, medium | Decide the multi-page mascot mapping before integrating decision #33's handoff |
+| Hero V2 exists but its page-level placement is unresolved | Resolved | Mapping and runtime rules are recorded in `ANIMATION_ASSETS.md` and HANDOFF §11 |
 | Motion accessibility not executed on a real browser/device | Open, medium | Run the manual reduced-motion acceptance check before deployment |
 
 ## Verification matrix
@@ -265,10 +265,10 @@ items above are authoritative.
 | Area | Evidence | Result |
 |---|---|---|
 | Hero V2 frame geometry | 13 RGBA cells at 160 × 208; body height 192; anchor baseline y=204 | PASS — 2026-08-16 |
-| Frames 2–4 waist calibration | Detected centers `[115, 114, 114]` in `assets/previews/oak-welcome-frames-02-04-calibration.png` | PASS — 2026-08-16 |
-| Atlas packaging | 2080 × 208 atlas cells byte-match individual frames; JSON lists frames 0–12 | PASS — 2026-08-16 |
-| Slow visual inspection | 13-frame `oak-welcome-inspection-1s.gif`, every frame held for 1000 ms | PASS — 2026-08-16 |
-| Website integration | Explicitly outside this asset-only session | NOT RUN / unchanged |
+| Frames 2–4 waist calibration | Historical QA completed before redundant calibration images were removed | PASS — 2026-08-16 |
+| Atlas packaging | 2080 × 208 Hero atlas; JSON lists frames 0–12 | PASS — 2026-08-16 |
+| Scene packaging | Six 4608 × 320 scene atlases; shared JSON lists 12 frames and 12 durations per scene | PASS — 2026-08-16 |
+| Website integration | Components point only at `public/assets/animation/` | PASS — 2026-08-16 |
 
 ## Session log
 
