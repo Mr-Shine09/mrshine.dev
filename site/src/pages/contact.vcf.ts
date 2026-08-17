@@ -23,8 +23,7 @@ export const GET: APIRoute = () => {
   const lines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
-    // TODO(owner): split into family;given if you want phone contacts to sort
-    // by surname. Left whole so the display name is never mangled.
+    // Left whole so the display name is never mangled.
     `N:;${esc(name)};;;`,
     `FN:${esc(name)}`,
     `TITLE:${esc(role)}`,
@@ -33,6 +32,9 @@ export const GET: APIRoute = () => {
     `URL:${esc(url)}`,
     socials.github ? `URL;TYPE=github:${esc(socials.github)}` : null,
     socials.linkedin ? `URL;TYPE=linkedin:${esc(socials.linkedin)}` : null,
+    socials.instagram ? `URL;TYPE=instagram:${esc(socials.instagram)}` : null,
+    socials.facebook ? `URL;TYPE=facebook:${esc(socials.facebook)}` : null,
+    socials.devpost ? `URL;TYPE=devpost:${esc(socials.devpost)}` : null,
     `REV:${new Date().toISOString()}`,
     "END:VCARD",
   ].filter((line): line is string => line !== null);

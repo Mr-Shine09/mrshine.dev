@@ -1,0 +1,287 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import AnimatedScene from "../components/AnimatedScene.astro";
+
+/**
+ * W Phrases — a dump of collected words and phrases (HANDOFF §7.4). The name
+ * is not explained on the page, on purpose.
+ *
+ * Marquee rows at different speeds, adjacent rows in opposite directions.
+ * Pause on hover and keyboard focus. The loop's duplicate copy is aria-hidden
+ * with its links untabbable. The marquee only runs once JS marks the wall —
+ * the static wrapped wall is both the no-JS fallback and the reduced-motion
+ * treatment.
+ *
+ * This page is the single exception to the one-font rule: each phrase carries
+ * its own face from the validated six-token set.
+ */
+
+const phrases = (await getCollection("phrases")).sort((a, b) =>
+  a.data.dateAdded < b.data.dateAdded ? -1 : 1
+);
+const books = await getCollection("books");
+
+// A dead cross-link is worse than none — fail the build by name.
+for (const phrase of phrases) {
+  const slug = phrase.data.bookSlug;
+  if (slug && !books.some((book) => book.id === slug)) {
+    throw new Error(
+      `Phrase "${phrase.id}" points at bookSlug "${slug}", which matches no book in src/content/books/`
+    );
+  }
+}
+
+/* Two rows, split by position, opposite directions, different speeds. */
+const rows = [
+  { phrases: phrases.filter((_, i) => i % 2 === 0), direction: "left", duration: 48 },
+  { phrases: phrases.filter((_, i) => i % 2 === 1), direction: "right", duration: 64 },
+].filter((row) => row.phrases.length > 0);
+---
+
+<Base title="W Phrases" traveller specimen>
+  <div class="wp wrap">
+    <header class="wp__head">
+      <AnimatedScene scene="thinking-cloud" class="wp__scene" />
+      <div>
+        <h1>W Phrases</h1>
+        <p class="lede">Found online, kept because they go hard.</p>
+      </div>
+    </header>
+  </div>
+
+  <div class="wp__wall" data-wall>
+    {
+      rows.map((row) => (
+        <div
+          class="wp__row"
+          data-wall-row
+          style={`--marquee-duration:${row.duration}s;--marquee-from:${row.direction === "left" ? "0%" : "-50%"};--marquee-to:${row.direction === "left" ? "-50%" : "0%"};`}
+        >
+          <div class="wp__track">
+            {[false, true].map((isDupe) => (
+              <ul class="wp__set" aria-hidden={isDupe ? "true" : undefined}>
+                {row.phrases.map((phrase) => (
+                  <li
+                    class:list={[
+                      "wp__phrase",
+                      `wp__phrase--${phrase.data.style.font}`,
+                      `wp__phrase--${phrase.data.style.size}`,
+                      `wp__phrase--${phrase.data.style.color}`,
+                    ]}
+                    style={`${phrase.data.style.weight ? `font-weight:${phrase.data.style.weight};` : ""}${phrase.data.style.italic ? "font-style:italic;" : ""}`}
+                  >
+                    <span class="wp__text">{phrase.data.text}</span>
+                    {phrase.data.source && (
+                      <span class="wp__source">
+                        {phrase.data.bookSlug ? (
+                          <a
+                            href={`/reading#book-${phrase.data.bookSlug}`}
+                            tabindex={isDupe ? -1 : undefined}
+                          >
+                            {phrase.data.source}
+                          </a>
+                        ) : (
+                          phrase.data.source
+                        )}
+                      </span>
+                    )}
+                    {phrase.data.meaning && (
+                      <span class="wp__meaning">{phrase.data.meaning}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .wp {
+    padding-top: var(--space-l);
+  }
+
+  .wp__head {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-m);
+    margin-bottom: var(--space-l);
+  }
+
+  .wp :global(.wp__scene) {
+    /* 384px native frame — 192px is a clean half scale (1:1 on retina). */
+    width: 192px;
+    flex: none;
+  }
+
+  @media (max-width: 30rem) {
+    .wp__head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  /* ---- the wall ---- */
+
+  .wp__wall {
+    display: grid;
+    gap: var(--space-l);
+    /* Rows overflow inside this container, never the body. */
+    overflow: hidden;
+    padding-block: var(--space-m);
+  }
+
+  .wp__track {
+    display: flex;
+    width: max-content;
+  }
+
+  .wp__set {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2xl);
+    padding-inline: var(--space-xl);
+  }
+
+  .wp__phrase {
+    display: grid;
+    gap: 0.35rem;
+    /* In the moving row a phrase owns its full width — capping it makes
+       nowrap text spill over its neighbours. The static wall caps below. */
+    width: max-content;
+    max-width: none;
+  }
+
+  .wp__text {
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  .wp__source {
+    font-family: var(--font-pixel);
+    font-size: var(--fs-xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .wp__source a {
+    display: inline-flex;
+    min-height: var(--tap-min);
+    align-items: center;
+  }
+
+  .wp__meaning {
+    font-family: var(--font-pixel);
+    font-size: var(--fs-sm);
+    color: var(--muted);
+  }
+
+  /* Faces — the six-token set. */
+  .wp__phrase--geist { font-family: var(--font-pixel); }
+  .wp__phrase--grotesque { font-family: var(--font-grotesque); }
+  .wp__phrase--condensed { font-family: var(--font-condensed); }
+  .wp__phrase--hand { font-family: var(--font-hand); }
+  .wp__phrase--slab { font-family: var(--font-slab); }
+  .wp__phrase--serif { font-family: var(--font-serif); }
+
+  /* Sizes — a token scale, never free pixels. */
+  .wp__phrase--sm .wp__text { font-size: var(--fs-base); }
+  .wp__phrase--md .wp__text { font-size: var(--fs-md); }
+  .wp__phrase--lg .wp__text { font-size: var(--fs-lg); }
+  .wp__phrase--xl .wp__text { font-size: var(--fs-xl); }
+
+  /* Colours — theme tokens only, AA in both modes by construction. */
+  .wp__phrase--ink .wp__text { color: var(--ink); }
+  .wp__phrase--accent .wp__text { color: var(--accent); }
+  .wp__phrase--muted .wp__text { color: var(--muted); }
+
+  @media (min-width: 48rem) {
+    .wp__phrase--lg .wp__text { font-size: var(--fs-xl); }
+    .wp__phrase--xl .wp__text { font-size: var(--fs-2xl); }
+  }
+
+  /* ---- motion: only once JS marks the wall ---- */
+
+  [data-wall][data-js] .wp__track {
+    animation: wp-slide var(--marquee-duration) linear infinite;
+  }
+
+  /* A phrase that cannot be stopped cannot be read. */
+  [data-wall][data-js] .wp__row:hover .wp__track,
+  [data-wall][data-js] .wp__row:focus-within .wp__track,
+  [data-wall][data-js] .wp__row:focus .wp__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes wp-slide {
+    from {
+      transform: translateX(var(--marquee-from));
+    }
+    to {
+      transform: translateX(var(--marquee-to));
+    }
+  }
+
+  /* ---- the static wrapped wall: no-JS fallback AND reduced motion ---- */
+
+  [data-wall]:not([data-js]) .wp__track,
+  [data-wall][data-static] .wp__track {
+    width: auto;
+  }
+
+  [data-wall]:not([data-js]) .wp__set,
+  [data-wall][data-static] .wp__set {
+    flex-wrap: wrap;
+    gap: var(--space-l);
+    padding-inline: var(--gutter);
+  }
+
+  [data-wall]:not([data-js]) .wp__set[aria-hidden="true"],
+  [data-wall][data-static] .wp__set[aria-hidden="true"] {
+    display: none;
+  }
+
+  [data-wall]:not([data-js]) .wp__text,
+  [data-wall][data-static] .wp__text {
+    white-space: normal;
+  }
+
+  [data-wall]:not([data-js]) .wp__phrase,
+  [data-wall][data-static] .wp__phrase {
+    width: auto;
+    max-width: min(26ch, 100%);
+  }
+
+  [data-wall][data-static] .wp__track {
+    animation: none !important;
+  }
+</style>
+
+<script>
+  const wall = document.querySelector<HTMLElement>("[data-wall]");
+
+  if (wall) {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const apply = () => {
+      // Reduced motion is not "slower" — it is the static wrapped wall.
+      wall.toggleAttribute("data-static", reduce.matches);
+    };
+
+    wall.dataset.js = "true";
+    // Rows are focusable only when they actually move, so keyboard users can
+    // stop one to read it — and text is never focusable for no reason.
+    for (const row of wall.querySelectorAll<HTMLElement>("[data-wall-row]")) {
+      row.tabIndex = 0;
+      row.setAttribute("role", "group");
+      row.setAttribute("aria-label", "Phrase row — focus pauses the movement");
+    }
+    reduce.addEventListener("change", apply);
+    apply();
+  }
+</script>

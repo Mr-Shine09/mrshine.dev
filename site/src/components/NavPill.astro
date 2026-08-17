@@ -1,0 +1,94 @@
+---
+import ThemeToggle from "./ThemeToggle.astro";
+
+/**
+ * Sticky pill nav, top-left: index · about · contact (HANDOFF §3).
+ * Plain links — works with scripting off. The theme toggle rides along.
+ */
+
+const links = [
+  { href: "/", label: "index" },
+  { href: "/about", label: "about" },
+  { href: "/contact", label: "contact" },
+];
+
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<header class="nav-bar">
+  <nav class="nav-pill" aria-label="Site">
+    {
+      links.map(({ href, label }) => (
+        <a
+          class="nav-pill__link"
+          href={href}
+          aria-current={path === (href === "/" ? "/" : href) ? "page" : undefined}
+        >
+          {label}
+        </a>
+      ))
+    }
+  </nav>
+  <ThemeToggle />
+</header>
+
+<style>
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--space-s) var(--gutter) 0;
+    pointer-events: none;
+  }
+
+  .nav-bar > :global(*) {
+    pointer-events: auto;
+  }
+
+  .nav-pill {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(6px);
+    padding: 0 0.4rem;
+  }
+
+  .nav-pill__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    padding: 0 0.75rem;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    text-decoration: none;
+    color: var(--muted);
+  }
+
+  .nav-pill__link:hover {
+    color: var(--accent);
+  }
+
+  .nav-pill__link[aria-current="page"] {
+    color: var(--ink);
+  }
+
+  /* The second ink marks where you are — a dot, not a bold. */
+  .nav-pill__link[aria-current="page"]::before {
+    content: "●";
+    font-size: 0.5em;
+    color: var(--accent);
+    margin-right: 0.5em;
+  }
+
+  @media (max-width: 30rem) {
+    .nav-pill__link {
+      padding: 0 0.55rem;
+    }
+  }
+</style>

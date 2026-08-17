@@ -1,0 +1,86 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import AnimatedScene from "../components/AnimatedScene.astro";
+
+/**
+ * Projects — a uniform flip-card deck (HANDOFF §7.2). Drafts are filtered at
+ * build time; the deck renders as two cards today and that is intended — the
+ * honest state of the work beats hollow cards padding it out.
+ */
+
+const projects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const rendered = await Promise.all(
+  projects.map(async (project) => ({ project, Content: (await render(project)).Content }))
+);
+---
+
+<Base title="Projects" traveller>
+  <div class="projects wrap">
+    <header class="projects__head">
+      <AnimatedScene scene="computer-working" class="projects__scene" />
+      <div>
+        <h1>Projects</h1>
+        <p class="lede">
+          Built to be used, mostly at hackathons. Flip a card for what was
+          hard.
+        </p>
+      </div>
+    </header>
+
+    <div class="projects__deck">
+      {
+        rendered.map(({ project, Content }) => (
+          <ProjectCard project={project}>
+            <Content />
+          </ProjectCard>
+        ))
+      }
+      {/* Plays once on first reveal, then holds the singed pose. */}
+      <AnimatedScene scene="workbench-zap" once class="projects__zap" />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .projects {
+    padding-top: var(--space-l);
+  }
+
+  .projects__head {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-m);
+    margin-bottom: var(--space-l);
+  }
+
+  .projects :global(.projects__scene) {
+    /* 384px native frame — 192px is a clean half scale (1:1 on retina). */
+    width: 192px;
+    flex: none;
+  }
+
+  .projects__deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+    gap: var(--space-m);
+    align-items: stretch;
+  }
+
+  .projects :global(.projects__zap) {
+    width: 192px;
+    align-self: end;
+    justify-self: end;
+  }
+
+  @media (max-width: 30rem) {
+    .projects__head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

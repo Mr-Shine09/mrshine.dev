@@ -8,19 +8,23 @@
 
 html {
   scroll-behavior: smooth;
-  /* Sticky nav must not cover the heading of an anchored section. */
-  scroll-padding-top: calc(var(--nav-h, 3.5rem) + var(--space-m));
   -webkit-text-size-adjust: 100%;
+  /*
+   * The site font has no weight axis. Without this, browsers synthesise a
+   * smeared faux bold over the pixel glyphs (HANDOFF §4 non-negotiable #2).
+   */
+  font-synthesis: none;
 }
 
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-body);
-  font-size: var(--step-0);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: var(--fs-base);
   line-height: var(--leading-body);
-  /* Guards the acceptance criterion: no horizontal scroll at any width. */
+  /* Belt for the acceptance criterion: no horizontal page scroll at any
+     width. Wide content scrolls inside its own overflow-x:auto container. */
   overflow-x: hidden;
 }
 
@@ -28,25 +32,39 @@ body {
   background: var(--selection);
 }
 
+/*
+ * There is no bold. Hierarchy is a size step; emphasis inside running text is
+ * the accent colour; labels are uppercase + letterspacing. Nothing else.
+ */
 h1,
 h2,
 h3 {
-  font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 400;
   line-height: var(--leading-tight);
-  letter-spacing: -0.015em;
   margin: 0;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: var(--step-4);
+  font-size: var(--fs-xl);
 }
 h2 {
-  font-size: var(--step-3);
+  font-size: var(--fs-lg);
 }
 h3 {
-  font-size: var(--step-1);
+  font-size: var(--fs-md);
+}
+
+strong,
+b {
+  font-weight: 400;
+  color: var(--accent);
+}
+
+em,
+i {
+  font-style: normal;
+  color: var(--accent);
 }
 
 p {
@@ -83,9 +101,14 @@ ul {
   list-style: none;
 }
 
+/* Element display rules above must never resurrect a [hidden] element. */
+[hidden] {
+  display: none !important;
+}
+
 /* ---- focus: every interactive element, always visible ---- */
 
-:where(a, button, [tabindex]):focus-visible {
+:where(a, button, [tabindex], summary):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
@@ -98,42 +121,17 @@ ul {
   margin-inline: auto;
 }
 
-.section {
-  padding-block: var(--space-2xl);
-  scroll-margin-top: calc(var(--nav-h, 3.5rem) + var(--space-s));
-}
-
-.section + .section {
-  border-top: var(--border);
-}
-
-/* Small caps mono label — the recurring engineering-register device. */
+/* Uppercase letterspaced label — one of the three emphasis devices. */
 .label {
-  font-family: var(--font-body);
-  font-size: var(--step--1);
-  font-weight: 500;
+  font-size: var(--fs-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--muted);
   margin: 0;
 }
 
-.section-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-xs) var(--space-m);
-  margin-bottom: var(--space-l);
-}
-
-.section-head .lede {
-  color: var(--muted);
-  max-width: 46ch;
-  margin: 0;
-}
-
 .lede {
-  font-size: var(--step-1);
+  font-size: var(--fs-md);
   line-height: 1.5;
   color: var(--muted);
 }
@@ -145,16 +143,14 @@ ul {
   align-items: center;
   justify-content: center;
   gap: var(--space-2xs);
-  /* 44px minimum tap target — acceptance criterion. */
-  min-height: 44px;
+  min-height: var(--tap-min);
   padding: 0.55rem 1.15rem;
-  border: 1px solid var(--fg);
+  border: 1px solid var(--ink);
   border-radius: var(--radius);
   background: transparent;
-  color: var(--fg);
+  color: var(--ink);
   font: inherit;
-  font-size: var(--step--1);
-  font-weight: 500;
+  font-size: var(--fs-sm);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
@@ -163,9 +159,9 @@ ul {
 }
 
 .btn:hover {
-  background: var(--fg);
+  background: var(--ink);
   color: var(--bg);
-  border-color: var(--fg);
+  border-color: var(--ink);
 }
 
 .btn--primary {
@@ -175,9 +171,15 @@ ul {
 }
 
 .btn--primary:hover {
-  background: var(--accent-strong);
-  border-color: var(--accent-strong);
-  color: var(--on-accent);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+/* ---- pixel art ---- */
+
+.pixelated {
+  image-rendering: pixelated;
 }
 
 /* ---- reduced motion: honour it globally, not per-component ---- */

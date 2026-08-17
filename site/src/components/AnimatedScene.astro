@@ -7,9 +7,12 @@ interface Props {
   scene: SceneId;
   class?: string;
   label?: string;
+  /** One-shot: wait until visible, play through once, hold the final frame.
+   *  Never replays on scroll nudges (HANDOFF §11.1, workbench-zap). */
+  once?: boolean;
 }
 
-const { scene, class: className, label } = Astro.props;
+const { scene, class: className, label, once = false } = Astro.props;
 const metadata = sceneContract.scenes.find((item) => item.id === scene);
 
 if (!metadata) {
@@ -17,7 +20,7 @@ if (!metadata) {
 }
 
 const frameCount = sceneContract.layout.frameCount;
-const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
+const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount, once });
 ---
 
 <span
@@ -58,7 +61,7 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
 </style>
 
 <script>
-  type SceneSpec = { durations: number[]; frameCount: number };
+  type SceneSpec = { durations: number[]; frameCount: number; once: boolean };
 
   const reduceSceneMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -71,7 +74,11 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
 
     let frame = 0;
     let timer: ReturnType<typeof setTimeout> | undefined;
-    let visible = true;
+    // Loops fail open: they animate immediately and IntersectionObserver only
+    // PAUSES them (HANDOFF §2 — do not "optimise" this into a gate). Only
+    // one-shot scenes wait to be seen.
+    let visible = !spec.once;
+    let finished = false;
 
     const show = () => {
       const percent = (frame * 100) / spec.frameCount;
@@ -84,9 +91,14 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
     };
 
     const schedule = () => {
-      if (!visible || reduceSceneMotion.matches || timer) return;
+      if (!visible || finished || reduceSceneMotion.matches || timer) return;
       timer = setTimeout(() => {
         timer = undefined;
+        if (spec.once && frame === spec.frameCount - 1) {
+          // Hold the final pose. Never zap again.
+          finished = true;
+          return;
+        }
         frame = (frame + 1) % spec.frameCount;
         show();
         schedule();
@@ -98,7 +110,7 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
       if (reduceSceneMotion.matches) {
         frame = 0;
         show();
-      } else {
+      } else if (!finished) {
         schedule();
       }
     };
@@ -107,7 +119,17 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount });
 
     const observer = new IntersectionObserver(
       (entries) => {
-        visible = entries.some((entry) => entry.isIntersecting);
+        const seen = entries.some((entry) => entry.isIntersecting);
+        if (spec.once) {
+          // First sighting starts the single run; leaving does not pause a
+          // one-shot mid-beat, and it never restarts.
+          if (seen && !visible) {
+            visible = true;
+            schedule();
+          }
+          return;
+        }
+        visible = seen;
         if (visible) schedule();
         else stop();
       },

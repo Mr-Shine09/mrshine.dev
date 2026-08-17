@@ -1,0 +1,418 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import BookSpine from "../components/BookSpine.astro";
+import AnimatedScene from "../components/AnimatedScene.astro";
+
+/**
+ * Reading List — a shelf of rendered spines (HANDOFF §7.3).
+ *
+ * Structure: English → {Non-fiction, Fiction}, Burmese → {Non-fiction,
+ * Fiction}. Status is never a shelf — it is a marker on the spine. Empty
+ * shelves do not render, so the Burmese section is absent until a Burmese
+ * book exists (and a Myanmar-capable font must be added BEFORE one does —
+ * Geist Pixel has zero Myanmar coverage and tofu is a silent failure).
+ *
+ * Search is a client-side enhancement: with no JS, every shelf renders and
+ * the box stays hidden. Spines link to always-rendered detail panels below,
+ * so the details need no JS either.
+ */
+
+const books = await getCollection("books");
+
+const SECTIONS = [
+  { language: "en", label: "English" },
+  { language: "my", label: "Burmese" },
+] as const;
+const GENRES = [
+  { genre: "nonfiction", label: "Non-fiction" },
+  { genre: "fiction", label: "Fiction" },
+] as const;
+
+const shelves = SECTIONS.flatMap((section) =>
+  GENRES.map((g) => ({
+    title: `${section.label} · ${g.label}`,
+    language: section.language,
+    books: books.filter(
+      (b) => b.data.language === section.language && b.data.genre === g.genre
+    ),
+  }))
+)
+  .filter((shelf) => shelf.books.length > 0)
+  // Offset each shelf's palette start so neighbouring shelves don't all
+  // open on the same colour.
+  .map((shelf, shelfIndex) => ({ ...shelf, paletteOffset: shelfIndex }));
+
+const count = books.length;
+
+const STATUS_LABEL = {
+  reading: "Reading now",
+  finished: "Finished",
+  want: "Want to read",
+} as const;
+
+const formatDate = (iso: string) =>
+  new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+  });
+---
+
+<Base title="Reading List" traveller>
+  <div class="reading wrap">
+    <header class="reading__head">
+      <AnimatedScene scene="reading-fire" class="reading__scene" />
+      <div>
+        <h1>Reading List</h1>
+        <p class="reading__count label">
+          {count} {count === 1 ? "volume" : "volumes"}
+        </p>
+      </div>
+    </header>
+
+    {/* Hidden until JS arrives — search is never the only way to the books. */}
+    <form class="reading__search" data-book-search hidden role="search">
+      <label class="label" for="book-search-input">Search the shelf</label>
+      <input
+        id="book-search-input"
+        class="reading__search-input"
+        type="search"
+        placeholder="title or author"
+        autocomplete="off"
+      />
+      <p class="reading__search-count" data-book-search-count aria-live="polite"></p>
+    </form>
+
+    {
+      shelves.map((shelf) => (
+        <section class="shelf" data-shelf>
+          <header class="shelf__head">
+            <h2 class="shelf__title" lang={shelf.language === "my" ? "my" : undefined}>
+              {shelf.title}
+            </h2>
+            <p class="label">
+              {shelf.books.length} {shelf.books.length === 1 ? "volume" : "volumes"}
+            </p>
+          </header>
+          {/* Each shelf scrolls in its own container, never the body. The
+              region is focusable so arrow keys scroll it from the keyboard. */}
+          <div
+            class="shelf__scroller"
+            tabindex="0"
+            role="region"
+            aria-label={`${shelf.title} shelf`}
+          >
+            <ul class="shelf__row">
+              {shelf.books.map((book, index) => (
+                <BookSpine book={book} index={index + shelf.paletteOffset} />
+              ))}
+            </ul>
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="details" aria-label="Book details">
+      {
+        books.map((book) => (
+          <article
+            class="bookcard"
+            id={`book-${book.id}`}
+            data-book-item
+            data-search={`${book.data.title} ${book.data.author}`}
+          >
+            <h3 class="bookcard__title" lang={book.data.language === "my" ? "my" : undefined}>
+              {book.data.title}
+            </h3>
+            <p class="bookcard__author" lang={book.data.language === "my" ? "my" : undefined}>
+              {book.data.author}
+            </p>
+            <dl class="bookcard__meta">
+              <div class="bookcard__row">
+                <dt class="label">Status</dt>
+                <dd>{STATUS_LABEL[book.data.status]}</dd>
+              </div>
+              {book.data.started && (
+                <div class="bookcard__row">
+                  <dt class="label">Started</dt>
+                  <dd>{formatDate(book.data.started)}</dd>
+                </div>
+              )}
+              {book.data.status === "reading" && book.data.progress !== undefined && (
+                <div class="bookcard__row">
+                  <dt class="label">Progress</dt>
+                  <dd>
+                    <span
+                      class="bookcard__bar"
+                      role="img"
+                      aria-label={`${book.data.progress} percent read`}
+                    >
+                      <span
+                        class="bookcard__bar-fill"
+                        style={`width:${book.data.progress}%`}
+                      />
+                    </span>
+                    {book.data.progress}%
+                  </dd>
+                </div>
+              )}
+              {book.data.ended && (
+                <div class="bookcard__row">
+                  <dt class="label">Ended</dt>
+                  <dd>{formatDate(book.data.ended)}</dd>
+                </div>
+              )}
+              {book.data.rating && (
+                <div class="bookcard__row">
+                  <dt class="label">Rating</dt>
+                  <dd>
+                    <span aria-hidden="true">
+                      {"★".repeat(book.data.rating)}
+                      {"☆".repeat(5 - book.data.rating)}
+                    </span>
+                    <span class="sr-only">Rated {book.data.rating} out of 5</span>
+                  </dd>
+                </div>
+              )}
+            </dl>
+            {book.data.review && <p class="bookcard__review">{book.data.review}</p>}
+          </article>
+        ))
+      }
+    </section>
+  </div>
+</Base>
+
+<style>
+  .reading {
+    padding-top: var(--space-l);
+  }
+
+  .reading__head {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-m);
+    margin-bottom: var(--space-l);
+  }
+
+  .reading :global(.reading__scene) {
+    /* 384px native frame — 192px is a clean half scale (1:1 on retina). */
+    width: 192px;
+    flex: none;
+  }
+
+  .reading__count {
+    margin-top: var(--space-2xs);
+  }
+
+  @media (max-width: 30rem) {
+    .reading__head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  /* ---- search ---- */
+
+  .reading__search {
+    margin-bottom: var(--space-l);
+    display: grid;
+    gap: var(--space-2xs);
+    max-width: 24rem;
+  }
+
+  .reading__search-input {
+    min-height: var(--tap-min);
+    padding: 0 0.8rem;
+    font: inherit;
+    font-size: var(--fs-base);
+    color: var(--ink);
+    background: var(--plate);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .reading__search-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .reading__search-count {
+    font-size: var(--fs-sm);
+    color: var(--muted);
+    min-height: 1.4em;
+    margin: 0;
+  }
+
+  /* ---- shelves ---- */
+
+  .shelf {
+    margin-bottom: var(--space-xl);
+  }
+
+  .shelf__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-m);
+    margin-bottom: var(--space-s);
+  }
+
+  .shelf__title {
+    font-size: var(--fs-md);
+  }
+
+  .shelf__scroller {
+    /* Wide shelves scroll here, inside their own box — never the body. */
+    overflow-x: auto;
+    /* Edge fade so it is visible there is more to scroll. */
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 1.25rem,
+      black calc(100% - 1.25rem),
+      transparent
+    );
+    padding-inline: 1.25rem;
+    scrollbar-width: thin;
+  }
+
+  .shelf__row {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    min-height: 232px;
+    width: max-content;
+    min-width: 100%;
+    border-bottom: 6px solid var(--line);
+    padding-bottom: 0;
+  }
+
+  /* ---- detail panels ---- */
+
+  .details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+    gap: var(--space-m);
+  }
+
+  .bookcard {
+    padding: var(--space-m);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--plate);
+    scroll-margin-top: 6rem;
+  }
+
+  .bookcard:target {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .bookcard__title {
+    font-size: var(--fs-md);
+  }
+
+  .bookcard__author {
+    margin: 0.2rem 0 var(--space-s);
+    color: var(--muted);
+    font-size: var(--fs-sm);
+  }
+
+  .bookcard__meta {
+    margin: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .bookcard__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+  }
+
+  .bookcard__row dt {
+    flex: none;
+    width: 5.5rem;
+  }
+
+  .bookcard__row dd {
+    margin: 0;
+    font-size: var(--fs-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .bookcard__bar {
+    display: inline-block;
+    width: 6rem;
+    height: 8px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .bookcard__bar-fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .bookcard__review {
+    margin-top: var(--space-s);
+    font-size: var(--fs-base);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-book-search]");
+  const input = document.querySelector<HTMLInputElement>("#book-search-input");
+  const output = document.querySelector<HTMLElement>("[data-book-search-count]");
+
+  if (form && input) {
+    form.hidden = false;
+    form.addEventListener("submit", (event) => event.preventDefault());
+
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-book-item]")
+    );
+    const shelves = Array.from(document.querySelectorAll<HTMLElement>("[data-shelf]"));
+
+    input.addEventListener("input", () => {
+      // Raw-ish matching: case folding only, no Latin-assuming normalisation —
+      // Burmese titles must match as typed.
+      const query = input.value.toLowerCase();
+      let matches = 0;
+
+      for (const item of items) {
+        const hit = (item.dataset.search ?? "").toLowerCase().includes(query);
+        item.hidden = !hit;
+        if (hit) matches += 1;
+      }
+
+      // Shelves that lose all their books hide too, and reappear on clear.
+      for (const shelf of shelves) {
+        const visible = shelf.querySelector("[data-book-item]:not([hidden])");
+        shelf.hidden = !visible;
+      }
+
+      if (output) {
+        // Each book renders one spine and one panel — halve for the count.
+        const bookCount = matches / 2;
+        output.textContent = query
+          ? `${bookCount} ${bookCount === 1 ? "book matches" : "books match"}`
+          : "";
+      }
+    });
+  }
+</script>
