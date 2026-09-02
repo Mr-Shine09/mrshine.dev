@@ -1,6 +1,9 @@
 ---
 import contract from "../../public/assets/animation/hero/oak-welcome-contract.json";
 
+interface Props { scale?: 1 | 2 }
+
+const { scale = 1 } = Astro.props;
 const [spriteWidth, spriteHeight] = contract.animation.pixel_size;
 const payload = JSON.stringify({
   animatedSrc: `/assets/animation/hero/${contract.asset}`,
@@ -10,7 +13,7 @@ const payload = JSON.stringify({
 });
 ---
 
-<div class="hero-welcome" role="img" aria-label="Oak waving welcome" data-welcome={payload}>
+<div class="hero-welcome" role="img" aria-label="Oak waving welcome" data-welcome={payload} style={`--w:${spriteWidth * scale}px;--h:${spriteHeight * scale}px`}>
   <img
     class="hero-welcome__bubble"
     data-welcome-bubble
@@ -32,25 +35,10 @@ const payload = JSON.stringify({
 </div>
 
 <style>
-  .hero-welcome {
-    position: relative;
-    width: 160px;
-    flex: none;
-  }
-
-  .hero-welcome__sprite {
-    display: block;
-    width: 160px;
-    height: 208px;
-    image-rendering: pixelated;
-  }
-
-  .hero-welcome__bubble {
-    position: absolute;
-    top: -2.2rem;
-    left: 68%;
-    z-index: 1;
-  }
+  .hero-welcome { position: relative; width: var(--w); flex: none; }
+  .hero-welcome__sprite { display: block; width: var(--w); height: var(--h); image-rendering: pixelated; }
+  .hero-welcome__bubble { position: absolute; top: -2.2rem; left: 68%; z-index: 1; }
+  @media (max-width: 48rem) { .hero-welcome { width: 160px; } .hero-welcome__sprite { width: 160px; height: 208px; } }
 
   :global([data-theme="dark"]) .hero-welcome__bubble {
     content: url("/assets/animation/effects/welcome-bubble-dark.svg");

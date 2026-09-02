@@ -40,6 +40,26 @@ check("overflow", async (browser) => {
   }
 });
 
+check("pixelated", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const bad = await p.$$eval(".oak-scene img, .hero-welcome img, .runner img", (imgs) =>
+    imgs.filter((i) => getComputedStyle(i).imageRendering !== "pixelated").map((i) => i.getAttribute("src")));
+  assert(bad.length === 0, `not pixelated: ${bad.join(", ")}`);
+  const count = await p.locator(".oak-scene img, .hero-welcome img").count();
+  assert(count >= 4, `expected ≥4 mascot images, found ${count}`);
+  await ctx.close();
+});
+
+check("reduced-motion-scenes", async (browser) => {
+  const { ctx, p } = await page(browser, { reducedMotion: "reduce" });
+  await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await p.waitForTimeout(600);
+  const srcs = await p.$$eval(".oak-scene img, .hero-welcome img", (imgs) => imgs.map((i) => i.getAttribute("src")));
+  const animated = srcs.filter((s) => !s.includes("-static."));
+  assert(animated.length === 0, `animated under reduced motion: ${animated.join(", ")}`);
+  await ctx.close();
+});
+
 // ---- runner ----
 const only = process.argv.slice(2);
 const names = only.length ? only : Object.keys(checks);

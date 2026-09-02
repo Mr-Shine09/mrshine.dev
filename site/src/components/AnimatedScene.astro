@@ -9,9 +9,11 @@ interface Props {
   label?: string;
   /** Play once on first reveal and hold the APNG's final frame. */
   once?: boolean;
+  /** Integer-friendly display scale: 1 = 384×320, 0.5 = 192×160. */
+  scale?: 0.5 | 1;
 }
 
-const { scene, class: className, label, once = false } = Astro.props;
+const { scene, class: className, label, once = false, scale = 1 } = Astro.props;
 const metadata = sceneContract.scenes.find((item) => item.id === scene);
 
 if (!metadata) {
@@ -31,6 +33,7 @@ const [frameWidth, frameHeight] = sceneContract.layout.outputFrameSize;
   role="img"
   aria-label={label ?? metadata.label}
   data-oak-scene={payload}
+  style={`--scene-w:${frameWidth * scale}px;--scene-h:${frameHeight * scale}px`}
 >
   <img
     class="oak-scene__animation"
@@ -45,19 +48,10 @@ const [frameWidth, frameHeight] = sceneContract.layout.outputFrameSize;
 </span>
 
 <style>
-  .oak-scene {
-    display: block;
-    max-width: 100%;
-    aspect-ratio: 6 / 5;
-  }
-
-  .oak-scene__animation {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    image-rendering: pixelated;
-  }
+  .oak-scene { display: block; width: var(--scene-w); height: var(--scene-h); max-width: 100%; }
+  .oak-scene__animation { display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+  /* Phones: half size keeps integer scale (384→192). */
+  @media (max-width: 40rem) { .oak-scene { width: calc(var(--scene-w) / 2); height: calc(var(--scene-h) / 2); } }
 </style>
 
 <script>
