@@ -80,6 +80,31 @@ check("hero", async (browser) => {
   await ctx.close();
 });
 
+check("runner", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const sprite = p.locator("[data-runner-sprite]");
+  assert(await sprite.count() === 1, "runner sprite missing");
+  const xAt = async () => p.locator("[data-runner]").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41);
+  const x0 = await xAt();
+  await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await p.waitForTimeout(250);
+  assert((await sprite.getAttribute("src")).includes("run-atlas.png"), "runner should animate while scrolling");
+  await p.waitForTimeout(1500);
+  const x1 = await xAt();
+  assert(x1 < x0 - 200, `runner did not travel left (x ${x0} → ${x1})`);
+  assert((await sprite.getAttribute("src")).endsWith("run-static.png"), "runner should freeze when idle");
+  const scaleX = await p.locator("[data-runner]").evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).a);
+  assert(scaleX < 0, "runner should face left (scaleX(-1))");
+  await ctx.close();
+});
+
+check("reduced-motion-runner", async (browser) => {
+  const { ctx, p } = await page(browser, { reducedMotion: "reduce" });
+  const display = await p.locator(".runner-layer").evaluate((el) => getComputedStyle(el).display);
+  assert(display === "none", `runner layer visible under reduced motion (display ${display})`);
+  await ctx.close();
+});
+
 // ---- runner ----
 const only = process.argv.slice(2);
 const names = only.length ? only : Object.keys(checks);

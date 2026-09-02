@@ -2,6 +2,7 @@
 import { Font } from "astro:assets";
 import { site } from "../data/site";
 import TopBar from "../components/TopBar.astro";
+import BottomRunner from "../components/BottomRunner.astro";
 import "../styles/global.css";
 
 interface Props { title?: string; description?: string }
@@ -56,7 +57,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <main id="main">
       <slot />
     </main>
-    <slot name="after" />
+    <BottomRunner />
   </body>
 </html>
 
