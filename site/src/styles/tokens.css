@@ -4,8 +4,9 @@
  * Two flat inks on a pale ground, print-shop register. The PAGE is duotone;
  * the mascot is exempt and keeps its own frozen 12-colour palette, preserved
  * below as --px-* (sampled from
- * `public/assets/animation/legacy/mascot-contract.json`). The --px-* set
- * colours book spines on /reading only — never page chrome.
+ * `public/assets/animation/legacy/mascot-contract.json`). The --px-* set is
+ * kept for any future element that must match the mascot; page chrome never
+ * uses it.
  *
  * Contrast is measured, all AA for body text (HANDOFF §5.2). Light --accent
  * clears 4.5:1 by 0.06 — do not lighten it, do not darken light --bg.
@@ -42,10 +43,11 @@
 
   /*
    * ---- type ----
-   * One family, Geist Pixel (--font-pixel from the Astro font pipeline).
-   * Pixel faces are crisp at integer multiples of their grid: the scale is
+   * Two faces from the Astro font pipeline: --font-pixel (Geist Pixel) for
+   * headings, nav, labels, chips, counts; --font-sans (Geist Sans) for prose.
+   * The pixel face is crisp at integer multiples of its grid: sizes are
    * multiples of 4px, no fractional sizes, no clamp(). 16px is a hard floor
-   * for prose; 12–14px are labels/metadata only (HANDOFF §4).
+   * for prose; 12–14px are labels/metadata only (Plan.md §4.2).
    */
   --fs-xs: 12px;
   --fs-sm: 14px;
