@@ -12,7 +12,9 @@ is `../Plan.md`; read it before changing anything.
 | `npm run dev` | Dev server at `localhost:4321` |
 | `npm run build` | Production build to `./dist/` (gitignored) |
 | `npm run preview` | Preview the production build |
-| `npm run covers` | Fetch Open Library covers for books with an `isbn` (added in the build session) |
+| `npm run covers` | Fetch Open Library covers for books with an `isbn` |
+| `npm run check` | Type-check the Astro project |
+| `npm run verify` | Run the Playwright acceptance harness (needs `npm run preview -- --port 4321` running) |
 
 ## Where content lives
 

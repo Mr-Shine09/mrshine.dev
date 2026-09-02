@@ -394,20 +394,20 @@ Draft projects and books with unknown status never render; the build says why.
 
 ## 11. Build-session checklist
 
-0. Delete `site/src/` **except** `src/assets/`. Keep `package.json`, `astro.config.mjs`, `tsconfig.json`, `public/`, `scripts/`, `node_modules/`.
-1. `tokens.css`, `global.css` (reset, `font-synthesis: none`, focus-visible rule, skip link), `Base.astro` (head, theme bootstrap script, fonts, top bar slot). Register Geist Pixel + Geist Sans locally; remove all Google providers.
-2. `TopBar.astro` + `ThemeToggle.astro`.
-3. `AnimatedScene.astro` and `HeroWelcome.astro` per §7.7 (port the fail-open logic).
-4. `Hero.astro` (§7.1) incl. the ✈ motif.
-5. `content.config.ts` with all four collections and every named failure in §8. `achievements/icpc.md`.
-6. `Highlights.astro` (§7.2).
-7. `ProjectCard.astro` + `ProjectSlider.astro` (§7.3). Rewrite `03-lookout.md` → `02-look-out.md`, add `03-visionassist.md`, renumber Echo to `04`, delete `04-wizlet.md`. Save the two repo images into `src/assets/projects/`.
-8. `scripts/fetch-covers.mjs` + `npm run covers`; delete `books/zero-to-one.md`, add `books/the-infinity-machine.md`, add `isbn` to `books/dune.md`; `CurrentlyReading.astro`, `Shelf.astro`, `BookDetail.astro`, `ReadingList.astro` (§7.4).
-9. `ContactCard.astro` (§7.5) + regenerate `contact.vcf.ts`.
-10. `BottomRunner.astro` (§7.6).
-11. `index.astro` assembling the five sections in order.
-12. Accessibility, reduced-motion, no-JS, four-width passes with Playwright (§10). Fix, re-run.
-13. Push; connect Cloudflare Pages (root `site`, build `npm run build`, output `dist`); confirm HTTPS.
+- [x] 0. Delete `site/src/` **except** `src/assets/`. Keep `package.json`, `astro.config.mjs`, `tsconfig.json`, `public/`, `scripts/`, `node_modules/`.
+- [x] 1. `tokens.css`, `global.css` (reset, `font-synthesis: none`, focus-visible rule, skip link), `Base.astro` (head, theme bootstrap script, fonts, top bar slot). Register Geist Pixel + Geist Sans locally; remove all Google providers.
+- [x] 2. `TopBar.astro` + `ThemeToggle.astro`.
+- [x] 3. `AnimatedScene.astro` and `HeroWelcome.astro` per §7.7 (port the fail-open logic).
+- [x] 4. `Hero.astro` (§7.1) incl. the ✈ motif.
+- [x] 5. `content.config.ts` with all four collections and every named failure in §8. `achievements/icpc.md`.
+- [x] 6. `Highlights.astro` (§7.2).
+- [x] 7. `ProjectCard.astro` + `ProjectSlider.astro` (§7.3). Rewrite `03-lookout.md` → `02-look-out.md`, add `03-visionassist.md`, renumber Echo to `04`, delete `04-wizlet.md`. Save the two repo images into `src/assets/projects/`.
+- [x] 8. `scripts/fetch-covers.mjs` + `npm run covers`; delete `books/zero-to-one.md`, add `books/the-infinity-machine.md`, add `isbn` to `books/dune.md`; `CurrentlyReading.astro`, `Shelf.astro`, `BookDetail.astro`, `ReadingList.astro` (§7.4).
+- [x] 9. `ContactCard.astro` (§7.5) + regenerate `contact.vcf.ts`.
+- [x] 10. `BottomRunner.astro` (§7.6).
+- [x] 11. `index.astro` assembling the five sections in order.
+- [x] 12. Accessibility, reduced-motion, no-JS, four-width passes with Playwright (§10). Fix, re-run.
+- [ ] 13. Push; connect Cloudflare Pages (root `site`, build `npm run build`, output `dist`); confirm HTTPS.
 
 ---
 
