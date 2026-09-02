@@ -39,11 +39,14 @@ const meta = [data.year, data.builtAt].filter(Boolean).join(" · ");
   .card__meta, .card__team { font-size: var(--fs-sm); color: var(--muted); }
   .card__meta { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; }
   .card__links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  /* Receded cards scale to 0.82; keep their buttons ≥44px after scaling. */
+  .card__links :global(.btn) { min-height: calc(var(--tap-min) / 0.82 + 1px); }
 
   /* Coverflow: the centred card is full size; neighbours recede. Scroll-driven,
      no JS; browsers without support get a flat, fully usable snap carousel. */
   @supports (animation-timeline: view()) {
-    .card { animation: card-focus linear both; animation-timeline: view(inline); animation-range: cover 0% cover 100%; }
+    .card { animation: card-focus linear both; }
+    :global(.slider__track) .card { animation-timeline: view(inline); animation-range: cover 0% cover 100%; }
     @keyframes card-focus { 0%, 100% { transform: scale(0.82); opacity: 0.6; } 50% { transform: scale(1); opacity: 1; } }
   }
   @media (prefers-reduced-motion: reduce) { .card { animation: none; } }

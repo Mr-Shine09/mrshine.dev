@@ -132,6 +132,13 @@ check("projects", async (browser) => {
     assert(b.card <= 34 * 16 + 2, `card wider than 34rem: ${b.card}px`);
     assert(Math.abs(b.plate[1] - b.plate[0] * 0.625) <= 2, `plate not 16:10: ${b.plate.join("x")}`);
   }
+  await p.locator("section#projects").scrollIntoViewIfNeeded();
+  await p.waitForTimeout(300);
+  const motion = await p.$$eval("section#projects .card", (els) => ({ supports: CSS.supports("animation-timeline: view()"), anims: els.map((e) => e.getAnimations().length), transforms: els.map((e) => getComputedStyle(e).transform) }));
+  if (motion.supports) {
+    assert(motion.anims.every((n) => n >= 1), `coverflow animation missing on cards: ${motion.anims.join(",")}`);
+    assert(motion.transforms.slice(1).some((t) => t !== "none"), "no neighbour card is scaled — scroll-driven scale not applying");
+  }
   const track = p.locator("section#projects .slider__track");
   const before = await track.evaluate((t) => t.scrollLeft);
   await p.locator("[data-slider-next]").click();
