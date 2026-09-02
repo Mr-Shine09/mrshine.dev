@@ -75,4 +75,16 @@ const books = defineCollection({
       }),
 });
 
-export const collections = { projects, books };
+const achievements = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/achievements" }),
+  schema: z.object({
+    title: z.string(),
+    org: z.string(),
+    year: z.string().regex(/^\d{4}$/, "year must be four digits"),
+    kind: z.enum(["competition", "hackathon", "award", "other"]),
+    link: z.url().optional(),
+    order: z.number().default(99),
+  }),
+});
+
+export const collections = { projects, books, achievements };

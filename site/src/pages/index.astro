@@ -2,11 +2,13 @@
 import Base from "../layouts/Base.astro";
 import SectionHead from "../components/SectionHead.astro";
 import Hero from "../components/Hero.astro";
+import Highlights from "../components/Highlights.astro";
 import { sections } from "../data/nav";
-const rest = sections.filter((s) => s.id !== "about");
+const rest = sections.filter((s) => s.id !== "about" && s.id !== "highlights");
 ---
 <Base>
   <Hero />
+  <Highlights />
   {rest.map((s) => (
     <section id={s.id} class="section" aria-labelledby={`${s.id}-title`}>
       <div class="wrap"><SectionHead id={s.id} title={s.label} /></div>

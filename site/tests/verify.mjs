@@ -42,10 +42,10 @@ check("overflow", async (browser) => {
 
 check("pixelated", async (browser) => {
   const { ctx, p } = await page(browser);
-  const bad = await p.$$eval(".oak-scene img, .hero-welcome img, .runner img", (imgs) =>
+  const bad = await p.$$eval(".oak-scene img, .hero-welcome img[data-welcome-sprite], .runner img", (imgs) =>
     imgs.filter((i) => getComputedStyle(i).imageRendering !== "pixelated").map((i) => i.getAttribute("src")));
   assert(bad.length === 0, `not pixelated: ${bad.join(", ")}`);
-  const count = await p.locator(".oak-scene img, .hero-welcome img").count();
+  const count = await p.locator(".oak-scene img, .hero-welcome img[data-welcome-sprite]").count();
   assert(count >= 4, `expected ≥4 mascot images, found ${count}`);
   await ctx.close();
 });
@@ -54,7 +54,7 @@ check("reduced-motion-scenes", async (browser) => {
   const { ctx, p } = await page(browser, { reducedMotion: "reduce" });
   await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await p.waitForTimeout(600);
-  const srcs = await p.$$eval(".oak-scene img, .hero-welcome img", (imgs) => imgs.map((i) => i.getAttribute("src")));
+  const srcs = await p.$$eval(".oak-scene img, .hero-welcome img[data-welcome-sprite]", (imgs) => imgs.map((i) => i.getAttribute("src")));
   const animated = srcs.filter((s) => !s.includes("-static."));
   assert(animated.length === 0, `animated under reduced motion: ${animated.join(", ")}`);
   await ctx.close();
@@ -102,6 +102,18 @@ check("reduced-motion-runner", async (browser) => {
   const { ctx, p } = await page(browser, { reducedMotion: "reduce" });
   const display = await p.locator(".runner-layer").evaluate((el) => getComputedStyle(el).display);
   assert(display === "none", `runner layer visible under reduced motion (display ${display})`);
+  await ctx.close();
+});
+
+check("highlights", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const s = p.locator("section#highlights");
+  assert((await s.locator("h2").innerText()).toUpperCase().includes("HIGHLIGHTS"), "heading");
+  assert(await s.locator(".achievements li").count() === 1, "expected one achievement row");
+  const row = await s.locator(".achievements li").first().innerText();
+  assert(row.includes("ICPC") && row.includes("2025"), `row text: ${row}`);
+  assert((await s.innerText()).includes("More achievements coming soon."), "coming-soon line missing");
+  assert(await s.locator('.oak-scene[aria-label*="trophy"]').count() === 1, "trophy-lift scene missing");
   await ctx.close();
 });
 
