@@ -18,7 +18,7 @@
 | Theme | **Riso C2**, light and dark, toggle persisted in `localStorage`, `prefers-color-scheme` honoured on first visit. |
 | Mascot | Native APNG scenes from `site/public/assets/animation/`. Used: `oak-welcome`, `trophy-lift`, `workbench-zap`, `reading-fire`, `run`. Unused but kept: `computer-working`, `thinking-cloud`, `walking`. |
 | Projects | Coverflow slider, four uniform single-face cards: **PokeDesk, Look-Out, VisionAssist, Echo**. |
-| Reading | Currently-reading cards with progress rings; shelves of **cover images** for **finished** books only; empty state at launch. |
+| Reading | Currently-reading cards with progress rings (Dune; The Infinity Machine); shelves of **cover images** for **finished** books only; empty state at launch. |
 | Contact | One business-card block at the end: Website, Email (+ copy), LinkedIn, GitHub. No floating card. No form. |
 | Dropped | W Phrases, About photo galleries, floating business card, masonry home grid, hobbies, "Ahead" section, flip cards, rendered spines, Wizlet, the six-font specimen set. |
 | Rejected tools | Framer (GUI-only, paid domain, pixel rendering needs overrides, site stops being a portfolio artefact). WebGL / three.js (standing exclusion). |
@@ -193,11 +193,11 @@ Three columns on desktop (text · mascot · portrait), stacked on phone.
 
 **Right column** — `portrait.jpg`, **with a visible border**: 2px `--line` on a `--plate` field, square-ish crop. It is a side profile by choice — never substitute a face-forward shot.
 
-**Optional copy, both verbatim if used, neither required by the sketch:**
-- Lead (would sit above the tagline): *"What's up everyone!!! My name is Oak, a Second-year Computer Engineering student at DeAnza Community College, transferring in 2027."* Three exclamation marks intentional. No second paragraph — the "I like building things that make a day run better…" line was cut and must not return.
-- Closing line (would sit small under the hero row): *"Leveraging artificial intelligence to sharpen actual intelligence."* One line, no gloss.
+**Two more lines, both in, both verbatim (owner opted in, 2 Sep 2026):**
+- **Lead**, above the tagline, Geist Sans `--fs-md`: *"What's up everyone!!! My name is Oak, a Second-year Computer Engineering student at DeAnza Community College, transferring in 2027."* Three exclamation marks intentional. No second paragraph — the "I like building things that make a day run better…" line was cut and must not return.
+- **Closing line**, set large in Geist Pixel (`--fs-lg`, `--fs-md` on phones) as the last element of the hero, full width under the three columns: *"Leveraging artificial intelligence to sharpen actual intelligence."* One line, no gloss, no supporting prose. The wordplay does not survive being explained.
 
-Default for the build: **omit both** and ship the sketch as drawn (name, role, tagline, links). The owner can opt either in.
+Check the lead at 375px: with Geist Sans it wraps to three lines, which is fine; it must not push the icon links below the fold on a 667px-tall phone. If it does, tighten vertical spacing before touching the copy.
 
 ### 7.2 Highlights — `#highlights`
 - Trophy emoji 🏆 centred above the heading **HIGHLIGHTS**.
@@ -205,7 +205,7 @@ Default for the build: **omit both** and ship the sketch as drawn (name, role, t
 - A list from `src/content/achievements/*.md`, ordered by `order`. Each row: small trophy glyph · title · organisation · year. Rows are ≥ 44px, text in Geist Sans, year in Geist Pixel.
 - When the list has fewer than three entries, render the line *"More achievements coming soon."* in `--muted`. The threshold lives in one constant.
 
-**Launch content:** one entry — **ICPC PacNW Regional, Division I — Participant**, year `TODO(owner)`.
+**Launch content:** one entry — **ICPC PacNW Regional, Division I — Participant**, **2025**, kind `competition`.
 
 ### 7.3 Projects — `#projects`
 - Heading **PROJECTS** at left; `workbench-zap` scene at right, `once` mode (concentrated work → zap → singed recovery, hold final frame; never re-zap on scroll nudges).
@@ -241,7 +241,10 @@ Default for the build: **omit both** and ship the sketch as drawn (name, role, t
 3. Commit and push. Cloudflare redeploys.
 Finishing a book = change `status` to `finished`, add `ended`, `rating`, `review`, remove `progress`, push.
 
-**Launch content:** Dune — Frank Herbert, `en`, `fiction`, reading, started 2026-08-01, progress 73 (p. 302 of 412), pageCount 412. Zero to One — Peter Thiel with Blake Masters, `en`, `nonfiction`, reading, started 2026-08-01, progress 43 (ch. 6 of 14), pageCount 224. ISBNs `TODO(owner)`.
+**Launch content (two books reading, none finished):**
+- **Dune** — Frank Herbert, `en`, `fiction`, `reading`, started 2026-08-01, progress 73 (p. 302 of 412), pageCount 412, **isbn `9780441013593`** (Open Library has the cover; verified 2 Sep 2026).
+- **The Infinity Machine: Demis Hassabis, DeepMind and the Quest for Superintelligence** — Sebastian Mallaby, `en`, `nonfiction`, `reading`, started `TODO(owner)`, progress `TODO(owner)`, **isbn `9780593831847`** (hardcover — Open Library has this cover). The owner's copy is the US digital edition, ISBN 979-8217336661, which has **no cover on Open Library**; keep the hardcover ISBN in the file so `npm run covers` succeeds, and note the digital ISBN in a comment if wanted.
+- **Zero to One** (Peter Thiel) is **removed** — replaced by The Infinity Machine at the owner's request. Delete `src/content/books/zero-to-one.md`.
 
 ### 7.5 Contact — `#contact`
 A single block styled as a business card, centred, max-width ≈ 36rem.
@@ -399,7 +402,7 @@ Draft projects and books with unknown status never render; the build says why.
 5. `content.config.ts` with all four collections and every named failure in §8. `achievements/icpc.md`.
 6. `Highlights.astro` (§7.2).
 7. `ProjectCard.astro` + `ProjectSlider.astro` (§7.3). Rewrite `03-lookout.md` → `02-look-out.md`, add `03-visionassist.md`, renumber Echo to `04`, delete `04-wizlet.md`. Save the two repo images into `src/assets/projects/`.
-8. `scripts/fetch-covers.mjs` + `npm run covers`; `CurrentlyReading.astro`, `Shelf.astro`, `BookDetail.astro`, `ReadingList.astro` (§7.4).
+8. `scripts/fetch-covers.mjs` + `npm run covers`; delete `books/zero-to-one.md`, add `books/the-infinity-machine.md`, add `isbn` to `books/dune.md`; `CurrentlyReading.astro`, `Shelf.astro`, `BookDetail.astro`, `ReadingList.astro` (§7.4).
 9. `ContactCard.astro` (§7.5) + regenerate `contact.vcf.ts`.
 10. `BottomRunner.astro` (§7.6).
 11. `index.astro` assembling the five sections in order.
@@ -412,14 +415,14 @@ Draft projects and books with unknown status never render; the build says why.
 
 | Item | Blocks |
 |---|---|
-| ICPC PacNW year | Highlights row (renders without a year until then) |
-| `.dev` domain | Canonical URL, Website row, vCard URL — `*.pages.dev` placeholder meanwhile |
+| `.dev` domain | Canonical URL, Website row, vCard URL — `*.pages.dev` placeholder meanwhile. Owner intends to buy through Cloudflare Registrar; see §14. |
 | Echo Devpost URL | The Devpost link on Echo's card (drops until present) |
-| Look-Out dashboard screenshot + collaborator names | Card image (logo used meanwhile) and credits |
+| Look-Out dashboard screenshot + collaborator names | Card image — the eye logo (`lookout-eye-1024.png`) is used until the owner finds a screenshot — and the credits line |
 | VisionAssist team names | Collaborator line |
-| ISBNs for Dune and Zero to One | Covers on the Currently Reading cards (plain plate meanwhile) |
+| The Infinity Machine: started date and progress % | Its Currently Reading card (renders with cover, title, author and no ring until then) |
 | Any finished books | Shelves show the empty state until one exists |
-| Opt-in of the lead line and the closing line (§7.1) | Nothing — omitted by default |
+
+Resolved 2 Sep 2026: ICPC year (2025); Echo's link (`https://github.com/aadityad12/Echo`, the original repo — confirmed); Dune ISBN; Infinity Machine ISBN; lead and closing lines both in.
 
 ---
 
@@ -434,3 +437,56 @@ Draft projects and books with unknown status never render; the build says why.
 | Finish a book | `status: finished`, add `ended`, `rating`, `review`; remove `progress`; push. It moves from Currently Reading to its shelf. |
 | Change a contact link | Edit `src/data/site.ts`; the card and the vCard both update. |
 | Switch the theme colours | Edit `tokens.css`; re-measure contrast (§5.2) before committing. |
+
+---
+
+## 14. Buying the `.dev` domain and connecting it — step by step
+
+The owner buys the domain (payment and account actions are theirs). The build session then sets `site.url` and redeploys. Everything happens inside one Cloudflare account, which is the point: registrar, DNS, hosting, and certificates in one place, no DNS hand-off.
+
+### 14.1 Before you start
+- A Cloudflare account (free) with **two-factor authentication turned on** — a domain is an identity asset.
+- A payment card or PayPal. `.dev` at Cloudflare Registrar is sold **at cost** (registry wholesale plus the ICANN fee), roughly **US$12–13 per year**. Cloudflare adds no markup; the price shown at checkout is the renewal price.
+- A shortlist of names. Recommendation, in order: `oaksoekhant.dev` (matches the name recruiters search), `oaksoe.dev`, `mrshine.dev` (the GitHub handle). Availability could not be checked from this machine; the search box in step 14.2 is authoritative.
+
+### 14.2 Register the domain (about 5 minutes)
+1. Log in at `dash.cloudflare.com`. In the left sidebar open **Domain Registration → Register Domains**.
+2. Type the name (e.g. `oaksoekhant`) and search. Pick the `.dev` result; the price shown is per year.
+3. Choose **1 year** (you can extend later) and leave **auto-renew on**. Letting a personal domain lapse is how someone else ends up owning your name.
+4. Fill the registrant contact details — your real name, email, and address are required by ICANN. **WHOIS redaction is free and on by default**, so none of it is published.
+5. Pay. The domain appears under **Domain Registration → Manage Domains** and, because Cloudflare is also the DNS host, a DNS zone is created automatically. Nothing to point anywhere.
+6. Two facts about `.dev` to know: it is run by Google Registry, and the whole TLD is **HSTS-preloaded** — browsers refuse plain `http://` for every `.dev` site. Cloudflare issues the certificate automatically, so this costs you nothing, but it means the site can never be served over HTTP by mistake.
+
+### 14.3 Put the site on Cloudflare Pages (first deploy, about 10 minutes)
+1. Push the repo to GitHub (it is already `Mr-Shine09/…`; make sure `main` is current).
+2. In the Cloudflare sidebar open **Workers & Pages → Create → Pages → Connect to Git**. Authorise the Cloudflare GitHub app for the portfolio repo only.
+3. Build settings:
+
+   | Field | Value |
+   |---|---|
+   | Production branch | `main` |
+   | Framework preset | Astro |
+   | Root directory | `site` |
+   | Build command | `npm run build` |
+   | Build output directory | `dist` |
+   | Environment variable | `NODE_VERSION` = `22` (Astro 7 needs Node ≥ 22.12; the Pages default may be older) |
+
+4. **Save and Deploy.** The first build takes a minute or two. You get a URL like `oak-portfolio.pages.dev`. Open it on your phone and laptop.
+5. Every later `git push` to `main` rebuilds and redeploys. Pull requests get preview URLs.
+
+### 14.4 Attach the domain (about 2 minutes, then a short wait)
+1. In the Pages project open **Custom domains → Set up a custom domain**.
+2. Enter `oaksoekhant.dev` (your name). Because the zone is already on Cloudflare, it **adds the DNS record for you** — confirm and activate. Repeat for `www.oaksoekhant.dev`.
+3. Wait for the status to read **Active** (usually under 10 minutes). Cloudflare provisions the certificate in the same step.
+4. Make `www` redirect to the bare domain: in the domain's zone, **Rules → Redirect Rules → Create rule**: when hostname equals `www.oaksoekhant.dev`, redirect 301 to `https://oaksoekhant.dev${uri}`… (the dashboard offers a "Redirect from WWW to Root" template — use it).
+5. In the zone's **SSL/TLS** settings confirm mode **Full (strict)** and that **Always Use HTTPS** is on. Both should already be the defaults.
+
+### 14.5 Tell the site its own address (build-session task)
+1. Set `url` in `site/src/data/site.ts` to `https://oaksoekhant.dev`.
+2. Push. The canonical `<link>`, Open Graph URL, the Website row on the contact card, and `contact.vcf` all update from that one field.
+3. Verify: `https://oaksoekhant.dev` loads with a padlock; `http://` is upgraded; `www` redirects; the vCard downloads and opens.
+
+### 14.6 Afterwards
+- Set a calendar reminder a month before renewal even with auto-renew on, in case the card expires.
+- Keep the domain's **registrar lock** (transfer lock) on — it is on by default.
+- Never publish the registrant email anywhere on the site; the contact email is a separate choice.
