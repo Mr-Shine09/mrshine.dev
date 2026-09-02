@@ -127,6 +127,11 @@ check("projects", async (browser) => {
   assert(await echo.locator('a[href="https://github.com/aadityad12/Echo"]').count() === 1, "Echo repo link");
   const fit = await p.locator("section#projects .card img").first().evaluate((i) => getComputedStyle(i).objectFit);
   assert(fit === "contain", `card images must be object-fit: contain, got ${fit}`);
+  const boxes = await p.$$eval("section#projects .card", (els) => els.map((e) => { const c = e.getBoundingClientRect(); const pl = e.querySelector(".card__plate").getBoundingClientRect(); return { card: Math.round(c.width), plate: [Math.round(pl.width), Math.round(pl.height)] }; }));
+  for (const b of boxes) {
+    assert(b.card <= 34 * 16 + 2, `card wider than 34rem: ${b.card}px`);
+    assert(Math.abs(b.plate[1] - b.plate[0] * 0.625) <= 2, `plate not 16:10: ${b.plate.join("x")}`);
+  }
   const track = p.locator("section#projects .slider__track");
   const before = await track.evaluate((t) => t.scrollLeft);
   await p.locator("[data-slider-next]").click();

@@ -29,10 +29,10 @@ const meta = [data.year, data.builtAt].filter(Boolean).join(" · ");
     scroll-snap-align: center; flex: 0 0 min(85vw, 34rem);
     display: grid; grid-template-rows: auto 1fr;
     border: var(--border); border-radius: var(--radius); background: var(--bg);
-    transform-origin: center;
+    transform-origin: center; min-width: 0;
   }
-  .card__plate { aspect-ratio: 16 / 10; background: var(--plate); display: grid; place-items: center; padding: var(--space-s); border-bottom: var(--border); }
-  .card__image { width: 100%; height: 100%; object-fit: contain; }
+  .card__plate { position: relative; aspect-ratio: 16 / 10; background: var(--plate); overflow: hidden; border-bottom: var(--border); }
+  .card__image { position: absolute; inset: var(--space-s); width: calc(100% - 2 * var(--space-s)); height: calc(100% - 2 * var(--space-s)); object-fit: contain; }
   .card__body { display: grid; gap: var(--space-s); padding: var(--space-m); align-content: start; }
   .card__summary { color: var(--ink); }
   .card__stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
