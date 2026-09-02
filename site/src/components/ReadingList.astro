@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import AnimatedScene from "./AnimatedScene.astro";
+import SectionHead from "./SectionHead.astro";
+import CurrentlyReading from "./CurrentlyReading.astro";
+import Shelf from "./Shelf.astro";
+import BookDetail from "./BookDetail.astro";
+
+const books = await getCollection("books");
+const reading = books.filter((b) => b.data.status === "reading").sort((a, b) => (b.data.progress ?? 0) - (a.data.progress ?? 0));
+const finished = books.filter((b) => b.data.status === "finished").sort((a, b) => (b.data.ended ?? "").localeCompare(a.data.ended ?? ""));
+const count = `${books.length} ${books.length === 1 ? "volume" : "volumes"} · ${finished.length} finished`;
+const lead = reading[0];
+const hint = lead?.data.progress !== undefined ? `${lead.data.title} is at ${lead.data.progress}%.` : undefined;
+
+// Language → genre; Burmese shelves appear only when data exists (§7.4).
+const shelves = [
+  { id: "shelf-fiction", title: "Fiction", books: finished.filter((b) => b.data.language === "en" && b.data.genre === "fiction") },
+  { id: "shelf-nonfiction", title: "Non-Fiction", books: finished.filter((b) => b.data.language === "en" && b.data.genre === "nonfiction") },
+];
+---
+<section id="personal" class="section" aria-labelledby="personal-title">
+  <div class="wrap reading">
+    <AnimatedScene scene="reading-fire" class="reading__scene" />
+    <div class="reading__body">
+      <SectionHead id="personal" title="Reading List" label={count} />
+      <CurrentlyReading books={reading} />
+      <div class="reading__shelves">
+        {shelves.map((s) => <Shelf id={s.id} title={s.title} books={s.books} emptyHint={hint} />)}
+      </div>
+      {finished.map((b) => <BookDetail book={b} backHref={`#${b.data.genre === "fiction" ? "shelf-fiction" : "shelf-nonfiction"}`} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .reading { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-l); align-items: start; }
+  .reading__body { display: grid; gap: var(--space-l); min-width: 0; }
+  .reading__shelves { display: grid; gap: var(--space-l); }
+  @media (max-width: 48rem) { .reading { grid-template-columns: 1fr; } }
+</style>

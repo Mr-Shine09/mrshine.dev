@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+interface Props { book: CollectionEntry<"books">; backHref: string }
+const { book, backHref } = Astro.props;
+const { data } = book;
+const fmt = (iso?: string) => iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) : undefined;
+---
+<article id={`book-${book.id}`} class="book-detail" aria-labelledby={`book-${book.id}-title`}>
+  <div class="book-detail__cover">
+    {data.cover && <Image src={data.cover} alt={`Cover of ${data.title}`} width={200} densities={[1, 2]} />}
+  </div>
+  <div class="book-detail__body">
+    <h3 id={`book-${book.id}-title`}>{data.title}</h3>
+    <p class="book-detail__author">{data.author}</p>
+    <dl class="book-detail__facts">
+      <dt>Status</dt><dd>{data.status === "reading" ? "Reading" : "Finished"}</dd>
+      {data.started && <><dt>Started</dt><dd>{fmt(data.started)}</dd></>}
+      {data.ended && <><dt>Finished</dt><dd>{fmt(data.ended)}</dd></>}
+      {data.rating && <><dt>Rating</dt><dd><span aria-hidden="true">{"★".repeat(data.rating)}{"☆".repeat(5 - data.rating)}</span><span class="sr-only">Rated {data.rating} out of 5</span></dd></>}
+    </dl>
+    {(data.review ?? data.note) && <p class="book-detail__note">{data.review ?? data.note}</p>}
+    <a class="btn" href={backHref}>Close</a>
+  </div>
+</article>
+
+<style>
+  /* Shown only when targeted by the URL hash — works with JS off, no focus trap. */
+  .book-detail { display: none; }
+  .book-detail:target { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: var(--space-m); padding: var(--space-m); margin-top: var(--space-m); border: var(--border); background: var(--plate); scroll-margin-top: 5rem; }
+  .book-detail__cover img { width: 100%; border: var(--border); }
+  .book-detail__body { display: grid; gap: var(--space-xs); align-content: start; }
+  .book-detail__author { color: var(--muted); }
+  .book-detail__facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem var(--space-s); margin: 0; }
+  .book-detail__facts dt { font-family: var(--font-pixel); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .book-detail__facts dd { margin: 0; }
+  @media (max-width: 40rem) { .book-detail:target { grid-template-columns: 1fr; } .book-detail__cover { max-width: 140px; } }
+</style>

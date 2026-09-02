@@ -144,6 +144,22 @@ check("nojs", async (browser) => {
   await ctx.close();
 });
 
+check("reading", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const s = p.locator("section#personal");
+  assert((await s.locator("h2").innerText()).toUpperCase().includes("READING LIST"), "heading");
+  assert((await s.locator(".label").first().innerText()).match(/2 VOLUMES/i), "count must derive from data (2 volumes)");
+  assert(await s.locator(".current__card").count() === 2, "expected two currently-reading cards");
+  const ring = s.locator('[role="progressbar"]').first();
+  assert(await ring.getAttribute("aria-valuenow") === "73", "Dune ring should be 73");
+  assert(await s.locator(".current__card img").count() === 2, "current cards should show covers");
+  assert(await s.locator(".shelf").count() === 2, "expected Fiction and Non-Fiction shelves");
+  assert(await s.locator(".shelf__empty").count() === 2, "both shelves should render the empty state");
+  assert((await s.innerText()).includes("Nothing finished yet"), "empty state copy");
+  assert(await s.locator('.oak-scene[aria-label*="stove"], .oak-scene[aria-label*="reading"]').count() === 1, "reading-fire scene missing");
+  await ctx.close();
+});
+
 // ---- runner ----
 const only = process.argv.slice(2);
 const names = only.length ? only : Object.keys(checks);

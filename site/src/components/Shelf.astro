@@ -1,0 +1,37 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+interface Props { id: string; title: string; books: CollectionEntry<"books">[]; emptyHint?: string }
+const { id, title, books, emptyHint } = Astro.props;
+---
+<div class="shelf" id={id}>
+  <div class="shelf__head">
+    <h3 class="shelf__title">{title}</h3>
+    <p class="label">{books.length} {books.length === 1 ? "volume" : "volumes"}</p>
+  </div>
+  {books.length === 0 ? (
+    <p class="shelf__empty">Nothing finished yet.{emptyHint && ` ${emptyHint}`}</p>
+  ) : (
+    <ul class="shelf__track scroller" tabindex="0" aria-label={`${title} shelf, scroll horizontally`}>
+      {books.map(({ id: slug, data }) => (
+        <li>
+          <a class="shelf__book" href={`#book-${slug}`} aria-label={`${data.title} by ${data.author}, finished${data.rating ? `, rated ${data.rating} out of 5` : ""}`}>
+            {data.cover ? <Image src={data.cover} alt="" width={140} densities={[1, 2]} /> : <span class="shelf__nocover pixel">{data.title}</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<style>
+  .shelf { display: grid; gap: var(--space-s); padding-bottom: var(--space-m); border-bottom: 2px solid var(--ink); }
+  .shelf__head { display: flex; align-items: baseline; gap: var(--space-s); }
+  .shelf__title { text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--fs-md); }
+  .shelf__empty { color: var(--muted); padding: var(--space-m) 0; }
+  .shelf__track { display: flex; gap: var(--space-s); padding: var(--space-xs) 0.25rem; }
+  .shelf__book { display: block; width: 104px; aspect-ratio: 2 / 3; min-height: var(--tap-min); scroll-snap-align: start; border: var(--border); background: var(--plate); overflow: hidden; }
+  .shelf__book img { width: 100%; height: 100%; object-fit: cover; }
+  .shelf__book:hover { border-color: var(--accent); }
+  .shelf__nocover { display: grid; place-items: center; height: 100%; padding: 0.4rem; font-size: var(--fs-xs); text-align: center; }
+</style>

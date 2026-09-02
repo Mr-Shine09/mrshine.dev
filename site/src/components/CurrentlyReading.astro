@@ -1,0 +1,47 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import ProgressRing from "./ProgressRing.astro";
+interface Props { books: CollectionEntry<"books">[] }
+const { books } = Astro.props;
+const fmt = (iso?: string) => iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-US", { month: "short", year: "numeric" }) : undefined;
+---
+<div class="current">
+  <p class="label">Currently reading</p>
+  <ul class="current__grid">
+    {books.map(({ data }) => (
+      <li class="current__card">
+        <div class="current__cover">
+          {data.cover ? <Image src={data.cover} alt={`Cover of ${data.title}`} width={160} densities={[1, 2]} /> : <span class="current__nocover pixel">{data.title}</span>}
+        </div>
+        <div class="current__body">
+          <h3 class="current__title">{data.title}</h3>
+          <p class="current__author">{data.author}</p>
+          {data.started && <p class="current__meta pixel">Started {fmt(data.started)}</p>}
+          {data.note && <p class="current__note">{data.note}</p>}
+        </div>
+        {data.progress !== undefined && <ProgressRing value={data.progress} label={`${data.title}: ${data.progress}% read`} />}
+      </li>
+    ))}
+    {books.length < 2 && <li class="current__card current__card--empty" aria-hidden="true"><span class="label">Second book</span></li>}
+  </ul>
+</div>
+
+<style>
+  .current { display: grid; gap: var(--space-s); }
+  .current__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-m); }
+  .current__card {
+    display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: var(--space-s); align-items: center;
+    padding: var(--space-s); border: var(--border); border-radius: var(--radius); background: var(--plate);
+  }
+  .current__card--empty { border-style: dashed; background: transparent; place-items: center; min-height: 9rem; }
+  .current__cover { aspect-ratio: 2 / 3; display: grid; place-items: center; background: var(--bg); border: var(--border); overflow: hidden; }
+  .current__cover img { width: 100%; height: 100%; object-fit: cover; }
+  .current__nocover { font-size: var(--fs-xs); padding: 0.4rem; text-align: center; }
+  .current__body { display: grid; gap: 0.25rem; min-width: 0; }
+  .current__title { font-size: var(--fs-base); text-wrap: pretty; }
+  .current__author, .current__note { font-size: var(--fs-sm); color: var(--muted); }
+  .current__meta { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  @media (max-width: 48rem) { .current__grid { grid-template-columns: 1fr; } .current__card--empty { display: none; } }
+  @media (max-width: 24rem) { .current__card { grid-template-columns: 72px minmax(0, 1fr); } .current__card .ring { grid-column: 2; justify-self: start; } }
+</style>
