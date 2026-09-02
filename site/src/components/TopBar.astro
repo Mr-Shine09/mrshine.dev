@@ -33,7 +33,10 @@ import ThemeToggle from "./ThemeToggle.astro";
   }
   .topbar__nav a:hover, .topbar__nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
   @media (max-width: 40rem) {
-    .topbar__nav a { font-size: var(--fs-xs); padding: 0 0.5rem; }
+    .topbar__nav a { font-size: var(--fs-xs); padding: 0 0.45rem; }
+    /* The nav scrolls horizontally on a phone; fade the right edge so the
+       overflow is visible instead of looking like the list simply ends. */
+    .topbar__nav { mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent); }
   }
 </style>
 

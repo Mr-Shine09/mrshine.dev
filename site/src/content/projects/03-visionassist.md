@@ -4,7 +4,7 @@ order: 3
 year: "2026"
 stack: ["Python", "YOLOv8n", "Raspberry Pi 5", "Arducam IMX708", "Piper TTS", "Flask"]
 summary: Wearable obstacle detection and spoken navigation for the visually impaired. Runs fully offline on a Raspberry Pi 5.
-collaborators: []
+collaborators: ["Oak", "Michael", "Cara", "Aaditya", "Ziyi"]
 builtAt: "De Anza College, Infineon-sponsored capstone"
 links:
   github: https://github.com/Mr-Shine09/VisionAssist

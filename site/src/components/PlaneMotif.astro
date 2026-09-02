@@ -1,10 +1,14 @@
 ---
 import { site } from "../data/site";
 ---
-<p class="plane label" aria-label={`From ${site.origin} to ${site.destination}`}>
-  <span>{site.origin}</span>
-  <span class="plane__track" aria-hidden="true"><span class="plane__icon">✈</span></span>
-  <span>{site.destination}</span>
+<p class="label">
+  {/* aria-label needs a role to be honoured; a <p> has none, so the group is a
+      span with role="img" and the flex layout moves onto it. */}
+  <span class="plane" role="img" aria-label={`From ${site.origin} to ${site.destination}`}>
+    <span>{site.origin}</span>
+    <span class="plane__track" aria-hidden="true"><span class="plane__icon">✈</span></span>
+    <span>{site.destination}</span>
+  </span>
 </p>
 
 <style>

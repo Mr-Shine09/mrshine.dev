@@ -4,7 +4,7 @@ order: 2
 year: "2026"
 stack: ["Python 3.11", "FastAPI", "Redis Stack", "Vite", "Ollama / Claude", "Browserbase"]
 summary: The first alert tool built to notify you less — semantic dedup in Redis vector search plus an LLM relevance judge, so only genuinely new and relevant items surface.
-collaborators: []
+collaborators: ["Oak Soe Khant", "BennPhu", "brucenh", "HarryMan256"]
 builtAt: "UC Berkeley AI Hackathon 2026"
 links:
   github: https://github.com/Mr-Shine09/Look-Out

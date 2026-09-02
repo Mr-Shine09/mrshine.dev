@@ -57,6 +57,10 @@ check("reduced-motion-scenes", async (browser) => {
   const srcs = await p.$$eval(".oak-scene img, .hero-welcome img[data-welcome-sprite]", (imgs) => imgs.map((i) => i.getAttribute("src")));
   const animated = srcs.filter((s) => !s.includes("-static."));
   assert(animated.length === 0, `animated under reduced motion: ${animated.join(", ")}`);
+  const planeAnim = await p.locator(".plane__icon").evaluate((el) => getComputedStyle(el).animationName);
+  assert(planeAnim === "none", `plane animates under reduced motion: ${planeAnim}`);
+  const cardAnims = await p.$$eval("section#projects .card", (els) => els.map((e) => e.getAnimations().length));
+  assert(cardAnims.every((n) => n === 0), `slider scale animates under reduced motion: ${cardAnims.join(",")}`);
   await ctx.close();
 });
 
@@ -154,6 +158,11 @@ check("nojs", async (browser) => {
   assert(await p.locator("section#projects .card").count() === 4, "no-JS: cards missing");
   assert(await p.locator('section#projects a[href="https://github.com/Mr-Shine09/PokeDesk"]').count() === 1, "no-JS: repo link");
   await ctx.close();
+  // With JS off the palette comes from the <noscript> block, not the toggle.
+  const { ctx: dctx, p: dp } = await page(browser, { javaScriptEnabled: false, colorScheme: "dark" });
+  const nojsBg = await dp.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  assert(nojsBg === "rgb(21, 14, 43)", `no-JS dark theme not applied: body bg ${nojsBg}`);
+  await dctx.close();
 });
 
 check("reading", async (browser) => {
@@ -246,6 +255,19 @@ check("fonts", async (browser) => {
   assert(synth === "none", `font-synthesis is ${synth}`);
   const heavy = await p.$$eval("body *", (els) => els.filter((e) => parseInt(getComputedStyle(e).fontWeight) >= 600 && e.textContent.trim()).length);
   assert(heavy === 0, `${heavy} elements render at weight ≥600 (faux bold risk)`);
+  await ctx.close();
+});
+
+check("vcard", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const res = await p.request.get(`${BASE}contact.vcf`);
+  assert(res.status() === 200, `contact.vcf status ${res.status()}`);
+  const body = await res.text();
+  assert(body.startsWith("BEGIN:VCARD"), `vcf does not start with BEGIN:VCARD: ${body.slice(0, 24)}`);
+  for (const line of ["FN:Oak Soe Khant", "EMAIL;TYPE=INTERNET,PREF:oaksoekhant182209@gmail.com", "URL:https://mrshine.dev"]) {
+    assert(body.includes(line), `vcf missing ${line}`);
+  }
+  assert(body.endsWith("END:VCARD\r\n"), "vcf must end with END:VCARD and a CRLF");
   await ctx.close();
 });
 

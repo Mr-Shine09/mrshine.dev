@@ -43,10 +43,12 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       })();
     </script>
     <noscript>
-      {/* JS off: follow the OS. The dark tokens are mirrored from tokens.css. */}
+      {/* JS off: follow the OS. The dark tokens are mirrored from tokens.css.
+          The selector must be `html[data-theme="light"]` — the static markup always
+          carries that attribute, and a bare `html` loses to `:root` in tokens.css. */}
       <style>
         @media (prefers-color-scheme: dark) {
-          html { color-scheme: dark; --bg: #150E2B; --ink: #E7DEFB; --accent: #FF7A55; --muted: #A99BC9; --line: #2E2450; --plate: #221846; --on-accent: #150E2B; }
+          html[data-theme="light"] { color-scheme: dark; --bg: #150E2B; --ink: #E7DEFB; --accent: #FF7A55; --muted: #A99BC9; --line: #2E2450; --plate: #221846; --on-accent: #150E2B; }
         }
       </style>
     </noscript>
@@ -54,7 +56,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <TopBar />
-    <main id="main">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     <BottomRunner />
@@ -69,4 +71,6 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     transform: translateY(-200%); transition: transform 0.15s ease;
   }
   .skip-link:focus { transform: translateY(0); }
+  /* The skip link moves focus here; the landmark itself needs no focus ring. */
+  main:focus { outline: none; }
 </style>

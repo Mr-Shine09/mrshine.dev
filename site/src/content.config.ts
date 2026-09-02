@@ -7,6 +7,8 @@ import { z } from "zod";
  * state (Plan.md §8) — silent fallbacks are how unfinished books grow ratings.
  */
 
+export const MYANMAR_FONT_READY = false; // flip to true once a Myanmar-capable font is registered in astro.config.mjs (Plan.md §4.3)
+
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
   schema: ({ image }) =>
@@ -69,7 +71,7 @@ const books = defineCollection({
         if (data.isbn && !data.cover) {
           ctx.addIssue({ code: "custom", path: ["cover"], message: `${name}: has an isbn but no \`cover\` — run \`npm run covers\` and add \`cover: ../../assets/books/<slug>.jpg\`` });
         }
-        if (data.language === "my") {
+        if (data.language === "my" && !MYANMAR_FONT_READY) {
           ctx.addIssue({ code: "custom", path: ["language"], message: `${name}: Burmese needs a Myanmar-capable font registered in astro.config.mjs first (Plan.md §4.3)` });
         }
       }),

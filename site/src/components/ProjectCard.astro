@@ -4,11 +4,12 @@ import type { CollectionEntry } from "astro:content";
 interface Props { project: CollectionEntry<"projects">; index: number; total: number }
 const { project, index, total } = Astro.props;
 const { data } = project;
-const meta = [data.year, data.builtAt].filter(Boolean).join(" · ");
+// `builtAt` often already names the year ("… Hackathon 2026"); do not repeat it.
+const meta = [data.builtAt?.includes(data.year) ? null : data.year, data.builtAt].filter(Boolean).join(" · ");
 ---
 <article class="card" tabindex="0" aria-roledescription="slide" aria-label={`${index + 1} of ${total}: ${data.title}`}>
   <div class="card__plate">
-    {data.image && <Image class="card__image" src={data.image} alt={data.imageAlt ?? ""} width={640} densities={[1, 2]} loading={index === 0 ? "eager" : "lazy"} />}
+    {data.image && <Image class="card__image" src={data.image} alt={data.imageAlt ?? ""} width={640} densities={[1, 2]} loading="lazy" />}
   </div>
   <div class="card__body">
     <h3 class="card__title">{data.title}</h3>
@@ -36,8 +37,8 @@ const meta = [data.year, data.builtAt].filter(Boolean).join(" · ");
   .card__body { display: grid; gap: var(--space-s); padding: var(--space-m); align-content: start; }
   .card__summary { color: var(--ink); }
   .card__stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-  .card__meta, .card__team { font-size: var(--fs-sm); color: var(--muted); }
-  .card__meta { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; }
+  .card__team { font-size: var(--fs-sm); color: var(--muted); }
+  .card__meta { font-size: var(--fs-xs); color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
   .card__links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
   /* Receded cards scale to 0.82; keep their buttons ≥44px after scaling. */
   .card__links :global(.btn) { min-height: calc(var(--tap-min) / 0.82 + 1px); }

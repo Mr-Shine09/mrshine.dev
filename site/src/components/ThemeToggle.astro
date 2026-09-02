@@ -3,7 +3,7 @@
 // before first paint so there is no flash of the wrong palette.
 ---
 
-<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">
+<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme" hidden>
   <span class="theme-toggle__face" data-theme-label>Light</span>
 </button>
 
@@ -68,6 +68,8 @@
   const STORAGE_KEY = "theme";
 
   const button = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+  // Rendered hidden so a no-JS visitor never sees a control that cannot work.
+  button?.removeAttribute("hidden");
   const label = document.querySelector<HTMLElement>("[data-theme-label]");
 
   const current = () =>

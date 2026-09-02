@@ -44,5 +44,5 @@ const fmt = (iso?: string) => iso ? new Date(iso + "T00:00:00").toLocaleDateStri
   .current__note { font-size: var(--fs-base); color: var(--muted); }
   .current__meta { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
   @media (max-width: 48rem) { .current__grid { grid-template-columns: 1fr; } .current__card--empty { display: none; } }
-  @media (max-width: 24rem) { .current__card { grid-template-columns: 72px minmax(0, 1fr); } .current__card .ring { grid-column: 2; justify-self: start; } }
+  @media (max-width: 24rem) { .current__card { grid-template-columns: 72px minmax(0, 1fr); } .current__card :global(.ring) { grid-column: 2; justify-self: start; } }
 </style>

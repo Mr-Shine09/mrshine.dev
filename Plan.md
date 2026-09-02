@@ -119,7 +119,7 @@ Two flat inks on a pale ground, print-shop register. The mascot is exempt (§2.7
   --bg:      #F0ECFA;   /* pale lilac ground */
   --ink:     #3B1E7A;   /* deep violet — primary text */
   --accent:  #C43A18;   /* coral/rust — second ink */
-  --muted:   #6E5F8C;   /* secondary text */
+  --muted:   #695A87;   /* secondary text */
   --line:    #D9D0EC;   /* rules, borders, plate edges */
   --plate:   #E4DDF4;   /* card-front colour plate */
 }
@@ -134,14 +134,16 @@ Two flat inks on a pale ground, print-shop register. The mascot is exempt (§2.7
 ```
 
 ### 5.2 Contrast — measured, all pass WCAG AA for body text
-| Mode | Token | Ratio vs `--bg` |
-|---|---|---|
-| Light | `--ink` | 10.94 |
-| Light | `--accent` | **4.56 — no headroom** |
-| Light | `--muted` | 4.92 |
-| Dark | `--ink` | 14.38 |
-| Dark | `--accent` | 7.23 |
-| Dark | `--muted` | 7.28 |
+| Mode | Token | Ratio vs `--bg` | Ratio vs `--plate` |
+|---|---|---|---|
+| Light | `--ink` | 10.94 | 9.65 |
+| Light | `--accent` | **4.56 — no headroom** | 4.02 (glyphs/strokes only, 3:1 applies) |
+| Light | `--muted` | 5.30 | 4.67 |
+| Dark | `--ink` | 14.38 | 12.62 |
+| Dark | `--accent` | 7.23 | 6.35 |
+| Dark | `--muted` | 7.28 | 6.39 |
+
+`--muted` is used as text on `--plate` (contact card, currently-reading cards, book detail), so it must clear 4.5:1 on both surfaces.
 
 > Light `--accent` clears 4.5 by 0.06. **Do not lighten it, and do not darken `--bg`.** If either changes, re-measure before committing.
 

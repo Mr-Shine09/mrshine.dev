@@ -64,7 +64,8 @@ const payload = JSON.stringify({
     const bubble = el.querySelector<HTMLElement>("[data-welcome-bubble]");
     if (!sprite) return;
 
-    let visible = false;
+    // Fail open (Plan.md §2.6): loops start playing immediately; IO only pauses. once-scenes wait to be seen.
+    let visible = true;
     let bubbleTimers: ReturnType<typeof setTimeout>[] = [];
 
     const clearBubble = () => {
@@ -95,7 +96,8 @@ const payload = JSON.stringify({
         sprite.src = spec.staticSrc;
         return;
       }
-      sprite.src = `${spec.animatedSrc}?play=${++welcomeToken}`;
+      welcomeToken = (welcomeToken + 1) % 4;
+      sprite.src = `${spec.animatedSrc}?play=${welcomeToken}`;
       scheduleBubble();
     };
 

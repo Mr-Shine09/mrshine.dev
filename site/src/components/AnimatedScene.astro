@@ -67,7 +67,8 @@ const [frameWidth, frameHeight] = sceneContract.layout.outputFrameSize;
     const image = el.querySelector<HTMLImageElement>("[data-oak-scene-image]");
     if (!image) return;
 
-    let visible = false;
+    // Fail open (Plan.md §2.6): loops start playing immediately; IO only pauses. once-scenes wait to be seen.
+    let visible = !spec.once;
     let started = false;
 
     const showStatic = () => {
@@ -77,7 +78,8 @@ const [frameWidth, frameHeight] = sceneContract.layout.outputFrameSize;
     const showAnimated = () => {
       if (spec.once && started) return;
       started = true;
-      image.src = `${spec.animatedSrc}?play=${++playbackToken}`;
+      playbackToken = (playbackToken + 1) % 4;
+      image.src = `${spec.animatedSrc}?play=${playbackToken}`;
     };
 
     const apply = () => {

@@ -18,7 +18,7 @@ const esc = (value: string) =>
     .replace(/\n/g, "\\n");
 
 export const GET: APIRoute = () => {
-  const { name, role, location, socials, url } = site;
+  const { name, role, socials, url } = site;
 
   const lines = [
     "BEGIN:VCARD",
@@ -27,7 +27,8 @@ export const GET: APIRoute = () => {
     `N:;${esc(name)};;;`,
     `FN:${esc(name)}`,
     `TITLE:${esc(role)}`,
-    `ADR;TYPE=home:;;;${esc(location)};;;`,
+    // Locality and region split into their own fields; neither needs escaping.
+    "ADR;TYPE=home:;;;Santa Clara;California;;",
     socials.email ? `EMAIL;TYPE=INTERNET,PREF:${esc(socials.email)}` : null,
     `URL:${esc(url)}`,
     socials.github ? `URL;TYPE=github:${esc(socials.github)}` : null,
@@ -35,7 +36,6 @@ export const GET: APIRoute = () => {
     socials.instagram ? `URL;TYPE=instagram:${esc(socials.instagram)}` : null,
     socials.facebook ? `URL;TYPE=facebook:${esc(socials.facebook)}` : null,
     socials.devpost ? `URL;TYPE=devpost:${esc(socials.devpost)}` : null,
-    `REV:${new Date().toISOString()}`,
     "END:VCARD",
   ].filter((line): line is string => line !== null);
 
