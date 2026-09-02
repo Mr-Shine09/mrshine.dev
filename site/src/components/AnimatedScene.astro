@@ -7,8 +7,7 @@ interface Props {
   scene: SceneId;
   class?: string;
   label?: string;
-  /** One-shot: wait until visible, play through once, hold the final frame.
-   *  Never replays on scroll nudges (HANDOFF §11.1, workbench-zap). */
+  /** Play once on first reveal and hold the APNG's final frame. */
   once?: boolean;
 }
 
@@ -19,8 +18,12 @@ if (!metadata) {
   throw new Error(`Unknown Oak animation scene: ${scene}`);
 }
 
-const frameCount = sceneContract.layout.frameCount;
-const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount, once });
+const payload = JSON.stringify({
+  animatedSrc: `/assets/animation/scenes/${metadata.asset}`,
+  staticSrc: `/assets/animation/scenes/${metadata.staticAsset}`,
+  once,
+});
+const [frameWidth, frameHeight] = sceneContract.layout.outputFrameSize;
 ---
 
 <span
@@ -30,12 +33,12 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount, on
   data-oak-scene={payload}
 >
   <img
-    class="oak-scene__atlas"
-    data-oak-scene-atlas
-    src={`/assets/animation/scenes/${scene}-atlas.png`}
+    class="oak-scene__animation"
+    data-oak-scene-image
+    src={`/assets/animation/scenes/${metadata.staticAsset}`}
     alt=""
-    width={sceneContract.layout.outputFrameSize[0] * frameCount}
-    height={sceneContract.layout.outputFrameSize[1]}
+    width={frameWidth}
+    height={frameHeight}
     loading="lazy"
     decoding="async"
   />
@@ -46,103 +49,69 @@ const payload = JSON.stringify({ durations: metadata.durationsMs, frameCount, on
     display: block;
     max-width: 100%;
     aspect-ratio: 6 / 5;
-    overflow: hidden;
   }
 
-  .oak-scene__atlas {
+  .oak-scene__animation {
     display: block;
-    width: 1200%;
-    max-width: none;
+    width: 100%;
     height: 100%;
+    object-fit: contain;
     image-rendering: pixelated;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
   }
 </style>
 
 <script>
-  type SceneSpec = { durations: number[]; frameCount: number; once: boolean };
+  type SceneSpec = { animatedSrc: string; staticSrc: string; once: boolean };
 
   const reduceSceneMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let playbackToken = 0;
 
-  function playScene(el: HTMLElement, spec: SceneSpec) {
+  function mountScene(el: HTMLElement, spec: SceneSpec) {
     if (el.dataset.ready === "true") return;
     el.dataset.ready = "true";
 
-    const atlas = el.querySelector<HTMLElement>("[data-oak-scene-atlas]");
-    if (!atlas) return;
+    const image = el.querySelector<HTMLImageElement>("[data-oak-scene-image]");
+    if (!image) return;
 
-    let frame = 0;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    // Loops fail open: they animate immediately and IntersectionObserver only
-    // PAUSES them (HANDOFF §2 — do not "optimise" this into a gate). Only
-    // one-shot scenes wait to be seen.
-    let visible = !spec.once;
-    let finished = false;
+    let visible = false;
+    let started = false;
 
-    const show = () => {
-      const percent = (frame * 100) / spec.frameCount;
-      atlas.style.transform = `translate3d(-${percent}%, 0, 0)`;
+    const showStatic = () => {
+      if (image.getAttribute("src") !== spec.staticSrc) image.src = spec.staticSrc;
     };
 
-    const stop = () => {
-      clearTimeout(timer);
-      timer = undefined;
+    const showAnimated = () => {
+      if (spec.once && started) return;
+      started = true;
+      image.src = `${spec.animatedSrc}?play=${++playbackToken}`;
     };
 
-    const schedule = () => {
-      if (!visible || finished || reduceSceneMotion.matches || timer) return;
-      timer = setTimeout(() => {
-        timer = undefined;
-        if (spec.once && frame === spec.frameCount - 1) {
-          // Hold the final pose. Never zap again.
-          finished = true;
-          return;
-        }
-        frame = (frame + 1) % spec.frameCount;
-        show();
-        schedule();
-      }, spec.durations[frame] ?? 180);
-    };
-
-    const applyMotionPreference = () => {
-      stop();
+    const apply = () => {
       if (reduceSceneMotion.matches) {
-        frame = 0;
-        show();
-      } else if (!finished) {
-        schedule();
+        showStatic();
+        return;
       }
+      if (!visible) {
+        if (!spec.once || !started) showStatic();
+        return;
+      }
+      showAnimated();
     };
 
-    reduceSceneMotion.addEventListener("change", applyMotionPreference);
-
+    reduceSceneMotion.addEventListener("change", apply);
     const observer = new IntersectionObserver(
       (entries) => {
-        const seen = entries.some((entry) => entry.isIntersecting);
-        if (spec.once) {
-          // First sighting starts the single run; leaving does not pause a
-          // one-shot mid-beat, and it never restarts.
-          if (seen && !visible) {
-            visible = true;
-            schedule();
-          }
-          return;
-        }
-        visible = seen;
-        if (visible) schedule();
-        else stop();
+        visible = entries.some((entry) => entry.isIntersecting);
+        apply();
       },
       { rootMargin: "160px" }
     );
     observer.observe(el);
-
-    show();
-    schedule();
+    apply();
   }
 
   for (const el of document.querySelectorAll<HTMLElement>("[data-oak-scene]")) {
     const raw = el.dataset.oakScene;
-    if (raw) playScene(el, JSON.parse(raw) as SceneSpec);
+    if (raw) mountScene(el, JSON.parse(raw) as SceneSpec);
   }
 </script>

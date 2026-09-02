@@ -1,41 +1,59 @@
 {
-  "version": 2,
+  "version": 3,
   "layout": {
-    "columns": 4,
-    "rows": 3,
+    "format": "apng",
     "frameCount": 12,
     "outputFrameSize": [384, 320]
   },
   "scenes": [
     {
       "id": "reading-fire",
+      "asset": "reading-fire-atlas.png",
+      "staticAsset": "reading-fire-static.png",
       "label": "Oak reading on a couch beside a warm wood stove",
       "durationsMs": [420, 180, 120, 120, 180, 130, 130, 130, 180, 220, 220, 260]
     },
     {
-      "id": "run-trip-recover",
-      "label": "Oak running, tripping, recovering, and running again",
-      "durationsMs": [80, 80, 80, 80, 105, 115, 125, 150, 115, 95, 80, 80]
+      "id": "run",
+      "asset": "run-atlas.png",
+      "staticAsset": "run-static.png",
+      "label": "Oak running toward the viewer's right in a three-quarter view",
+      "durationsMs": [83, 83, 83, 83, 83, 83, 83, 83, 83, 83, 83, 83]
     },
     {
       "id": "workbench-zap",
+      "asset": "workbench-zap-atlas.png",
+      "staticAsset": "workbench-zap-static.png",
       "label": "Oak testing electronics at a workbench and getting zapped",
       "durationsMs": [240, 170, 180, 260, 90, 110, 150, 280, 360, 300, 420, 260]
     },
     {
       "id": "computer-working",
+      "asset": "computer-working-atlas.png",
+      "staticAsset": "computer-working-static.png",
       "label": "Oak typing and working at a computer",
       "durationsMs": [150, 90, 90, 90, 120, 150, 220, 130, 90, 90, 120, 150]
     },
     {
       "id": "thinking-cloud",
+      "asset": "thinking-cloud-atlas.png",
+      "staticAsset": "thinking-cloud-static.png",
       "label": "Oak sitting and ideating beneath a thought cloud",
       "durationsMs": [260, 180, 180, 180, 220, 300, 260, 220, 180, 180, 180, 260]
     },
     {
       "id": "walking",
+      "asset": "walking-atlas.png",
+      "staticAsset": "walking-static.png",
       "label": "Oak walking toward the viewer's right in a three-quarter view",
       "durationsMs": [95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 95]
+    },
+    {
+      "id": "trophy-lift",
+      "asset": "trophy-lift-atlas.png",
+      "staticAsset": "trophy-lift-static.png",
+      "label": "Oak lifting a glowing golden trophy and smiling with closed eyes",
+      "durationsMs": [260, 170, 140, 130, 120, 120, 130, 150, 190, 240, 320, 700]
     }
   ]
 }

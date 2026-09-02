@@ -22,8 +22,8 @@ The owner's own framing, which governs every judgement call:
 
 > **"A personal time capsule, describing who I am and what I love to do."**
 
-Written for everyone — friends, recruiters, anyone. **It is not a résumé** and
-must not read like one. Register: plain, specific, dry, first person.
+Written for everyone — friends, recruiters, anyone. **A Personal Portfolio Website** and
+Register: plain, specific, dry, first person.
 
 ### Non-negotiables
 
@@ -544,13 +544,13 @@ it unverified — do it properly this time.
 
 ---
 
-## 11. Mascot animation contract — resolved 16 August 2026
+## 11. Mascot animation contract — refined 31 August 2026
 
-The owner has approved six scene animations plus the separate 13-frame Hero V2
+The owner has approved seven scene animations plus the separate 13-frame Hero V2
 welcome animation. **Start with
-`site/public/assets/animation/ANIMATION_ASSETS.md`.** Every approved animation
-file is consolidated under that one directory. The six scene atlases share
-`scenes/scene-contract.json` for layout, durations, labels, and frame size.
+`site/public/assets/animation/ANIMATION_ASSETS.md`.** Every active animation is
+a native APNG with a static fallback. The seven scenes share
+`scenes/scene-contract.json` for filenames, durations, labels, and frame size.
 
 ### 11.1 Page mapping
 
@@ -561,8 +561,9 @@ file is consolidated under that one directory. The six scene atlases share
 | `computer-working` | `/projects`, beside the page introduction. This is the calm looping state while the project deck is being browsed. |
 | `workbench-zap` | `/projects`, beside the project-folder/deck area. Play once on first reveal: concentrated work → full-body blue skeleton zap → singed recovery. Hold the final singed pose; do not repeatedly zap when the user nudges the scroll position. |
 | `thinking-cloud` | `/w-phrases`, beside the introduction to the collected phrases. The blank connected cloud grows, holds, and recedes; do not insert icons or words inside it. |
-| `walking` | The low-speed phase of the site-wide scroll traveller. Scrub its gait from scroll progress so feet remain planted. Horizontally flip it when the traveller is moving right-to-left. |
-| `run-trip-recover` | The intricate beat in the same site-wide scroll traveller on sufficiently long pages. The mascot runs from the right edge to the left edge, catches a toe, stutter-recovers without falling or becoming dizzy, then runs again. Both travel and frames are driven by smoothed document scroll. |
+| `walking` | The low-speed phase of the site-wide scroll traveller on shorter pages. The APNG supplies its own loop; document scroll controls travel. Horizontally flip it when the traveller changes direction. |
+| `run` | The energetic phase of the same traveller on sufficiently long pages. It is a seamless 12 fps run cycle with no trip or recovery beat. Document scroll controls travel while the APNG controls the stride. |
+| `trophy-lift` | Reserved for the Achievement section. Play once when revealed, then hold the final overhead pose: moderate golden trophy, compact hard-edged glow, closed eyes, and a broad smile. |
 
 `/about` receives the scroll traveller beside its dated gallery sequence, but no
 additional stationary scene. `/contact` receives no decorative mascot; the
@@ -576,12 +577,12 @@ legacy mascot contract** as required in §2.
 
 ### 11.2 Playback rules
 
-- Production pages consume each scene's `*-atlas.png` plus the shared
-  `scene-contract.json` through `AnimatedScene.astro`. GIF, WebP, raw-board,
-  frame, contact-sheet, and per-scene-manifest duplicates were removed.
-- Loops may begin immediately and `IntersectionObserver` may pause them when
-  offscreen. One-shot scenes wait until visible. Preserve the fail-open behavior
-  described in §2.
+- Production pages consume each scene's APNG `*-atlas.png`, static companion,
+  and the shared `scene-contract.json` through `AnimatedScene.astro`. The stable
+  atlas filenames no longer indicate horizontal sprite strips.
+- `IntersectionObserver` swaps looping APNGs to their static companions while
+  offscreen. One-shot scenes wait until visible; `workbench-zap` plays once and
+  holds its authored final frame.
 - The global traveller is decorative and uses a fixed overlay plus transforms;
   it must never create layout width or horizontal body scroll. On short pages,
   use only the walking cycle or omit the traveller.

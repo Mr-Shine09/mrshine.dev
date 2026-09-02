@@ -72,7 +72,7 @@ is deploy, not build.
 | 37 | **The W Phrases marquee pauses on hover and on focus, and does not move at all under reduced motion** | A phrase that cannot be stopped cannot be read, and reading them is the entire point. The static wall is also the no-JS fallback — same principle as #23 and the Reading List search |
 | 38 | **`/contact` renders the business card in its opened state, from the same data file** | One source, two presentations, so the card and the page can never drift out of sync. It is also what makes keeping the page cheap — it is a second layout of data that already exists, not a second copy of it |
 | 39 | **No contact form.** An email address, plus a copy-to-clipboard control beside it | A form needs somewhere to POST. This site is static with no backend — a form means either a third-party service (new external dependency, and a privacy question about where messages go) or a Cloudflare Function (a backend to maintain and a spam problem on day one). The email is published plainly: obfuscation that defeats scrapers also defeats screen readers and copy-paste |
-| 40 | **Mascot mapping is resolved in `ANIMATION_ASSETS.md`** | Hero V2 is home-only; reading-fire maps to Reading; computer-working and workbench-zap map to Projects; thinking-cloud maps to W Phrases; walking and run-trip-recover form the scroll traveller. The old waiting/working/poof/sleeping page mapping is retired |
+| 40 | **Mascot mapping is resolved in `ANIMATION_ASSETS.md`** | Hero V2 is home-only; reading-fire maps to Reading; computer-working and workbench-zap map to Projects; thinking-cloud maps to W Phrases; walking and run form the scroll traveller. The retired run-trip-recover source is archived outside the public runtime. The old waiting/working/poof/sleeping page mapping is retired |
 | 41 | **Type: Geist Pixel, one family for the whole site.** Replaces #10 and #14 | SIL OFL, self-hosted, subsetted. The owner's choice, and the reasoning inverts the old rule: the mascot is pixel art (#8), so a pixel face is more coherent with the signature element than a serif was. Verified by rendering: it is a fine technical monospace, not a chunky arcade face, and reads cleanly at 16px |
 | 42 | **There is no bold. Emphasis is size, accent colour, and letterspaced uppercase** — and `font-synthesis: none` globally | Geist Pixel's only axis is `ELSH` ("Element Shape"), which changes pixel shape, not weight. Verified by rendering: **mid-axis values 20–80 are hollow and low-contrast**, so any real text is locked to `ELSH` 0 or 100. Without `font-synthesis: none` a browser fakes a bold and smears the pixel edges |
 | 43 | **Type scale is built on 4px multiples with a 16px floor for prose** | Pixel faces are crisp at integer multiples of their grid and muddy between. The font is also monospaced and therefore wide — the same sentence takes more horizontal room than the old proportional face, which makes 375px the real test |
@@ -197,7 +197,7 @@ The original build files were verified against the working directory on
 | `site/` | **The site.** Astro 7, built to the HANDOFF architecture 16 Aug, builds clean (0 errors / 0 warnings / 0 hints), content-complete, all assets self-hosted |
 | `site/scripts/strip-clock-overlay.js` | Clears the clock from the `waiting` row so those frames can be re-used as a hero wave. Idempotent, and refuses to run if the source art changes shape |
 | `site/public/assets/animation/ANIMATION_ASSETS.md` | Canonical asset map. Claude should start here before placing or changing any mascot animation |
-| `site/public/assets/animation/scenes/` | Six approved 12-frame runtime atlases plus one shared timing contract |
+| `site/public/assets/animation/scenes/` | Seven approved 12-frame runtime atlases plus one shared timing contract |
 | `site/public/assets/animation/hero/` | Hero V2 runtime atlas, contract, and static fallback |
 | `site/public/assets/animation/legacy/` | Existing multi-state mascot atlas and contract, retained for component compatibility |
 | `site/public/assets/animation/authoring/legacy-atlas-source.png` | Pristine legacy atlas input used only by `strip-clock-overlay.js`; never reference from page code |
@@ -230,7 +230,7 @@ and `astro check` both clean (0 errors / 0 warnings / 0 hints).
   spines only (#45)
 - Business card on every page: corner card → spin-and-travel dialog; full-screen
   tab on phones; plain `/contact` link with no JS; Escape closes
-- All six scenes wired per #40, including one-shot workbench-zap that holds the
+- All six page-mapped scenes wired per #40, including one-shot workbench-zap that holds the
   singed pose, and the two-mode scroll traveller (#50)
 - Verified by running: 0 horizontal overflow at 320/375/768/1280 on every
   route; dark theme; reduced motion (wall static, traveller hidden, scenes
@@ -281,7 +281,7 @@ items above are authoritative.
 | Hero V2 frame geometry | 13 RGBA cells at 160 × 208; body height 192; anchor baseline y=204 | PASS — 2026-08-16 |
 | Frames 2–4 waist calibration | Historical QA completed before redundant calibration images were removed | PASS — 2026-08-16 |
 | Atlas packaging | 2080 × 208 Hero atlas; JSON lists frames 0–12 | PASS — 2026-08-16 |
-| Scene packaging | Six 4608 × 320 scene atlases; shared JSON lists 12 frames and 12 durations per scene | PASS — 2026-08-16 |
+| Scene packaging | Seven native 384 × 320 APNG scenes; shared JSON lists 12 frames and 12 durations per scene | PASS — 2026-09-01 |
 | Website integration | Components point only at `public/assets/animation/` | PASS — 2026-08-16 |
 
 ## Session log
