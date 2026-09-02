@@ -1,6 +1,8 @@
 ---
 title: Dune
 author: Frank Herbert
+isbn: "9780441013593"
+cover: ../../assets/books/dune.jpg
 language: en
 genre: fiction
 status: reading
