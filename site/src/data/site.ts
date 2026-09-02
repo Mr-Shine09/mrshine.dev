@@ -48,8 +48,8 @@ export const site: SiteConfig = {
   // TODO(owner): drop the PDF at site/public/resume.pdf, then set "/resume.pdf".
   resumeUrl: "/resume.pdf",
 
-  // TODO(owner): the real .dev domain. Used for canonical URLs and the vCard.
-  url: "https://example.dev",
+  // Registered 2 Sep 2026 through Cloudflare Registrar. Used for canonical URLs and the vCard.
+  url: "https://mrshine.dev",
 
   seo: {
     description:

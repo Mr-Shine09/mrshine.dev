@@ -13,7 +13,7 @@
 |---|---|
 | Structure | **One scrolling page** at `/`. Nav anchors in order: About · Highlights · Projects · Personal · Contact. "Personal" is the Reading List. |
 | Stack | Astro (existing `^7.2.2` shell in `site/`), plain CSS with custom properties, no CSS framework, no UI framework, minimal JS. |
-| Hosting | Cloudflare Pages connected to the GitHub repo; every push to `main` redeploys. `.dev` domain via Cloudflare registrar when bought. |
+| Hosting | Cloudflare Pages connected to the GitHub repo; every push to `main` redeploys. Domain **`mrshine.dev`**, bought through Cloudflare Registrar on 2 Sep 2026. |
 | Type | **Geist Pixel** for headings, nav, labels, chips. **Geist Sans** for all prose. Both self-hosted woff2. |
 | Theme | **Riso C2**, light and dark, toggle persisted in `localStorage`, `prefers-color-scheme` honoured on first visit. |
 | Mascot | Native APNG scenes from `site/public/assets/animation/`. Used: `oak-welcome`, `trophy-lift`, `workbench-zap`, `reading-fire`, `run`. Unused but kept: `computer-working`, `thinking-cloud`, `walking`. |
@@ -65,7 +65,7 @@ Written for everyone — friends, recruiters, whoever finds it. Not a résumé, 
 | JS | Astro ships none by default. Scripts allowed: theme toggle, active-nav highlighting, scene player (APNG/static swap), slider prev/next, email copy button, bottom runner. Each is progressive enhancement over working HTML. |
 | Fonts | `fontProviders.local()` for both faces. **No `fontProviders.google()` entries** — the five that existed served W Phrases and were the site's only third-party requests. |
 | Hosting | Cloudflare Pages. Build command `npm run build`, output `dist`, root `site`. Free tier, automatic HTTPS. |
-| Domain | Not yet bought. Plan is a `.dev` through Cloudflare registrar (`.dev` is HSTS-preloaded, so HTTPS is mandatory and automatic). Until then `site.url` is a placeholder and the Website row on the contact card renders the `*.pages.dev` URL. |
+| Domain | **`https://mrshine.dev`** — registered 2 Sep 2026 through Cloudflare Registrar, DNS zone on Cloudflare. `.dev` is HSTS-preloaded, so HTTPS is mandatory and automatic. `site.url` is set to it; the Pages custom-domain step (§14.4) is still to do. |
 | Updating content | Edit or add a markdown file, commit, push. Cloudflare redeploys. This is what "books must be updatable" means in practice; see §7.4. |
 
 ### Why these (carried reasoning)
@@ -250,7 +250,7 @@ Finishing a book = change `status` to `finished`, add `ended`, `rating`, `review
 A single block styled as a business card, centred, max-width ≈ 36rem.
 - Top: **OAK SOE KHANT** (Geist Pixel), `Computer Engineering @ De Anza`, the favicon mark in the top-right corner, a `--line` rule.
 - Then a **labelled list, not icon soup** — icon · label · value, each row ≥ 44px:
-  1. **Website** — the site URL (`*.pages.dev` until the `.dev` domain exists).
+  1. **Website** — `https://mrshine.dev`, shown as `mrshine.dev`.
   2. **Email** — `oaksoekhant182209@gmail.com`, visible and selectable, as a `mailto:` link, with a **copy-to-clipboard button beside it** (never replacing it). Success announced in an `aria-live` region. With JS off the button is hidden.
   3. **LinkedIn** — `https://www.linkedin.com/in/oak-soe-khant-350252362`
   4. **GitHub** — `https://github.com/Mr-Shine09`
@@ -300,7 +300,7 @@ type SiteConfig = {
     devpost:   "https://devpost.com/oaksoekhant182209";        // vCard only
   };
   resumeUrl: "/resume.pdf";               // file exists at site/public/resume.pdf
-  url: string;                            // TODO(owner): real .dev domain; *.pages.dev until then
+  url: "https://mrshine.dev";             // registered 2 Sep 2026
   seo: { description: string };
 };
 
@@ -415,14 +415,13 @@ Draft projects and books with unknown status never render; the build says why.
 
 | Item | Blocks |
 |---|---|
-| `.dev` domain | Canonical URL, Website row, vCard URL — `*.pages.dev` placeholder meanwhile. Owner intends to buy through Cloudflare Registrar; see §14. |
 | Echo Devpost URL | The Devpost link on Echo's card (drops until present) |
 | Look-Out dashboard screenshot + collaborator names | Card image — the eye logo (`lookout-eye-1024.png`) is used until the owner finds a screenshot — and the credits line |
 | VisionAssist team names | Collaborator line |
 | The Infinity Machine: started date and progress % | Its Currently Reading card (renders with cover, title, author and no ring until then) |
 | Any finished books | Shelves show the empty state until one exists |
 
-Resolved 2 Sep 2026: ICPC year (2025); Echo's link (`https://github.com/aadityad12/Echo`, the original repo — confirmed); Dune ISBN; Infinity Machine ISBN; lead and closing lines both in.
+Resolved 2 Sep 2026: domain (`mrshine.dev`, bought — §14.4 attach step pending); ICPC year (2025); Echo's link (`https://github.com/aadityad12/Echo`, the original repo — confirmed); Dune ISBN; Infinity Machine ISBN; lead and closing lines both in.
 
 ---
 
@@ -442,12 +441,11 @@ Resolved 2 Sep 2026: ICPC year (2025); Echo's link (`https://github.com/aadityad
 
 ## 14. Buying the `.dev` domain and connecting it — step by step
 
-The owner buys the domain (payment and account actions are theirs). The build session then sets `site.url` and redeploys. Everything happens inside one Cloudflare account, which is the point: registrar, DNS, hosting, and certificates in one place, no DNS hand-off.
+**Status:** 14.1–14.2 done — `mrshine.dev` was registered on 2 Sep 2026. `site.url` is already set. Remaining: 14.3 (Pages project), 14.4 (attach the domain), 14.5 step 3 (verify). Everything happens inside one Cloudflare account, which is the point: registrar, DNS, hosting, and certificates in one place, no DNS hand-off.
 
 ### 14.1 Before you start
 - A Cloudflare account (free) with **two-factor authentication turned on** — a domain is an identity asset.
 - A payment card or PayPal. `.dev` at Cloudflare Registrar is sold **at cost** (registry wholesale plus the ICANN fee), roughly **US$12–13 per year**. Cloudflare adds no markup; the price shown at checkout is the renewal price.
-- A shortlist of names. Recommendation, in order: `oaksoekhant.dev` (matches the name recruiters search), `oaksoe.dev`, `mrshine.dev` (the GitHub handle). Availability could not be checked from this machine; the search box in step 14.2 is authoritative.
 
 ### 14.2 Register the domain (about 5 minutes)
 1. Log in at `dash.cloudflare.com`. In the left sidebar open **Domain Registration → Register Domains**.
@@ -476,15 +474,15 @@ The owner buys the domain (payment and account actions are theirs). The build se
 
 ### 14.4 Attach the domain (about 2 minutes, then a short wait)
 1. In the Pages project open **Custom domains → Set up a custom domain**.
-2. Enter `oaksoekhant.dev` (your name). Because the zone is already on Cloudflare, it **adds the DNS record for you** — confirm and activate. Repeat for `www.oaksoekhant.dev`.
+2. Enter `mrshine.dev` (your name). Because the zone is already on Cloudflare, it **adds the DNS record for you** — confirm and activate. Repeat for `www.mrshine.dev`.
 3. Wait for the status to read **Active** (usually under 10 minutes). Cloudflare provisions the certificate in the same step.
-4. Make `www` redirect to the bare domain: in the domain's zone, **Rules → Redirect Rules → Create rule**: when hostname equals `www.oaksoekhant.dev`, redirect 301 to `https://oaksoekhant.dev${uri}`… (the dashboard offers a "Redirect from WWW to Root" template — use it).
+4. Make `www` redirect to the bare domain: in the domain's zone, **Rules → Redirect Rules → Create rule**: when hostname equals `www.mrshine.dev`, redirect 301 to `https://mrshine.dev${uri}`… (the dashboard offers a "Redirect from WWW to Root" template — use it).
 5. In the zone's **SSL/TLS** settings confirm mode **Full (strict)** and that **Always Use HTTPS** is on. Both should already be the defaults.
 
 ### 14.5 Tell the site its own address (build-session task)
-1. Set `url` in `site/src/data/site.ts` to `https://oaksoekhant.dev`.
+1. `url` in `site/src/data/site.ts` is already `https://mrshine.dev` (set 2 Sep 2026); the rebuilt `site.ts` must keep it.
 2. Push. The canonical `<link>`, Open Graph URL, the Website row on the contact card, and `contact.vcf` all update from that one field.
-3. Verify: `https://oaksoekhant.dev` loads with a padlock; `http://` is upgraded; `www` redirects; the vCard downloads and opens.
+3. Verify: `https://mrshine.dev` loads with a padlock; `http://` is upgraded; `www` redirects; the vCard downloads and opens.
 
 ### 14.6 Afterwards
 - Set a calendar reminder a month before renewal even with auto-renew on, in case the card expires.
