@@ -1,0 +1,20 @@
+---
+import { site } from "../data/site";
+---
+<p class="plane label" aria-label={`From ${site.origin} to ${site.destination}`}>
+  <span>{site.origin}</span>
+  <span class="plane__track" aria-hidden="true"><span class="plane__icon">✈</span></span>
+  <span>{site.destination}</span>
+</p>
+
+<style>
+  .plane { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--muted); }
+  .plane__track { position: relative; display: inline-block; width: 4.5rem; height: 1px; background: var(--line); }
+  .plane__icon {
+    position: absolute; top: 50%; left: 0; translate: 0 -55%;
+    font-size: var(--fs-base); line-height: 1; color: var(--accent);
+    animation: fly 6s ease-in-out infinite alternate;
+  }
+  @keyframes fly { from { left: 0; } to { left: calc(100% - 1em); } }
+  @media (prefers-reduced-motion: reduce) { .plane__icon { animation: none; left: calc(100% - 1em); } }
+</style>

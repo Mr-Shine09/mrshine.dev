@@ -60,6 +60,26 @@ check("reduced-motion-scenes", async (browser) => {
   await ctx.close();
 });
 
+check("hero", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const s = p.locator("section#about");
+  assert((await s.locator("h1").innerText()).trim() === "OAK SOE KHANT", "h1 must be the name in caps");
+  const text = await s.innerText();
+  assert(text.includes("What's up everyone!!!"), "lead line missing or altered");
+  assert(text.includes("Reader in progress."), "tagline missing");
+  assert(text.includes("Leveraging artificial intelligence to sharpen actual intelligence."), "closing line missing");
+  assert(text.toUpperCase().includes("YANGON") && text.toUpperCase().includes("BAY AREA, CA"), "plane motif missing");
+  for (const [label, href] of [["Résumé", "/resume.pdf"], ["GitHub", "https://github.com/Mr-Shine09"], ["LinkedIn", "https://www.linkedin.com/in/oak-soe-khant-350252362"]]) {
+    const a = s.locator(`a[href="${href}"]`);
+    assert(await a.count() === 1, `hero link ${label} → ${href} missing`);
+    assert((await a.innerText()).toUpperCase().includes(label.toUpperCase()), `hero link ${href} has no visible label "${label}"`);
+  }
+  assert(await s.locator(".hero-welcome").count() === 1, "welcome mascot missing");
+  const border = await s.locator(".hero__portrait").evaluate((el) => getComputedStyle(el).borderWidth);
+  assert(border === "2px", `portrait border is ${border}, want 2px`);
+  await ctx.close();
+});
+
 // ---- runner ----
 const only = process.argv.slice(2);
 const names = only.length ? only : Object.keys(checks);

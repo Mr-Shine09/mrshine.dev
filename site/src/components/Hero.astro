@@ -1,0 +1,82 @@
+---
+import { Image } from "astro:assets";
+import { site } from "../data/site";
+import HeroWelcome from "./HeroWelcome.astro";
+import PlaneMotif from "./PlaneMotif.astro";
+import portrait from "../assets/photos/portrait.jpg";
+
+const links = [
+  { label: "Résumé", href: site.resumeUrl, icon: "▤" },
+  { label: "GitHub", href: site.socials.github, icon: "◉", me: true },
+  { label: "LinkedIn", href: site.socials.linkedin, icon: "in", me: true },
+];
+---
+<section id="about" class="section hero" aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="hero__grid">
+      <div class="hero__text">
+        <PlaneMotif />
+        <h1 id="about-title" class="hero__name">{site.name.toUpperCase()}</h1>
+        <p class="label hero__role">{site.shortRole}</p>
+        <p class="hero__lead">{site.lead}</p>
+        <p class="hero__tagline">{site.tagline}</p>
+        <ul class="hero__links" aria-label="Links">
+          {links.map((l) => (
+            <li>
+              <a class="hero__link" href={l.href} rel={l.me ? "me" : undefined}>
+                <span class="hero__icon pixel" aria-hidden="true">{l.icon}</span>
+                <span class="hero__linklabel">{l.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="hero__mascot"><HeroWelcome scale={1} /></div>
+      <figure class="hero__portrait-wrap">
+        <Image class="hero__portrait" src={portrait} alt="Oak, in side profile" width={360} densities={[1, 2]} loading="eager" />
+      </figure>
+    </div>
+    <p class="hero__closing pixel">{site.closing}</p>
+  </div>
+</section>
+
+<style>
+  .hero { padding-top: var(--space-xl); }
+  .hero__grid {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(180px, 300px);
+    gap: var(--space-l); align-items: end;
+  }
+  .hero__text { display: grid; gap: var(--space-s); align-content: end; min-width: 0; }
+  .hero__name { font-size: var(--fs-2xl); letter-spacing: 0.02em; overflow-wrap: anywhere; }
+  .hero__role { color: var(--muted); }
+  .hero__lead { font-size: var(--fs-md); line-height: 1.5; }
+  .hero__tagline { color: var(--muted); }
+  .hero__links { display: flex; flex-wrap: wrap; gap: var(--space-s); margin-top: var(--space-xs); }
+  .hero__link {
+    display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    min-width: var(--tap-min); min-height: var(--tap-min); padding: 0.4rem 0.6rem;
+    text-decoration: none; color: var(--ink);
+  }
+  .hero__icon {
+    display: grid; place-items: center; width: 44px; height: 44px;
+    border: 2px solid var(--ink); border-radius: var(--radius); font-size: var(--fs-md);
+  }
+  .hero__linklabel { font-family: var(--font-pixel); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; }
+  .hero__link:hover .hero__icon { background: var(--ink); color: var(--bg); }
+  .hero__mascot { align-self: end; }
+  .hero__portrait-wrap { margin: 0; padding: var(--space-xs); background: var(--plate); border: var(--border); }
+  .hero__portrait { border: 2px solid var(--line); aspect-ratio: 1; object-fit: cover; width: 100%; }
+  .hero__closing { margin-top: var(--space-xl); font-size: var(--fs-lg); text-align: center; text-wrap: balance; }
+
+  @media (max-width: 64rem) {
+    .hero__grid { grid-template-columns: minmax(0, 1fr) auto; }
+    .hero__portrait-wrap { grid-column: 1 / -1; max-width: 300px; }
+  }
+  @media (max-width: 40rem) {
+    .hero__grid { grid-template-columns: minmax(0, 1fr); }
+    .hero__name { font-size: var(--fs-xl); }
+    .hero__mascot { justify-self: start; }
+    .hero__portrait-wrap { max-width: 60vw; }
+    .hero__closing { font-size: var(--fs-md); }
+  }
+</style>
