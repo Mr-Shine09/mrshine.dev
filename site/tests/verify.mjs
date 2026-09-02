@@ -160,6 +160,31 @@ check("reading", async (browser) => {
   await ctx.close();
 });
 
+check("contact", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const s = p.locator("section#contact");
+  for (const href of ["https://mrshine.dev", "mailto:oaksoekhant182209@gmail.com", "https://www.linkedin.com/in/oak-soe-khant-350252362", "https://github.com/Mr-Shine09", "/contact.vcf"]) {
+    assert(await s.locator(`a[href="${href}"]`).count() === 1, `contact row ${href} missing`);
+  }
+  assert((await s.innerText()).includes("oaksoekhant182209@gmail.com"), "email must be visible text");
+  await ctx.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await s.locator("[data-copy]").click();
+  await p.waitForTimeout(200);
+  assert((await s.locator("[data-copy-status]").innerText()).toLowerCase().includes("copied"), "copy button must announce success");
+  assert(await s.locator("form").count() === 0, "no contact form");
+  assert(await s.locator(".oak-scene").count() === 0, "no mascot in contact");
+  const me = await s.locator('a[href="https://github.com/Mr-Shine09"]').getAttribute("rel");
+  assert(me && me.includes("me"), 'social links need rel="me"');
+  await ctx.close();
+});
+
+check("contact-nojs", async (browser) => {
+  const { ctx, p } = await page(browser, { javaScriptEnabled: false });
+  assert(await p.locator("section#contact a[href^='mailto:']").count() === 1, "no-JS: email link");
+  assert(!(await p.locator("section#contact [data-copy]").isVisible()), "no-JS: copy button must be hidden");
+  await ctx.close();
+});
+
 // ---- runner ----
 const only = process.argv.slice(2);
 const names = only.length ? only : Object.keys(checks);

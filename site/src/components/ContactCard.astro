@@ -1,0 +1,66 @@
+---
+import { site, contactRows } from "../data/site";
+import SectionHead from "./SectionHead.astro";
+const icons: Record<string, string> = { Website: "⌂", Email: "✉", LinkedIn: "in", GitHub: "◉", "Save contact": "▤" };
+---
+<section id="contact" class="section" aria-labelledby="contact-title">
+  <div class="wrap">
+    <SectionHead id="contact" title="Contact" />
+    <div class="bizcard">
+      <header class="bizcard__head">
+        <div>
+          <p class="bizcard__name pixel">{site.name.toUpperCase()}</p>
+          <p class="label">{site.shortRole}</p>
+        </div>
+        <img class="bizcard__mark pixelated" src="/favicon-48.png" alt="" width="48" height="48" />
+      </header>
+      <ul class="bizcard__rows">
+        {contactRows.map((row) => (
+          <li class="bizcard__row">
+            <span class="bizcard__icon pixel" aria-hidden="true">{icons[row.label] ?? "·"}</span>
+            <span class="bizcard__label label">{row.label}</span>
+            <a class="bizcard__value" href={row.href} rel={row.me ? "me" : row.href.startsWith("http") ? "noopener" : undefined}>{row.text}</a>
+            {row.copy && (
+              <button type="button" class="bizcard__copy btn" data-copy={row.text} aria-label="Copy email address" hidden>Copy</button>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p class="bizcard__status label" data-copy-status aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bizcard { max-width: 36rem; margin-inline: auto; padding: var(--space-m); border: 2px solid var(--ink); border-radius: var(--radius); background: var(--plate); box-shadow: 6px 6px 0 var(--shadow); }
+  .bizcard__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-s); padding-bottom: var(--space-s); border-bottom: 2px solid var(--ink); }
+  .bizcard__name { font-size: var(--fs-md); letter-spacing: 0.04em; margin: 0 0 0.2rem; }
+  .bizcard__rows { display: grid; gap: 0.25rem; margin-top: var(--space-s); }
+  .bizcard__row { display: grid; grid-template-columns: 2rem 7rem minmax(0, 1fr) auto; align-items: center; gap: var(--space-xs); min-height: var(--tap-min); }
+  .bizcard__icon { color: var(--accent); font-size: var(--fs-base); }
+  .bizcard__value { overflow-wrap: anywhere; min-height: var(--tap-min); display: inline-flex; align-items: center; }
+  .bizcard__copy { padding: 0.3rem 0.6rem; font-size: var(--fs-xs); }
+  .bizcard__status { min-height: 1.2em; margin-top: var(--space-xs); }
+  @media (max-width: 40rem) {
+    .bizcard__row { grid-template-columns: 2rem minmax(0, 1fr) auto; }
+    .bizcard__label { grid-column: 2; }
+    .bizcard__value { grid-column: 2; }
+    .bizcard__copy { grid-column: 3; grid-row: 1 / span 2; }
+  }
+</style>
+
+<script>
+  const status = document.querySelector<HTMLElement>("[data-copy-status]");
+  for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
+    btn.hidden = false; // JS is here; the button can earn its place.
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? "");
+        if (status) status.textContent = "Copied to clipboard.";
+      } catch {
+        if (status) status.textContent = "Copy failed — select the address instead.";
+      }
+      setTimeout(() => { if (status) status.textContent = ""; }, 3000);
+    });
+  }
+</script>
