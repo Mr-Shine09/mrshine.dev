@@ -117,6 +117,33 @@ check("highlights", async (browser) => {
   await ctx.close();
 });
 
+check("projects", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const titles = await p.$$eval("section#projects .card h3", (els) => els.map((e) => e.textContent.trim()));
+  assert(titles.join("|") === "PokeDesk|Look-Out|VisionAssist|Echo", `card order: ${titles.join(" · ")}`);
+  const echo = p.locator("section#projects .card", { hasText: "Echo" });
+  const echoText = await echo.innerText();
+  for (const n of ["aadityad12", "shahxsheel", "Mr-Shine09"]) assert(echoText.includes(n), `Echo must credit ${n}`);
+  assert(await echo.locator('a[href="https://github.com/aadityad12/Echo"]').count() === 1, "Echo repo link");
+  const fit = await p.locator("section#projects .card img").first().evaluate((i) => getComputedStyle(i).objectFit);
+  assert(fit === "contain", `card images must be object-fit: contain, got ${fit}`);
+  const track = p.locator("section#projects .slider__track");
+  const before = await track.evaluate((t) => t.scrollLeft);
+  await p.locator("[data-slider-next]").click();
+  await p.waitForTimeout(600);
+  assert((await track.evaluate((t) => t.scrollLeft)) > before, "next button did not scroll the track");
+  assert(await p.locator('section#projects .oak-scene[aria-label*="workbench"]').count() === 1, "workbench-zap scene missing");
+  await ctx.close();
+});
+
+check("nojs", async (browser) => {
+  const { ctx, p } = await page(browser, { javaScriptEnabled: false });
+  for (const id of SECTIONS) assert(await p.locator(`section#${id}`).count() === 1, `no-JS: section ${id} missing`);
+  assert(await p.locator("section#projects .card").count() === 4, "no-JS: cards missing");
+  assert(await p.locator('section#projects a[href="https://github.com/Mr-Shine09/PokeDesk"]').count() === 1, "no-JS: repo link");
+  await ctx.close();
+});
+
 // ---- runner ----
 const only = process.argv.slice(2);
 const names = only.length ? only : Object.keys(checks);

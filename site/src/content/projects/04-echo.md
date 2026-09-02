@@ -1,6 +1,6 @@
 ---
 title: Echo
-order: 2
+order: 4
 year: "2026"
 stack: ["Flutter", "Dart", "Kotlin", "Swift", "SQLite", "Python 3"]
 summary: A Flutter prototype for receiving, storing, and relaying emergency alerts between nearby devices over Bluetooth Low Energy when an internet connection is unavailable.

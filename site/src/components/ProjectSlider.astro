@@ -1,0 +1,41 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+interface Props { projects: CollectionEntry<"projects">[] }
+const { projects } = Astro.props;
+---
+<div class="slider" data-slider>
+  <div class="slider__track scroller" tabindex="0" aria-label="Projects, scroll horizontally">
+    {projects.map((p, i) => <ProjectCard project={p} index={i} total={projects.length} />)}
+  </div>
+  <div class="slider__controls">
+    <button type="button" class="btn" data-slider-prev aria-label="Previous project">←</button>
+    <button type="button" class="btn" data-slider-next aria-label="Next project">→</button>
+  </div>
+</div>
+
+<style>
+  .slider { display: grid; gap: var(--space-s); }
+  .slider__track {
+    display: flex; gap: var(--space-m);
+    padding: var(--space-s) calc(50% - min(85vw, 34rem) / 2);  /* lets first/last card centre */
+    scroll-snap-type: x mandatory;
+  }
+  .slider__controls { display: none; gap: var(--space-xs); justify-content: center; }
+  /* Buttons need JS; hide them without it so nothing dead is on the page. */
+  :global(html.js) .slider__controls { display: flex; }
+</style>
+
+<script>
+  document.documentElement.classList.add("js");
+  for (const root of document.querySelectorAll<HTMLElement>("[data-slider]")) {
+    const track = root.querySelector<HTMLElement>(".slider__track")!;
+    const step = () => (track.querySelector<HTMLElement>(".card")?.getBoundingClientRect().width ?? 320) + 24;
+    root.querySelector("[data-slider-prev]")?.addEventListener("click", () => track.scrollBy({ left: -step(), behavior: "smooth" }));
+    root.querySelector("[data-slider-next]")?.addEventListener("click", () => track.scrollBy({ left: step(), behavior: "smooth" }));
+    track.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); track.scrollBy({ left: step(), behavior: "smooth" }); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); track.scrollBy({ left: -step(), behavior: "smooth" }); }
+    });
+  }
+</script>

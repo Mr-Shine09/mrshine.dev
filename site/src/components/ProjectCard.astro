@@ -1,0 +1,50 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+interface Props { project: CollectionEntry<"projects">; index: number; total: number }
+const { project, index, total } = Astro.props;
+const { data } = project;
+const meta = [data.year, data.builtAt].filter(Boolean).join(" · ");
+---
+<article class="card" tabindex="0" aria-roledescription="slide" aria-label={`${index + 1} of ${total}: ${data.title}`}>
+  <div class="card__plate">
+    {data.image && <Image class="card__image" src={data.image} alt={data.imageAlt ?? ""} width={640} densities={[1, 2]} loading={index === 0 ? "eager" : "lazy"} />}
+  </div>
+  <div class="card__body">
+    <h3 class="card__title">{data.title}</h3>
+    <p class="card__summary">{data.summary}</p>
+    <ul class="card__stack" aria-label="Stack">{data.stack.map((s) => <li class="chip">{s}</li>)}</ul>
+    {meta && <p class="card__meta pixel">{meta}</p>}
+    {data.collaborators.length > 0 && <p class="card__team">With {data.collaborators.join(" · ")}</p>}
+    <p class="card__links">
+      {data.links.github && <a class="btn" href={data.links.github} rel="noopener">GitHub</a>}
+      {data.links.devpost && <a class="btn" href={data.links.devpost} rel="noopener">Devpost</a>}
+      {data.links.live && <a class="btn btn--primary" href={data.links.live} rel="noopener">Live</a>}
+    </p>
+  </div>
+</article>
+
+<style>
+  .card {
+    scroll-snap-align: center; flex: 0 0 min(85vw, 34rem);
+    display: grid; grid-template-rows: auto 1fr;
+    border: var(--border); border-radius: var(--radius); background: var(--bg);
+    transform-origin: center;
+  }
+  .card__plate { aspect-ratio: 16 / 10; background: var(--plate); display: grid; place-items: center; padding: var(--space-s); border-bottom: var(--border); }
+  .card__image { width: 100%; height: 100%; object-fit: contain; }
+  .card__body { display: grid; gap: var(--space-s); padding: var(--space-m); align-content: start; }
+  .card__summary { color: var(--ink); }
+  .card__stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .card__meta, .card__team { font-size: var(--fs-sm); color: var(--muted); }
+  .card__meta { font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; }
+  .card__links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+
+  /* Coverflow: the centred card is full size; neighbours recede. Scroll-driven,
+     no JS; browsers without support get a flat, fully usable snap carousel. */
+  @supports (animation-timeline: view()) {
+    .card { animation: card-focus linear both; animation-timeline: view(inline); animation-range: cover 0% cover 100%; }
+    @keyframes card-focus { 0%, 100% { transform: scale(0.82); opacity: 0.6; } 50% { transform: scale(1); opacity: 1; } }
+  }
+  @media (prefers-reduced-motion: reduce) { .card { animation: none; } }
+</style>

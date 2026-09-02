@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+import AnimatedScene from "./AnimatedScene.astro";
+import SectionHead from "./SectionHead.astro";
+import ProjectSlider from "./ProjectSlider.astro";
+const projects = (await getCollection("projects", ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+<section id="projects" class="section" aria-labelledby="projects-title">
+  <div class="wrap projects__head">
+    <SectionHead id="projects" title="Projects" label={`${projects.length} projects`} />
+    <AnimatedScene scene="workbench-zap" once class="projects__scene" />
+  </div>
+  <ProjectSlider projects={projects} />
+</section>
+
+<style>
+  .projects__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-l); align-items: end; }
+  @media (max-width: 48rem) { .projects__head { grid-template-columns: 1fr; } .projects__scene { justify-self: start; } }
+</style>
