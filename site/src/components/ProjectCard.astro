@@ -16,7 +16,7 @@ const meta = [data.builtAt?.includes(data.year) ? null : data.year, data.builtAt
     <p class="card__summary">{data.summary}</p>
     <ul class="card__stack" aria-label="Stack">{data.stack.map((s) => <li class="chip">{s}</li>)}</ul>
     {meta && <p class="card__meta pixel">{meta}</p>}
-    {data.collaborators.length > 0 && <p class="card__team">With {data.collaborators.join(" · ")}</p>}
+    {data.collaborators.length > 0 && <p class="card__team">Team: {data.collaborators.join(" · ")}</p>}
     <p class="card__links">
       {data.links.github && <a class="btn" href={data.links.github} rel="noopener">GitHub</a>}
       {data.links.devpost && <a class="btn" href={data.links.devpost} rel="noopener">Devpost</a>}
