@@ -185,6 +185,70 @@ check("contact-nojs", async (browser) => {
   await ctx.close();
 });
 
+check("focus", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const total = await p.locator("a, button, [tabindex='0'], summary").count();
+  const missing = [];
+  await p.keyboard.press("Tab"); // skip link
+  for (let i = 0; i < total; i++) {
+    const info = await p.evaluate(() => {
+      const el = document.activeElement;
+      if (!el || el === document.body) return null;
+      const cs = getComputedStyle(el);
+      return { tag: el.tagName + (el.getAttribute("href") ? `[${el.getAttribute("href")}]` : ""), outline: cs.outlineStyle !== "none" && parseFloat(cs.outlineWidth) > 0 };
+    });
+    if (info && !info.outline) missing.push(info.tag);
+    await p.keyboard.press("Tab");
+  }
+  assert(missing.length === 0, `no visible focus on: ${[...new Set(missing)].join(", ")}`);
+  await ctx.close();
+});
+
+check("tap-targets", async (browser) => {
+  const { ctx, p } = await page(browser, { viewport: { width: 375, height: 700 } });
+  await p.evaluate(() => document.documentElement.classList.add("js"));
+  const small = await p.$$eval("a, button, summary", (els) =>
+    els.filter((e) => { const r = e.getBoundingClientRect(); const vis = r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; return vis && (r.width < 44 || r.height < 44); })
+       .map((e) => `${e.tagName}${e.className ? "." + e.className.split(" ")[0] : ""} ${Math.round(e.getBoundingClientRect().width)}×${Math.round(e.getBoundingClientRect().height)}`));
+  assert(small.length === 0, `tap targets under 44px: ${small.join(", ")}`);
+  await ctx.close();
+});
+
+check("theme", async (browser) => {
+  const { ctx, p } = await page(browser);
+  await p.locator("[data-theme-toggle]").click();
+  assert((await p.getAttribute("html", "data-theme")) === "dark", "toggle should switch to dark");
+  await p.reload({ waitUntil: "networkidle" });
+  assert((await p.getAttribute("html", "data-theme")) === "dark", "theme should persist across reload");
+  const bg = await p.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  assert(bg === "rgb(21, 14, 43)", `dark --bg should be #150E2B, got ${bg}`);
+  await ctx.close();
+});
+
+check("fonts", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const loaded = await p.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family.replace(/"/g, "")); });
+  assert(loaded.some((f) => /Geist Pixel/.test(f)), `Geist Pixel not loaded: ${loaded.join(", ")}`);
+  assert(loaded.some((f) => /Geist Sans/.test(f)), `Geist Sans not loaded: ${loaded.join(", ")}`);
+  const synth = await p.evaluate(() => getComputedStyle(document.documentElement).fontSynthesis);
+  assert(synth === "none", `font-synthesis is ${synth}`);
+  const heavy = await p.$$eval("body *", (els) => els.filter((e) => parseInt(getComputedStyle(e).fontWeight) >= 600 && e.textContent.trim()).length);
+  assert(heavy === 0, `${heavy} elements render at weight ≥600 (faux bold risk)`);
+  await ctx.close();
+});
+
+check("third-party", async (browser) => {
+  const ctx = await browser.newContext();
+  const p = await ctx.newPage();
+  const foreign = [];
+  p.on("request", (r) => { const u = new URL(r.url()); if (u.origin !== new URL(BASE).origin) foreign.push(r.url()); });
+  await p.goto(BASE, { waitUntil: "networkidle" });
+  await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await p.waitForTimeout(800);
+  assert(foreign.length === 0, `third-party requests: ${foreign.slice(0, 5).join(", ")}`);
+  await ctx.close();
+});
+
 // ---- runner ----
 const only = process.argv.slice(2);
 const names = only.length ? only : Object.keys(checks);
