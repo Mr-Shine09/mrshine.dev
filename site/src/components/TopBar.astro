@@ -1,0 +1,55 @@
+---
+import { sections } from "../data/nav";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+<header class="topbar">
+  <div class="wrap topbar__row">
+    <a class="topbar__mark" href="#top" aria-label="Back to top">
+      <img src="/favicon-32.png" alt="" width="32" height="32" class="pixelated" />
+    </a>
+    <nav class="topbar__nav" aria-label="Sections" data-topnav>
+      {sections.map((s) => <a href={`#${s.id}`} data-nav-link={s.id}>{s.label}</a>)}
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>
+
+<style>
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: var(--border);
+  }
+  .topbar__row { display: flex; align-items: center; gap: var(--space-s); min-height: 3.5rem; }
+  .topbar__mark { display: inline-flex; align-items: center; justify-content: center; min-width: var(--tap-min); min-height: var(--tap-min); flex: none; }
+  .topbar__nav { display: flex; gap: 0; margin-left: auto; overflow-x: auto; scrollbar-width: none; }
+  .topbar__nav a {
+    display: inline-flex; align-items: center;
+    min-height: var(--tap-min); padding: 0 0.7rem;
+    font-family: var(--font-pixel); font-size: var(--fs-sm); letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; color: var(--muted); white-space: nowrap;
+    border-bottom: 2px solid transparent;
+  }
+  .topbar__nav a:hover, .topbar__nav a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  @media (max-width: 40rem) {
+    .topbar__nav a { font-size: var(--fs-xs); padding: 0 0.5rem; }
+  }
+</style>
+
+<script>
+  // Progressive enhancement: mark the section in view. Anchors work without it.
+  const links = new Map<string, HTMLAnchorElement>();
+  for (const a of document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]")) links.set(a.dataset.navLink!, a);
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        for (const a of links.values()) a.removeAttribute("aria-current");
+        links.get(e.target.id)?.setAttribute("aria-current", "true");
+      }
+    },
+    { rootMargin: "-40% 0px -55% 0px" }
+  );
+  for (const id of links.keys()) { const s = document.getElementById(id); if (s) io.observe(s); }
+</script>

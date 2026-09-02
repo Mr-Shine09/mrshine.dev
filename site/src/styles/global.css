@@ -1,18 +1,12 @@
 @import "./tokens.css";
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem; /* sticky top bar height + breathing room */
   -webkit-text-size-adjust: 100%;
-  /*
-   * The site font has no weight axis. Without this, browsers synthesise a
-   * smeared faux bold over the pixel glyphs (HANDOFF §4 non-negotiable #2).
-   */
+  /* Geist Pixel has no weight axis; never let a browser fake one (Plan.md §2.2). */
   font-synthesis: none;
 }
 
@@ -20,62 +14,34 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-pixel);
+  font-family: var(--font-sans);
   font-size: var(--fs-base);
   line-height: var(--leading-body);
-  /* Belt for the acceptance criterion: no horizontal page scroll at any
-     width. Wide content scrolls inside its own overflow-x:auto container. */
+  /* Belt for §2.1: wide things scroll inside their own container, never the body. */
   overflow-x: hidden;
 }
 
-::selection {
-  background: var(--selection);
-}
+::selection { background: var(--selection); }
 
-/*
- * There is no bold. Hierarchy is a size step; emphasis inside running text is
- * the accent colour; labels are uppercase + letterspacing. Nothing else.
- */
-h1,
-h2,
-h3 {
+/* Headings, labels, chips and counts are the pixel face. There is no bold:
+   hierarchy is a size step, emphasis is the accent colour, labels are
+   uppercase + letterspacing. */
+h1, h2, h3, .pixel {
+  font-family: var(--font-pixel);
   font-weight: 400;
   line-height: var(--leading-tight);
   margin: 0;
   text-wrap: balance;
 }
+h1 { font-size: var(--fs-xl); }
+h2 { font-size: var(--fs-lg); }
+h3 { font-size: var(--fs-md); }
 
-h1 {
-  font-size: var(--fs-xl);
-}
-h2 {
-  font-size: var(--fs-lg);
-}
-h3 {
-  font-size: var(--fs-md);
-}
+strong, b { font-weight: 500; color: var(--accent); }
+em, i { font-style: normal; color: var(--accent); }
 
-strong,
-b {
-  font-weight: 400;
-  color: var(--accent);
-}
-
-em,
-i {
-  font-style: normal;
-  color: var(--accent);
-}
-
-p {
-  margin: 0 0 var(--space-s);
-  max-width: var(--measure);
-  text-wrap: pretty;
-}
-
-p:last-child {
-  margin-bottom: 0;
-}
+p { margin: 0 0 var(--space-s); max-width: var(--measure); text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
 
 a {
   color: inherit;
@@ -84,45 +50,28 @@ a {
   text-underline-offset: 0.25em;
   transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
+a:hover { color: var(--accent); }
 
-a:hover {
-  color: var(--accent);
-}
+img { max-width: 100%; height: auto; display: block; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Element display rules above must never resurrect a [hidden] element. */
-[hidden] {
-  display: none !important;
-}
-
-/* ---- focus: every interactive element, always visible ---- */
-
-:where(a, button, [tabindex], summary):focus-visible {
+/* ---- focus: every interactive element, always visible (§2.9) ---- */
+:where(a, button, [tabindex], summary, input):focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-/* ---- layout primitives ---- */
+/* ---- primitives ---- */
+.wrap { width: min(100% - var(--gutter) * 2, var(--page-max)); margin-inline: auto; }
 
-.wrap {
-  width: min(100% - var(--gutter) * 2, var(--page-max));
-  margin-inline: auto;
-}
+.section { padding-block: var(--space-2xl); border-top: var(--border); }
+.section:first-of-type { border-top: 0; }
 
-/* Uppercase letterspaced label — one of the three emphasis devices. */
 .label {
+  font-family: var(--font-pixel);
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -130,68 +79,52 @@ ul {
   margin: 0;
 }
 
-.lede {
-  font-size: var(--fs-md);
-  line-height: 1.5;
+.chip {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border: var(--border);
+  border-radius: var(--radius);
   color: var(--muted);
 }
 
-/* ---- buttons ---- */
-
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2xs);
-  min-height: var(--tap-min);
-  padding: 0.55rem 1.15rem;
-  border: 1px solid var(--ink);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  font-size: var(--fs-sm);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2xs);
+  min-height: var(--tap-min); min-width: var(--tap-min);
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--ink); border-radius: var(--radius);
+  background: transparent; color: var(--ink);
+  font-family: var(--font-pixel); font-size: var(--fs-sm); letter-spacing: 0.06em; text-transform: uppercase;
+  text-decoration: none; cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
+.btn:hover { background: var(--ink); color: var(--bg); }
+.btn--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn--primary:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 
-.btn:hover {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
 }
 
-.btn--primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
+.pixelated { image-rendering: pixelated; }
+
+/* Horizontal scrollers: their own overflow, an edge fade, keyboard-focusable (§6). */
+.scroller {
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
 }
 
-.btn--primary:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--bg);
-}
-
-/* ---- pixel art ---- */
-
-.pixelated {
-  image-rendering: pixelated;
-}
-
-/* ---- reduced motion: honour it globally, not per-component ---- */
-
+/* ---- reduced motion (§2.3) ---- */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;

@@ -1,33 +1,16 @@
 ---
 import { Font } from "astro:assets";
 import { site } from "../data/site";
-import NavPill from "../components/NavPill.astro";
-import BusinessCard from "../components/BusinessCard.astro";
-import ScrollTripMascot from "../components/ScrollTripMascot.astro";
+import TopBar from "../components/TopBar.astro";
 import "../styles/global.css";
 
-interface Props {
-  title?: string;
-  description?: string;
-  /** The site-wide scroll traveller — enabled per page (HANDOFF §11.1).
-   *  /contact gets none; the home grid is too short to travel. */
-  traveller?: boolean;
-  /** true only on /w-phrases — emits the five specimen families' @font-face. */
-  specimen?: boolean;
-}
-
-const {
-  title,
-  description = site.seo.description,
-  traveller = false,
-  specimen = false,
-} = Astro.props;
-const pageTitle = title ? `${title} — ${site.name}` : `${site.name}`;
+interface Props { title?: string; description?: string }
+const { title, description = site.seo.description } = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.shortRole}`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
-
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" id="top">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,82 +22,50 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48" />
     <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
 
-    {/* One family for all site text (HANDOFF §4). The five specimen faces are
-        W Phrases-only and are emitted without preload, on that page alone. */}
     <Font cssVariable="--font-pixel" preload />
-    {
-      specimen && (
-        <>
-          <Font cssVariable="--font-grotesque" />
-          <Font cssVariable="--font-condensed" />
-          <Font cssVariable="--font-hand" />
-          <Font cssVariable="--font-slab" />
-          <Font cssVariable="--font-serif" />
-        </>
-      )
-    }
+    <Font cssVariable="--font-sans" preload />
 
-    {/* Set the theme before first paint — otherwise dark visitors get a flash
-        of the pale background. Inline and blocking on purpose. */}
+    {/* Theme before first paint (Plan.md §5.3). Inline and blocking on purpose. */}
     <script is:inline>
       (function () {
         try {
-          var stored = localStorage.getItem("theme");
-          if (stored === "dark" || stored === "light") {
-            document.documentElement.dataset.theme = stored;
-            return;
-          }
-        } catch (e) {
-          /* storage blocked — fall through to the OS preference */
-        }
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          document.documentElement.dataset.theme = "dark";
-        }
+          var s = localStorage.getItem("theme");
+          if (s === "dark" || s === "light") { document.documentElement.dataset.theme = s; return; }
+        } catch (e) {}
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.dataset.theme = "dark";
       })();
     </script>
+    <noscript>
+      {/* JS off: follow the OS. The dark tokens are mirrored from tokens.css. */}
+      <style>
+        @media (prefers-color-scheme: dark) {
+          html { color-scheme: dark; --bg: #150E2B; --ink: #E7DEFB; --accent: #FF7A55; --muted: #A99BC9; --line: #2E2450; --plate: #221846; --on-accent: #150E2B; }
+        }
+      </style>
+    </noscript>
   </head>
-
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <NavPill />
+    <TopBar />
     <main id="main">
       <slot />
     </main>
-    <BusinessCard />
-    {traveller && <ScrollTripMascot />}
+    <slot name="after" />
   </body>
 </html>
 
 <style>
-  main {
-    /* Room for the fixed business card so it never covers the last content. */
-    padding-bottom: 9rem;
-  }
-
   .skip-link {
-    position: absolute;
-    left: var(--space-s);
-    top: var(--space-s);
-    z-index: 100;
-    padding: 0.7rem 1.1rem;
-    background: var(--accent);
-    color: var(--on-accent);
-    text-decoration: none;
-    border-radius: var(--radius);
-    transform: translateY(-200%);
-    transition: transform 0.15s ease;
+    position: absolute; left: var(--space-s); top: var(--space-s); z-index: 100;
+    padding: 0.7rem 1.1rem; background: var(--accent); color: var(--on-accent);
+    text-decoration: none; border-radius: var(--radius);
+    transform: translateY(-200%); transition: transform 0.15s ease;
   }
-
-  /* `:focus`, not `:focus-visible` — this link is only ever reached by
-     keyboard, and it must appear for every way a browser can focus it. */
-  .skip-link:focus {
-    transform: translateY(0);
-  }
+  .skip-link:focus { transform: translateY(0); }
 </style>

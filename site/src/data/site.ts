@@ -1,17 +1,17 @@
 /**
- * Site-wide facts (HANDOFF §8). One data source: the business card, the
- * /contact page, and the vCard all read this file so they can never drift.
- *
- * Values marked TODO(owner) are placeholders so the build runs — do not invent
- * real values for them.
+ * Site-wide facts (Plan.md §8). The hero, the contact card, and contact.vcf
+ * all read this file so they can never drift. Do not invent TODO(owner) values.
  */
-
 export type SiteConfig = {
   name: string;
   role: string;
+  shortRole: string;
   location: string;
+  origin: string;
+  destination: string;
+  lead: string;
   tagline: string;
-  /** Any social left as "" is dropped from the page rather than rendered empty. */
+  closing: string;
   socials: {
     email: string;
     github: string;
@@ -20,51 +20,45 @@ export type SiteConfig = {
     facebook: string;
     devpost: string;
   };
-  /** "" until resume.pdf exists — the Résumé row drops itself. */
   resumeUrl: string;
   url: string;
   seo: { description: string };
 };
 
-// Annotated rather than `as const`: empty placeholders must stay typed as
-// `string`, or narrowing them to their literal `""` makes the "drop it if
-// blank" checks unreachable.
 export const site: SiteConfig = {
   name: "Oak Soe Khant",
   role: "Second-year Computer Engineering student, De Anza Community College",
+  shortRole: "Computer Engineering @ De Anza",
   location: "Santa Clara, California",
+  origin: "Yangon",
+  destination: "Bay Area, CA",
+  // Verbatim, owner's own words. Three exclamation marks are intentional.
+  lead:
+    "What's up everyone!!! My name is Oak, a Second-year Computer Engineering student at DeAnza Community College, transferring in 2027.",
   tagline:
     "Building cool products to boost productivity. Hackathon fanatic. Mindful AI user. Reader in progress.",
-
+  closing: "Leveraging artificial intelligence to sharpen actual intelligence.",
   socials: {
     email: "oaksoekhant182209@gmail.com",
     github: "https://github.com/Mr-Shine09",
     linkedin: "https://www.linkedin.com/in/oak-soe-khant-350252362",
-    instagram: "https://www.instagram.com/oak_soe_khant909",
-    facebook: "https://www.facebook.com/johnwick.wick.37625",
-    devpost: "https://devpost.com/oaksoekhant182209",
+    instagram: "https://www.instagram.com/oak_soe_khant909", // vCard only
+    facebook: "https://www.facebook.com/johnwick.wick.37625", // vCard only
+    devpost: "https://devpost.com/oaksoekhant182209", // vCard only
   },
-
-  // TODO(owner): drop the PDF at site/public/resume.pdf, then set "/resume.pdf".
   resumeUrl: "/resume.pdf",
-
-  // Registered 2 Sep 2026 through Cloudflare Registrar. Used for canonical URLs and the vCard.
+  // Registered 2 Sep 2026 through Cloudflare Registrar.
   url: "https://mrshine.dev",
-
   seo: {
-    description:
-      "A personal time capsule — who I am and what I love to do. Projects, reading, and collected phrases.",
+    description: "A personal time capsule — who I am and what I love to do. Projects, highlights, and what I'm reading.",
   },
 };
 
-/** Ordered, labelled contact rows — blank fields dropped, never rendered empty. */
-export const contactRows: { label: string; href: string; text: string; me?: boolean }[] = [
-  { label: "Email", href: `mailto:${site.socials.email}`, text: site.socials.email },
-  { label: "GitHub", href: site.socials.github, text: "Mr-Shine09", me: true },
+/** Rows on the contact card, in order. Blank hrefs drop rather than render empty. */
+export const contactRows: { label: string; href: string; text: string; me?: boolean; copy?: boolean }[] = [
+  { label: "Website", href: site.url, text: site.url.replace(/^https?:\/\//, "") },
+  { label: "Email", href: `mailto:${site.socials.email}`, text: site.socials.email, copy: true },
   { label: "LinkedIn", href: site.socials.linkedin, text: "oak-soe-khant", me: true },
-  { label: "Instagram", href: site.socials.instagram, text: "oak_soe_khant909", me: true },
-  { label: "Facebook", href: site.socials.facebook, text: "Oak Soe Khant", me: true },
-  { label: "Devpost", href: site.socials.devpost, text: "oaksoekhant182209", me: true },
-  ...(site.resumeUrl ? [{ label: "Résumé", href: site.resumeUrl, text: "resume.pdf" }] : []),
-  { label: "vCard", href: "/contact.vcf", text: "contact.vcf" },
+  { label: "GitHub", href: site.socials.github, text: "Mr-Shine09", me: true },
+  { label: "Save contact", href: "/contact.vcf", text: "contact.vcf" },
 ].filter((row) => row.href && row.text);

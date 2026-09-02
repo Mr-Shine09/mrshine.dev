@@ -1,0 +1,21 @@
+---
+interface Props {
+  id: string;         // section id; heading gets `${id}-title`
+  title: string;
+  label?: string;     // small letterspaced line under the title (e.g. a count)
+  emoji?: string;     // decorative, above the title
+}
+const { id, title, label, emoji } = Astro.props;
+---
+<header class="section-head">
+  {emoji && <span class="section-head__emoji" aria-hidden="true">{emoji}</span>}
+  <h2 id={`${id}-title`} class="section-head__title">{title}</h2>
+  {label && <p class="label">{label}</p>}
+</header>
+
+<style>
+  .section-head { display: grid; gap: var(--space-xs); margin-bottom: var(--space-l); }
+  .section-head__emoji { font-size: var(--fs-xl); line-height: 1; }
+  .section-head__title { font-size: var(--fs-xl); letter-spacing: 0.04em; text-transform: uppercase; }
+  @media (max-width: 40rem) { .section-head__title { font-size: var(--fs-lg); } }
+</style>
