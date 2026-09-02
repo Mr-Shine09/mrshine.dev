@@ -16,11 +16,11 @@ subset() { # $1 in.ttf  $2 out.woff2
 mkdir -p "$SRC/geist-sans"
 for w in Regular Medium; do
   f="$SRC/geist-sans/Geist-$w.ttf"
-  [ -f "$f" ] || curl -sSL -o "$f" \
+  [ -f "$f" ] || curl -fsSL -o "$f" \
     "https://raw.githubusercontent.com/vercel/geist-font/main/packages/next/dist/fonts/geist-sans/Geist-$w.ttf"
 done
-[ -f "$SRC/geist-sans/OFL.txt" ] || curl -sSL -o "$SRC/geist-sans/OFL.txt" \
-  "https://raw.githubusercontent.com/vercel/geist-font/main/LICENSE.TXT"
+[ -f "$SRC/geist-sans/OFL.txt" ] || curl -fsSL -o "$SRC/geist-sans/OFL.txt" \
+  "https://raw.githubusercontent.com/vercel/geist-font/main/OFL.txt"
 
 subset "$SRC/geist-pixel/GeistPixel-Regular-VariableFont_ELSH.ttf" "$OUT/geist-pixel.woff2"
 subset "$SRC/geist-sans/Geist-Regular.ttf" "$OUT/geist-sans.woff2"
