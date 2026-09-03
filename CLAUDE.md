@@ -5,7 +5,8 @@ stack, type, theme, the five-section page spec, content schemas, acceptance
 criteria, and the build checklist. `HANDOFF.md`, `plan.md`, `ledger.md`, and
 the old `docs/*.md` specs were folded into it and deleted on 2 Sep 2026.
 
-The owner's design sketch is `docs/Website-Plan.pdf`.
+The owner's design sketch is `docs/Website-Plan.pdf`. Day-to-day content edits
+(books, highlights, projects, copy) are documented in `instruction.md`.
 
 For any mascot or animation task, read
 `site/public/assets/animation/ANIMATION_ASSETS.md` next.

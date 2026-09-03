@@ -4,6 +4,7 @@
 **Supersedes:** `HANDOFF.md`, `plan.md`, `ledger.md`, and `docs/{about-me,contact,projects,reading-list,w-phrases}.md`. All of those are deleted; their still-valid decisions, verbatim copy, and reasoning live here. Git history has the originals.
 **Design source:** `docs/Website-Plan.pdf` — four hand-drawn pages by the owner (2 Sep 2026). Where this document and the sketch disagree, the sketch wins unless a decision below says otherwise.
 **For:** a build session starting cold. Read all of it. No other document is required.
+**Day-to-day edits** (books, highlights, projects, copy): see `instruction.md` at the repo root.
 
 ---
 
@@ -284,7 +285,7 @@ The `run` scene travels along the bottom of the viewport as the visitor scrolls:
 - Never creates layout width or body scroll.
 
 ### 7.7 Scene player rules (all stationary scenes)
-- One component (`AnimatedScene.astro`) reads `public/assets/animation/scenes/scene-contract.json`; an unknown scene id **throws at build time**. Frame size 384×320, hero 160×208. **Scene art is stored at 2× its native pixels** (every pixel run is even), so the default display scale is **0.75 → 288×240**: three device pixels per art pixel on Retina and a figure the same height as the hero's. The runner is smaller than the stationary scenes — 192×160 on laptops, 96×80 on phones — so it never dominates the viewport (owner, 3 Sep 2026).
+- One component (`AnimatedScene.astro`) reads `public/assets/animation/scenes/scene-contract.json`; an unknown scene id **throws at build time**. Frame size 384×320, hero 160×208. **Scene art is stored at 2× its native pixels** (every pixel run is even), so the default display scale is **0.75 → 288×240**. The trophy uses that default; the **workbench and reading scenes render at 0.5 (192×160)** because their frames include furniture and read far larger than the lone trophy figure at the same scale (owner, 3 Sep 2026). The runner is smaller than the stationary scenes — 192×160 on laptops, 96×80 on phones — so it never dominates the viewport (owner, 3 Sep 2026).
 - **Outline pass (2 Sep 2026):** `trophy-lift`, `workbench-zap` and `run` had a pale rim of edge pixels that haloed on dark backgrounds. `scripts/fix-scene-outlines.py` recolours only fully opaque edge pixels with mean RGB > 150 to the mascot ink (#111219) on every frame; interior colours and alpha are untouched. Originals are in `site/archive/animation/pre-outline-fix/`. `--check` fails if a light rim reappears (harness check `scene-outlines`).
 - Astro does not propagate a parent's style scope to a child component's root, so parents position scenes through a wrapper `<div>` they own, never through a class passed to `AnimatedScene`.
 - Each scene = APNG `*-atlas.png` (animation with embedded timing — never treat as a sprite sheet) + `*-static.png` first-frame companion.
@@ -431,12 +432,11 @@ Draft projects and books with unknown status never render; the build says why.
 
 | Item | Blocks |
 |---|---|
-| Look-Out dashboard screenshot + collaborator names | Card image — the eye logo (`lookout-eye-1024.png`) is used until the owner finds a screenshot — and the credits line |
+| Look-Out dashboard screenshot | The owner decided the eye logo stays (3 Sep 2026); no action |
 | VisionAssist team names | Collaborator line |
-| The Infinity Machine: progress % | Its ring (started 2026-08-20 is set; the card shows no ring until a percentage exists) |
 | Any finished books | Shelves show the empty state until one exists |
 
-Resolved 3 Sep 2026: DA Hacks years (3.5 and 4.0, both 2025); Infinity Machine start date (20 Aug 2026); Echo Devpost (`https://devpost.com/software/re3-x6kj0r`, submitted as Re3); Pages connected to GitHub with `site/.node-version` = 22.
+Resolved 3 Sep 2026: Infinity Machine progress 30% (chapter 6 of 20); DA Hacks years (3.5 and 4.0, both 2025); Infinity Machine start date (20 Aug 2026); Echo Devpost (`https://devpost.com/software/re3-x6kj0r`, submitted as Re3); Pages connected to GitHub with `site/.node-version` = 22.
 Resolved 2 Sep 2026: domain (`mrshine.dev`, bought — §14.4 attach step pending); ICPC year (2025); Echo's link (`https://github.com/aadityad12/Echo`, the original repo — confirmed); Dune ISBN; Infinity Machine ISBN; lead and closing lines both in.
 
 ---
