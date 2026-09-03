@@ -1,12 +1,21 @@
 ---
 import { site, contactRows } from "../data/site";
 import SectionHead from "./SectionHead.astro";
-const icons: Record<string, string> = { Website: "⌂", Email: "✉", LinkedIn: "in", GitHub: "◉", "Save contact": "▤" };
+import Icon from "./Icon.astro";
+
+// Devicon for the brands, Tabler for the generic rows (Devicon has no résumé/mail/globe).
+const icons: Record<string, { name: string; mono: boolean }> = {
+  Website: { name: "tabler/world", mono: false },
+  Email: { name: "tabler/mail", mono: false },
+  LinkedIn: { name: "devicon/linkedin-plain", mono: true },
+  GitHub: { name: "devicon/github", mono: true },
+  "Save contact": { name: "tabler/address-book", mono: false },
+};
 ---
 <section id="contact" class="section" aria-labelledby="contact-title">
   <div class="wrap">
     <SectionHead id="contact" title="Contact" />
-    <div class="bizcard">
+    <div class="bizcard" data-reveal>
       <header class="bizcard__head">
         <div>
           <p class="bizcard__name pixel">{site.name.toUpperCase()}</p>
@@ -15,16 +24,19 @@ const icons: Record<string, string> = { Website: "⌂", Email: "✉", LinkedIn: 
         <img class="bizcard__mark pixelated" src="/favicon-48.png" alt="" width="48" height="48" />
       </header>
       <ul class="bizcard__rows">
-        {contactRows.map((row) => (
-          <li class="bizcard__row">
-            <span class="bizcard__icon pixel" aria-hidden="true">{icons[row.label] ?? "·"}</span>
-            <span class="bizcard__label label">{row.label}</span>
-            <a class="bizcard__value" href={row.href} rel={row.me ? "me" : row.href.startsWith("http") ? "noopener" : undefined}>{row.text}</a>
-            {row.copy && (
-              <button type="button" class="bizcard__copy btn" data-copy={row.text} aria-label="Copy email address" hidden>Copy</button>
-            )}
-          </li>
-        ))}
+        {contactRows.map((row) => {
+          const ic = icons[row.label] ?? { name: "tabler/arrow-up-right", mono: false };
+          return (
+            <li class="bizcard__row">
+              <span class="bizcard__icon" aria-hidden="true"><Icon name={ic.name} size={20} mono={ic.mono} /></span>
+              <span class="bizcard__label label">{row.label}</span>
+              <a class="bizcard__value" href={row.href} rel={row.me ? "me" : row.href.startsWith("http") ? "noopener" : undefined}>{row.text}</a>
+              {row.copy && (
+                <button type="button" class="bizcard__copy btn" data-copy={row.text} aria-label="Copy email address" hidden>Copy</button>
+              )}
+            </li>
+          );
+        })}
       </ul>
       <p class="bizcard__status label" data-copy-status aria-live="polite"></p>
     </div>
@@ -32,12 +44,22 @@ const icons: Record<string, string> = { Website: "⌂", Email: "✉", LinkedIn: 
 </section>
 
 <style>
-  .bizcard { max-width: 36rem; margin-inline: auto; padding: var(--space-m); border: 2px solid var(--ink); border-radius: var(--radius); background: var(--plate); box-shadow: 6px 6px 0 var(--shadow); }
+  /* A printed card: two-ink border, hard offset shadow like a stacked second sheet. */
+  .bizcard {
+    max-width: 36rem; margin-inline: auto; padding: var(--space-m);
+    border: 2px solid var(--ink); border-radius: var(--radius); background: var(--plate);
+    box-shadow: 8px 8px 0 var(--ink);
+  }
   .bizcard__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-s); padding-bottom: var(--space-s); border-bottom: 2px solid var(--ink); }
   .bizcard__name { font-size: var(--fs-md); letter-spacing: 0.04em; margin: 0 0 0.2rem; }
   .bizcard__rows { display: grid; gap: 0.25rem; margin-top: var(--space-s); }
-  .bizcard__row { display: grid; grid-template-columns: 2rem 7rem minmax(0, 1fr) auto; align-items: center; gap: var(--space-xs); min-height: var(--tap-min); }
-  .bizcard__icon { color: var(--accent); font-size: var(--fs-base); }
+  .bizcard__row {
+    display: grid; grid-template-columns: 2rem 7rem minmax(0, 1fr) auto; align-items: center; gap: var(--space-xs);
+    min-height: var(--tap-min); padding-inline: 0.4rem; margin-inline: -0.4rem; border-radius: var(--radius);
+    transition: background 0.15s ease;
+  }
+  .bizcard__row:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .bizcard__icon { color: var(--accent); display: inline-flex; }
   .bizcard__value { overflow-wrap: anywhere; min-height: var(--tap-min); display: inline-flex; align-items: center; }
   .bizcard__copy { padding: 0.3rem 0.6rem; font-size: var(--fs-xs); }
   .bizcard__status { min-height: 1.2em; margin-top: var(--space-xs); }

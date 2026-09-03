@@ -1,0 +1,29 @@
+---
+/**
+ * A full-bleed divider band printed in the negative: ink ground, paper text.
+ * Sits between Projects and the Reading List and echoes the tagline.
+ */
+interface Props { eyebrow: string; watermark: string }
+const { eyebrow, watermark } = Astro.props;
+---
+<div class="band" data-reveal>
+  <div class="wrap band__inner">
+    <p class="label band__eyebrow">{eyebrow}</p>
+    <p class="band__text pixel"><slot /></p>
+    <span class="band__mark pixel" aria-hidden="true">{watermark.toUpperCase()}</span>
+  </div>
+</div>
+
+<style>
+  .band { position: relative; background: var(--ink); color: var(--bg); overflow: clip; padding-block: var(--space-xl); }
+  .band__inner { position: relative; display: grid; gap: var(--space-xs); }
+  .band__eyebrow { color: var(--bg); opacity: 0.7; }
+  .band__text { position: relative; z-index: 1; font-size: var(--fs-xl); line-height: 1.15; text-wrap: balance; max-width: 22ch; }
+  .band__text :global(.accent) { color: var(--accent); }
+  .band__mark {
+    position: absolute; right: 0; bottom: -0.35em; z-index: 0;
+    font-size: clamp(72px, 16vw, 200px); line-height: 1; letter-spacing: 0.04em;
+    color: var(--bg); opacity: 0.07; white-space: nowrap; pointer-events: none; user-select: none;
+  }
+  @media (max-width: 40rem) { .band__text { font-size: var(--fs-lg); } }
+</style>

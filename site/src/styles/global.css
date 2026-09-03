@@ -67,7 +67,7 @@ button { font: inherit; color: inherit; }
 /* ---- primitives ---- */
 .wrap { width: min(100% - var(--gutter) * 2, var(--page-max)); margin-inline: auto; }
 
-.section { padding-block: var(--space-2xl); border-top: var(--border); }
+.section { position: relative; padding-block: var(--space-2xl); border-top: var(--border); overflow-x: clip; }
 .section:first-of-type { border-top: 0; }
 
 .label {
@@ -80,7 +80,7 @@ button { font: inherit; color: inherit; }
 }
 
 .chip {
-  display: inline-block;
+  display: inline-flex; align-items: center; gap: 0.35rem;
   font-family: var(--font-pixel);
   font-size: var(--fs-xs);
   letter-spacing: 0.08em;
@@ -102,8 +102,18 @@ button { font: inherit; color: inherit; }
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .btn:hover { background: var(--ink); color: var(--bg); }
-.btn--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.btn--primary:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn .icon { flex: none; }
+.btn__label { line-height: 1; }
+/* Primary: solid ink with an accent icon square — a stamped button. */
+.btn--primary { padding: 0; background: var(--ink); border-color: var(--ink); color: var(--bg); overflow: hidden; }
+.btn--primary .btn__ico { display: inline-grid; place-items: center; align-self: stretch; width: 2.75rem; background: var(--accent); color: var(--on-accent); }
+.btn--primary .btn__label { padding: 0 1rem 0 0.85rem; }
+.btn--primary:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn--primary:hover .btn__ico { background: var(--ink); color: var(--bg); }
+/* Outline: quiet, with a corner arrow for anything that leaves the page. */
+.btn--outline { gap: 0.5rem; padding: 0.55rem 0.85rem; }
+.btn__arrow { opacity: 0.7; transition: translate 0.15s ease; }
+.btn--outline:hover .btn__arrow { translate: 2px -2px; }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -121,9 +131,36 @@ button { font: inherit; color: inherit; }
   mask-image: linear-gradient(to right, transparent, #000 2.5rem, #000 calc(100% - 2.5rem), transparent);
 }
 
+/* ---- riso devices ---- */
+
+/* Highlighter: a translucent coral overprint behind the words that matter. */
+mark {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: inherit;
+  padding: 0.05em 0.18em;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Ruled paper for the Reading List: plate tint with a hairline every 28px. */
+.section--paper {
+  background-color: var(--plate);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 27px, var(--line) 27px 28px);
+}
+
+/* Scroll reveal: only when JS is present (html.js); content is never hidden without it. */
+html.js [data-reveal] {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 0.5s ease var(--reveal-delay, 0s), translate 0.5s ease var(--reveal-delay, 0s);
+}
+html.js [data-reveal].is-visible { opacity: 1; translate: 0 0; }
+
 /* ---- reduced motion (§2.3) ---- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  html.js [data-reveal] { opacity: 1; translate: none; transition: none; }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;

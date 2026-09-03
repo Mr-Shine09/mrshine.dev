@@ -35,6 +35,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     {/* Theme before first paint (Plan.md §5.3). Inline and blocking on purpose. */}
     <script is:inline>
       (function () {
+        document.documentElement.classList.add("js");
         try {
           var s = localStorage.getItem("theme");
           if (s === "dark" || s === "light") { document.documentElement.dataset.theme = s; return; }
@@ -60,6 +61,25 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       <slot />
     </main>
     <BottomRunner />
+    <script>
+      // Scroll reveal (progressive enhancement): add a class once, on first sight.
+      const revealables = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      if (!("IntersectionObserver" in window)) {
+        revealables.forEach((el) => el.classList.add("is-visible"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              e.target.classList.add("is-visible");
+              io.unobserve(e.target);
+            }
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+        );
+        revealables.forEach((el) => io.observe(el));
+      }
+    </script>
   </body>
 </html>
 

@@ -10,7 +10,7 @@ const fmt = (iso?: string) => iso ? new Date(iso + "T00:00:00").toLocaleDateStri
   <p class="label">Currently reading</p>
   <ul class="current__grid">
     {books.map(({ data }) => (
-      <li class="current__card">
+      <li class="current__card" data-reveal>
         <div class="current__cover">
           {data.cover ? <Image src={data.cover} alt={`Cover of ${data.title}`} width={160} densities={[1, 2]} /> : <span class="current__nocover pixel">{data.title}</span>}
         </div>
@@ -32,7 +32,7 @@ const fmt = (iso?: string) => iso ? new Date(iso + "T00:00:00").toLocaleDateStri
   .current__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-m); }
   .current__card {
     display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: var(--space-s); align-items: center;
-    padding: var(--space-s); border: var(--border); border-radius: var(--radius); background: var(--plate);
+    padding: var(--space-s); border: var(--border); border-radius: var(--radius); background: var(--bg);
   }
   .current__card--empty { border-style: dashed; background: transparent; place-items: center; min-height: 9rem; }
   .current__cover { aspect-ratio: 2 / 3; display: grid; place-items: center; background: var(--bg); border: var(--border); overflow: hidden; }

@@ -8,12 +8,18 @@ const projects = (await getCollection("projects", ({ data }) => !data.draft)).so
 <section id="projects" class="section" aria-labelledby="projects-title">
   <div class="wrap projects__head">
     <SectionHead id="projects" title="Projects" label={`${projects.length} projects`} />
-    <AnimatedScene scene="workbench-zap" once class="projects__scene" />
+    <AnimatedScene scene="workbench-zap" class="projects__scene" />
   </div>
   <ProjectSlider projects={projects} />
 </section>
 
 <style>
-  .projects__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-l); align-items: end; }
-  @media (max-width: 48rem) { .projects__head { grid-template-columns: 1fr; } .projects__scene { justify-self: start; } }
+  /* The head stays centred; on wide screens the workbench sits off to the right
+     like a figure in the margin, without pushing the title off-centre. */
+  .projects__head { position: relative; display: grid; justify-items: center; }
+  .projects__scene { margin-bottom: var(--space-m); }
+  @media (min-width: 72rem) {
+    .projects__head { padding-right: 0; }
+    .projects__scene { position: absolute; right: 0; bottom: 0; margin: 0; }
+  }
 </style>

@@ -19,11 +19,11 @@ const shelves = [
   { id: "shelf-nonfiction", title: "Non-Fiction", books: finished.filter((b) => b.data.language === "en" && b.data.genre === "nonfiction") },
 ];
 ---
-<section id="personal" class="section" aria-labelledby="personal-title">
+<section id="personal" class="section section--paper" aria-labelledby="personal-title">
   <div class="wrap reading">
     <AnimatedScene scene="reading-fire" class="reading__scene" />
     <div class="reading__body">
-      <SectionHead id="personal" title="Reading List" label={count} />
+      <SectionHead id="personal" title="Reading List" label={count} watermark="Reading" />
       <CurrentlyReading books={reading} />
       <div class="reading__shelves">
         {shelves.map((s) => <Shelf id={s.id} title={s.title} books={s.books} emptyHint={hint} />)}

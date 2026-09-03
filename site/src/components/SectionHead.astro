@@ -1,21 +1,35 @@
 ---
 interface Props {
-  id: string;         // section id; heading gets `${id}-title`
+  id: string;           // section id; heading gets `${id}-title`
   title: string;
-  label?: string;     // small letterspaced line under the title (e.g. a count)
-  emoji?: string;     // decorative, above the title
+  label?: string;       // small letterspaced line under the title (e.g. a count)
+  emoji?: string;       // decorative, above the title
+  watermark?: string;   // ghosted word behind the title; defaults to the title
 }
-const { id, title, label, emoji } = Astro.props;
+const { id, title, label, emoji, watermark = title } = Astro.props;
 ---
-<header class="section-head">
+<header class="section-head" data-reveal>
+  <span class="section-head__mark pixel" aria-hidden="true">{watermark.toUpperCase()}</span>
   {emoji && <span class="section-head__emoji" aria-hidden="true">{emoji}</span>}
   <h2 id={`${id}-title`} class="section-head__title">{title}</h2>
   {label && <p class="label">{label}</p>}
+  <span class="section-head__rule" aria-hidden="true"></span>
 </header>
 
 <style>
-  .section-head { display: grid; gap: var(--space-xs); margin-bottom: var(--space-l); }
+  .section-head {
+    position: relative; display: grid; justify-items: center; text-align: center;
+    gap: var(--space-xs); margin-bottom: var(--space-l); padding-top: var(--space-m);
+  }
+  /* The ghosted second pass: same word, printed huge at 5% ink. */
+  .section-head__mark {
+    position: absolute; left: 50%; top: -0.05em; translate: -50% 0; z-index: 0;
+    font-size: clamp(64px, 14vw, 176px); line-height: 1; letter-spacing: 0.04em;
+    color: var(--ink); opacity: 0.05; white-space: nowrap; pointer-events: none; user-select: none;
+  }
+  .section-head > :not(.section-head__mark) { position: relative; z-index: 1; }
   .section-head__emoji { font-size: var(--fs-xl); line-height: 1; }
-  .section-head__title { font-size: var(--fs-xl); letter-spacing: 0.04em; text-transform: uppercase; }
+  .section-head__title { font-size: var(--fs-xl); letter-spacing: 0.06em; text-transform: uppercase; }
+  .section-head__rule { display: block; width: min(100%, 36rem); height: 1px; background: var(--line); margin-top: var(--space-s); }
   @media (max-width: 40rem) { .section-head__title { font-size: var(--fs-lg); } }
 </style>

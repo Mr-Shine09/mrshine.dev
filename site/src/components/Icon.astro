@@ -1,0 +1,30 @@
+---
+/**
+ * Inline SVG icon from src/icons/<set>/<name>.svg — Devicon for developer
+ * brands (github, linkedin, swift, python …) and Tabler for generic glyphs
+ * (mail, world, file-text, arrow-up-right …). Inlined at build time, so no
+ * request leaves the page. `mono` recolours brand fills to currentColor so an
+ * icon can sit in running text; leave it off for the colourful stack chips.
+ */
+interface Props { name: string; size?: number; mono?: boolean; class?: string }
+const { name, size = 20, mono = false, class: className = "" } = Astro.props;
+
+const files = import.meta.glob<string>("../icons/**/*.svg", { query: "?raw", import: "default", eager: true });
+const key = `../icons/${name}.svg`;
+let svg = files[key];
+if (!svg) throw new Error(`Unknown icon "${name}" — expected src/icons/${name}.svg`);
+
+svg = svg.replace(/<\?xml[^>]*>/, "").replace(/<!--[\s\S]*?-->/g, "").trim();
+if (mono) {
+  svg = svg
+    .replace(/fill="(?!none)[^"]*"/g, 'fill="currentColor"')
+    .replace(/fill:\s*#[0-9a-fA-F]{3,8}/g, "fill:currentColor")
+    .replace(/stop-color="[^"]*"/g, 'stop-color="currentColor"');
+}
+const cls = ["icon", className].filter(Boolean).join(" ");
+svg = svg.replace(/<svg\b([^>]*)>/, (_m, attrs: string) => {
+  const kept = attrs.replace(/\s(width|height|class|aria-hidden|focusable)="[^"]*"/g, "");
+  return `<svg${kept} width="${size}" height="${size}" class="${cls}" aria-hidden="true" focusable="false">`;
+});
+---
+<Fragment set:html={svg} />

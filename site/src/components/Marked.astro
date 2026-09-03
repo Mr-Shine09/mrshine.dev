@@ -1,0 +1,25 @@
+---
+/**
+ * Renders `text` verbatim, wrapping each listed phrase in <mark>. The copy in
+ * site.ts stays untouched; only presentation is added (Plan.md §7.1 keeps the
+ * lead and tagline verbatim).
+ */
+interface Props { text: string; marks?: string[] }
+const { text, marks = [] } = Astro.props;
+
+type Seg = { t: string; m: boolean };
+let segs: Seg[] = [{ t: text, m: false }];
+for (const phrase of marks) {
+  const next: Seg[] = [];
+  for (const s of segs) {
+    if (s.m || !s.t.includes(phrase)) { next.push(s); continue; }
+    const parts = s.t.split(phrase);
+    parts.forEach((p, i) => {
+      if (p) next.push({ t: p, m: false });
+      if (i < parts.length - 1) next.push({ t: phrase, m: true });
+    });
+  }
+  segs = next;
+}
+---
+{segs.map((s) => (s.m ? <mark>{s.t}</mark> : <Fragment>{s.t}</Fragment>))}

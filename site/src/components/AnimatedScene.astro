@@ -9,11 +9,12 @@ interface Props {
   label?: string;
   /** Play once on first reveal and hold the APNG's final frame. */
   once?: boolean;
-  /** Integer-friendly display scale: 1 = 384×320, 0.5 = 192×160. */
-  scale?: 0.5 | 1;
+  /** Display scale. Scene art is stored at 2× its native pixels, so 0.75 (288×240) is
+   *  3 device pixels per art pixel on Retina and matches the hero figure's height. */
+  scale?: 0.5 | 0.75 | 1;
 }
 
-const { scene, class: className, label, once = false, scale = 1 } = Astro.props;
+const { scene, class: className, label, once = false, scale = 0.75 } = Astro.props;
 const metadata = sceneContract.scenes.find((item) => item.id === scene);
 
 if (!metadata) {
@@ -50,8 +51,6 @@ const [frameWidth, frameHeight] = sceneContract.layout.outputFrameSize;
 <style>
   .oak-scene { display: block; width: var(--scene-w); height: var(--scene-h); max-width: 100%; }
   .oak-scene__animation { display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
-  /* Phones: half size keeps integer scale (384→192). */
-  @media (max-width: 40rem) { .oak-scene { width: calc(var(--scene-w) / 2); height: calc(var(--scene-h) / 2); } }
 </style>
 
 <script>

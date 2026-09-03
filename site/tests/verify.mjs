@@ -113,9 +113,10 @@ check("highlights", async (browser) => {
   const { ctx, p } = await page(browser);
   const s = p.locator("section#highlights");
   assert((await s.locator("h2").innerText()).toUpperCase().includes("HIGHLIGHTS"), "heading");
-  assert(await s.locator(".achievements li").count() === 1, "expected one achievement row");
+  assert(await s.locator(".hl-col").count() === 2, "expected two highlight columns (awards, hackathons)");
+  assert(await s.locator(".achievements li").count() >= 4, "expected ICPC plus three hackathons");
   const row = await s.locator(".achievements li").first().innerText();
-  assert(row.includes("ICPC") && row.includes("2025"), `row text: ${row}`);
+  assert(row.includes("ICPC") && row.includes("2025"), `first award row text: ${row}`);
   assert((await s.innerText()).includes("More achievements coming soon."), "coming-soon line missing");
   assert(await s.locator('.oak-scene[aria-label*="trophy"]').count() === 1, "trophy-lift scene missing");
   await ctx.close();
@@ -281,6 +282,69 @@ check("third-party", async (browser) => {
   await p.waitForTimeout(800);
   assert(foreign.length === 0, `third-party requests: ${foreign.slice(0, 5).join(", ")}`);
   await ctx.close();
+});
+
+
+check("scene-size", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const sizes = await p.$$eval(".oak-scene", (els) => els.map((e) => { const r = e.getBoundingClientRect(); return `${Math.round(r.width)}x${Math.round(r.height)}`; }));
+  assert(sizes.length >= 3 && sizes.every((x) => x === "288x240"), `scenes must render at 288x240 (0.75), got ${sizes.join(", ")}`);
+  const runner = await p.locator("[data-runner]").evaluate((el) => `${Math.round(el.getBoundingClientRect().width)}x${Math.round(el.getBoundingClientRect().height)}`);
+  assert(runner === "288x240", `runner should be 288x240 on desktop, got ${runner}`);
+  await ctx.close();
+});
+
+check("scenes-loop", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const specs = await p.$$eval("[data-oak-scene]", (els) => els.map((e) => JSON.parse(e.dataset.oakScene)));
+  const once = specs.filter((sp) => sp.once).map((sp) => sp.animatedSrc);
+  assert(once.length === 0, `scenes must loop continuously; still one-shot: ${once.join(", ")}`);
+  await ctx.close();
+});
+
+check("scene-outlines", async () => {
+  const { execFileSync } = await import("node:child_process");
+  let out = "";
+  try { out = execFileSync("python3", ["scripts/fix-scene-outlines.py", "--check"], { encoding: "utf8" }); }
+  catch (e) { throw new Error(`light rim pixels remain in scene art:\n${e.stdout || e.message}`); }
+  assert(/0 light rim pixels/.test(out), `unexpected outline check output: ${out}`);
+});
+
+check("reveal", async (browser) => {
+  const { ctx, p } = await page(browser);
+  const total = await p.locator("[data-reveal]").count();
+  assert(total >= 8, `expected reveal targets on the page, found ${total}`);
+  for (let y = 0; y <= 1; y += 0.1) { await p.evaluate((f) => window.scrollTo(0, document.body.scrollHeight * f), y); await p.waitForTimeout(120); }
+  await p.waitForTimeout(700);
+  const hidden = await p.$$eval("[data-reveal]", (els) => els.filter((e) => !e.classList.contains("is-visible")).length);
+  assert(hidden === 0, `${hidden} reveal targets never became visible after a full scroll`);
+  const ring = await p.locator(".ring__val").first().evaluate((c) => c.getAttribute("stroke-dasharray"));
+  assert(ring && !ring.startsWith("0 "), `progress ring did not draw in: ${ring}`);
+  await ctx.close();
+  // JS off: nothing is hidden and the ring is full.
+  const { ctx: nctx, p: np } = await page(browser, { javaScriptEnabled: false });
+  const dim = await np.$$eval("[data-reveal]", (els) => els.filter((e) => parseFloat(getComputedStyle(e).opacity) < 1).length);
+  assert(dim === 0, `no-JS: ${dim} reveal targets are faded`);
+  await nctx.close();
+});
+
+check("mark-contrast", async (browser) => {
+  for (const scheme of ["light", "dark"]) {
+    const { ctx, p } = await page(browser, { colorScheme: scheme });
+    await p.evaluate((t) => { document.documentElement.dataset.theme = t; }, scheme);
+    const ratio = await p.locator("mark").first().evaluate((m) => {
+      const parse = (c) => c.match(/[\d.]+/g).map(Number);
+      const blend = (top, bottom) => { const [r, g, b, a = 1] = top; const [R, G, B] = bottom; return [r * a + R * (1 - a), g * a + G * (1 - a), b * a + B * (1 - a)]; };
+      const lum = ([r, g, b]) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+      const bg = parse(getComputedStyle(document.body).backgroundColor);
+      const wash = blend(parse(getComputedStyle(m).backgroundColor), bg);
+      const fg = parse(getComputedStyle(m).color);
+      const [l1, l2] = [lum(fg), lum(wash)].sort((a, b) => b - a);
+      return (l1 + 0.05) / (l2 + 0.05);
+    });
+    assert(ratio >= 4.5, `${scheme}: highlighter text contrast ${ratio.toFixed(2)} < 4.5`);
+    await ctx.close();
+  }
 });
 
 // ---- runner ----

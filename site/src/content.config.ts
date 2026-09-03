@@ -82,7 +82,8 @@ const achievements = defineCollection({
   schema: z.object({
     title: z.string(),
     org: z.string(),
-    year: z.string().regex(/^\d{4}$/, "year must be four digits"),
+    /** Four-digit year; optional for events whose date the owner has not supplied. */
+    year: z.string().regex(/^\d{4}$/, "year must be four digits").optional(),
     kind: z.enum(["competition", "hackathon", "award", "other"]),
     link: z.url().optional(),
     order: z.number().default(99),

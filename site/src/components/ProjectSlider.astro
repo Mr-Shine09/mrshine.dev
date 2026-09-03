@@ -4,7 +4,7 @@ import ProjectCard from "./ProjectCard.astro";
 interface Props { projects: CollectionEntry<"projects">[] }
 const { projects } = Astro.props;
 ---
-<div class="slider" data-slider>
+<div class="slider" data-slider data-reveal>
   <div class="slider__track scroller" tabindex="0" aria-label="Projects, scroll horizontally">
     {projects.map((p, i) => <ProjectCard project={p} index={i} total={projects.length} />)}
   </div>

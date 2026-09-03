@@ -3,40 +3,53 @@ import { Image } from "astro:assets";
 import { site } from "../data/site";
 import HeroWelcome from "./HeroWelcome.astro";
 import PlaneMotif from "./PlaneMotif.astro";
+import Marked from "./Marked.astro";
+import Icon from "./Icon.astro";
 import portrait from "../assets/photos/portrait.jpg";
 
-const links = [
-  { label: "Résumé", href: site.resumeUrl, icon: "▤" },
-  { label: "GitHub", href: site.socials.github, icon: "◉", me: true },
-  { label: "LinkedIn", href: site.socials.linkedin, icon: "in", me: true },
-];
+// The first name sits on a printed plate, like a riso colour block.
+const [firstName, ...restName] = site.name.toUpperCase().split(" ");
+const leadMarks = ["Computer Engineering", "transferring in 2027"];
+const taglineMarks = ["Hackathon fanatic", "Reader in progress"];
 ---
 <section id="about" class="section hero" aria-labelledby="about-title">
   <div class="wrap">
     <div class="hero__grid">
-      <div class="hero__text">
+      <div class="hero__text" data-reveal>
         <PlaneMotif />
-        <h1 id="about-title" class="hero__name">{site.name.toUpperCase()}</h1>
+        <h1 id="about-title" class="hero__name"><span class="hero__block">{firstName}</span> {restName.join(" ")}</h1>
         <p class="label hero__role">{site.shortRole}</p>
-        <p class="hero__lead">{site.lead}</p>
-        <p class="hero__tagline">{site.tagline}</p>
+        <p class="hero__lead"><Marked text={site.lead} marks={leadMarks} /></p>
+        <p class="hero__tagline"><Marked text={site.tagline} marks={taglineMarks} /></p>
         <ul class="hero__links" aria-label="Links">
-          {links.map((l) => (
-            <li>
-              <a class="hero__link" href={l.href} rel={l.me ? "me" : undefined}>
-                <span class="hero__icon pixel" aria-hidden="true">{l.icon}</span>
-                <span class="hero__linklabel">{l.label}</span>
-              </a>
-            </li>
-          ))}
+          <li>
+            <a class="btn btn--primary" href={site.resumeUrl}>
+              <span class="btn__ico"><Icon name="tabler/file-text" size={18} /></span>
+              <span class="btn__label">Résumé</span>
+            </a>
+          </li>
+          <li>
+            <a class="btn btn--outline" href={site.socials.github} rel="me">
+              <Icon name="devicon/github" size={18} mono />
+              <span class="btn__label">GitHub</span>
+              <Icon name="tabler/arrow-up-right" size={16} class="btn__arrow" />
+            </a>
+          </li>
+          <li>
+            <a class="btn btn--outline" href={site.socials.linkedin} rel="me">
+              <Icon name="devicon/linkedin-plain" size={18} mono />
+              <span class="btn__label">LinkedIn</span>
+              <Icon name="tabler/arrow-up-right" size={16} class="btn__arrow" />
+            </a>
+          </li>
         </ul>
       </div>
-      <div class="hero__mascot"><HeroWelcome scale={1} /></div>
-      <figure class="hero__portrait-wrap">
+      <div class="hero__mascot" data-reveal style="--reveal-delay: .12s"><HeroWelcome scale={1} /></div>
+      <figure class="hero__portrait-wrap" data-reveal style="--reveal-delay: .2s">
         <Image class="hero__portrait" src={portrait} alt="Oak, in side profile" width={360} densities={[1, 2]} loading="eager" />
       </figure>
     </div>
-    <p class="hero__closing pixel">{site.closing}</p>
+    <p class="hero__closing pixel" data-reveal>{site.closing}</p>
   </div>
 </section>
 
@@ -47,22 +60,12 @@ const links = [
     gap: var(--space-l); align-items: end;
   }
   .hero__text { display: grid; gap: var(--space-s); align-content: end; min-width: 0; }
-  .hero__name { font-size: var(--fs-2xl); letter-spacing: 0.02em; overflow-wrap: anywhere; }
+  .hero__name { font-size: var(--fs-2xl); letter-spacing: 0.02em; overflow-wrap: anywhere; line-height: 1.1; }
+  .hero__block { background: var(--plate); padding: 0.02em 0.16em; margin-left: -0.16em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .hero__role { color: var(--muted); }
   .hero__lead { font-size: var(--fs-md); line-height: 1.5; }
   .hero__tagline { color: var(--muted); }
-  .hero__links { display: flex; flex-wrap: wrap; gap: var(--space-s); margin-top: var(--space-xs); }
-  .hero__link {
-    display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem;
-    min-width: var(--tap-min); min-height: var(--tap-min); padding: 0.4rem 0.6rem;
-    text-decoration: none; color: var(--ink);
-  }
-  .hero__icon {
-    display: grid; place-items: center; width: 44px; height: 44px;
-    border: 2px solid var(--ink); border-radius: var(--radius); font-size: var(--fs-md);
-  }
-  .hero__linklabel { font-family: var(--font-pixel); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; }
-  .hero__link:hover .hero__icon { background: var(--ink); color: var(--bg); }
+  .hero__links { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-xs); }
   .hero__mascot { align-self: end; }
   .hero__portrait-wrap { margin: 0; padding: var(--space-xs); background: var(--plate); border: var(--border); }
   .hero__portrait { border: 2px solid var(--line); aspect-ratio: 1; object-fit: cover; width: 100%; }

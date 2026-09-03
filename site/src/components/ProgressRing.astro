@@ -7,8 +7,8 @@ const pct = Math.max(0, Math.min(100, Math.round(value)));
 <span class="ring" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={pct} aria-label={label} style={`--size:${size}px`}>
   <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} aria-hidden="true">
     <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--line)" stroke-width="6" />
-    <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="butt"
-      stroke-dasharray={`${(c * pct) / 100} ${c}`} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
+    <circle cx={size / 2} cy={size / 2} r={r} fill="none" class="ring__val" stroke="var(--accent)" stroke-width="6" stroke-linecap="butt"
+      style={`--dash:${(c * pct) / 100};--c:${c}`} stroke-dasharray={`${(c * pct) / 100} ${c}`} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
   </svg>
   <span class="ring__text pixel">{pct}%</span>
 </span>
@@ -17,4 +17,8 @@ const pct = Math.max(0, Math.min(100, Math.round(value)));
   .ring { position: relative; display: inline-grid; place-items: center; width: var(--size); height: var(--size); flex: none; }
   .ring svg { position: absolute; inset: 0; }
   .ring__text { font-size: var(--fs-xs); letter-spacing: 0.05em; }
+  /* Draws from empty to its value on reveal; JS-off and reduced motion show the value immediately. */
+  .ring__val { transition: stroke-dasharray 0.9s ease 0.15s; }
+  :global(html.js [data-reveal]:not(.is-visible)) .ring__val { stroke-dasharray: 0 var(--c); }
+  @media (prefers-reduced-motion: reduce) { :global(html.js [data-reveal]:not(.is-visible)) .ring__val { stroke-dasharray: var(--dash) var(--c); } }
 </style>

@@ -1,11 +1,22 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import Icon from "./Icon.astro";
+
 interface Props { project: CollectionEntry<"projects">; index: number; total: number }
 const { project, index, total } = Astro.props;
 const { data } = project;
 // `builtAt` often already names the year ("… Hackathon 2026"); do not repeat it.
 const meta = [data.builtAt?.includes(data.year) ? null : data.year, data.builtAt].filter(Boolean).join(" · ");
+
+// Stack chip → Devicon (brand colours). Unmapped tools render as plain chips.
+const devicon: Record<string, string> = {
+  Swift: "swift", SwiftUI: "swift", AppKit: "apple", XcodeGen: "xcode",
+  "Python 3": "python", "Python 3.11": "python", Python: "python",
+  Flutter: "flutter", Dart: "dart", Kotlin: "kotlin", SQLite: "sqlite",
+  FastAPI: "fastapi", "Redis Stack": "redis", Vite: "vitejs", Flask: "flask",
+  "Raspberry Pi 5": "raspberrypi", YOLOv8n: "pytorch",
+};
 ---
 <article class="card" tabindex="0" aria-roledescription="slide" aria-label={`${index + 1} of ${total}: ${data.title}`}>
   <div class="card__plate">
@@ -14,13 +25,32 @@ const meta = [data.builtAt?.includes(data.year) ? null : data.year, data.builtAt
   <div class="card__body">
     <h3 class="card__title">{data.title}</h3>
     <p class="card__summary">{data.summary}</p>
-    <ul class="card__stack" aria-label="Stack">{data.stack.map((s) => <li class="chip">{s}</li>)}</ul>
+    <ul class="card__stack" aria-label="Stack">
+      {data.stack.map((s) => (
+        <li class:list={["chip", { "chip--icon": !!devicon[s] }]}>
+          {devicon[s] && <Icon name={`devicon/${devicon[s]}`} size={14} />}
+          {s}
+        </li>
+      ))}
+    </ul>
     {meta && <p class="card__meta pixel">{meta}</p>}
     {data.collaborators.length > 0 && <p class="card__team">Team: {data.collaborators.join(" · ")}</p>}
     <p class="card__links">
-      {data.links.github && <a class="btn" href={data.links.github} rel="noopener">GitHub</a>}
-      {data.links.devpost && <a class="btn" href={data.links.devpost} rel="noopener">Devpost</a>}
-      {data.links.live && <a class="btn btn--primary" href={data.links.live} rel="noopener">Live</a>}
+      {data.links.github && (
+        <a class="btn btn--outline" href={data.links.github} rel="noopener">
+          <Icon name="devicon/github" size={16} mono /><span class="btn__label">GitHub</span><Icon name="tabler/arrow-up-right" size={14} class="btn__arrow" />
+        </a>
+      )}
+      {data.links.devpost && (
+        <a class="btn btn--outline" href={data.links.devpost} rel="noopener">
+          <span class="btn__label">Devpost</span><Icon name="tabler/arrow-up-right" size={14} class="btn__arrow" />
+        </a>
+      )}
+      {data.links.live && (
+        <a class="btn btn--primary" href={data.links.live} rel="noopener">
+          <span class="btn__ico"><Icon name="tabler/world" size={16} /></span><span class="btn__label">Live</span>
+        </a>
+      )}
     </p>
   </div>
 </article>
@@ -31,7 +61,9 @@ const meta = [data.builtAt?.includes(data.year) ? null : data.year, data.builtAt
     display: grid; grid-template-rows: auto 1fr;
     border: var(--border); border-radius: var(--radius); background: var(--bg);
     transform-origin: center; min-width: 0;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
+  .card:hover, .card:focus-within { border-color: var(--ink); box-shadow: 6px 6px 0 var(--line); }
   .card__plate { position: relative; aspect-ratio: 16 / 10; background: var(--plate); overflow: hidden; border-bottom: var(--border); }
   .card__image { position: absolute; inset: var(--space-s); width: calc(100% - 2 * var(--space-s)); height: calc(100% - 2 * var(--space-s)); object-fit: contain; }
   .card__body { display: grid; gap: var(--space-s); padding: var(--space-m); align-content: start; }
