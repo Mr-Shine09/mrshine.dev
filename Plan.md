@@ -14,7 +14,7 @@
 | Structure | **One scrolling page** at `/`. Nav anchors in order: About · Highlights · Projects · Personal · Contact. "Personal" is the Reading List. |
 | Stack | Astro (existing `^7.2.2` shell in `site/`), plain CSS with custom properties, no CSS framework, no UI framework, minimal JS. |
 | Hosting | Cloudflare Pages connected to the GitHub repo; every push to `main` redeploys. Domain **`mrshine.dev`**, bought through Cloudflare Registrar on 2 Sep 2026. |
-| Type | **Geist Pixel** for headings, nav, labels, chips. **Geist Sans** for all prose. Both self-hosted woff2. |
+| Type | **Geist Pixel** as a display accent (hero name, section titles, watermark, band, closing). **Geist Sans** for everything else, including nav, labels, chips and buttons. Both self-hosted woff2. |
 | Theme | **Riso C2**, light and dark, toggle persisted in `localStorage`, `prefers-color-scheme` honoured on first visit. |
 | Mascot | Native APNG scenes from `site/public/assets/animation/`. Used: `oak-welcome`, `trophy-lift`, `workbench-zap`, `reading-fire`, `run`. Unused but kept: `computer-working`, `thinking-cloud`, `walking`. **Every scene loops continuously** (owner, 2 Sep 2026); scenes render at 0.75 so the figure matches the hero. |
 | Projects | Coverflow slider, four uniform single-face cards: **PokeDesk, Look-Out, VisionAssist, Echo**. |

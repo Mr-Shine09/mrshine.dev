@@ -10,13 +10,13 @@ const pct = Math.max(0, Math.min(100, Math.round(value)));
     <circle cx={size / 2} cy={size / 2} r={r} fill="none" class="ring__val" stroke="var(--accent)" stroke-width="6" stroke-linecap="butt"
       style={`--dash:${(c * pct) / 100};--c:${c}`} stroke-dasharray={`${(c * pct) / 100} ${c}`} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
   </svg>
-  <span class="ring__text pixel">{pct}%</span>
+  <span class="ring__text">{pct}%</span>
 </span>
 
 <style>
   .ring { position: relative; display: inline-grid; place-items: center; width: var(--size); height: var(--size); flex: none; }
   .ring svg { position: absolute; inset: 0; }
-  .ring__text { font-size: var(--fs-xs); letter-spacing: 0.05em; }
+  .ring__text { font-size: var(--fs-xs); font-weight: 500; letter-spacing: 0.05em; }
   /* Draws from empty to its value on reveal; JS-off and reduced motion show the value immediately. */
   .ring__val { transition: stroke-dasharray 0.9s ease 0.15s; }
   :global(html.js [data-reveal]:not(.is-visible)) .ring__val { stroke-dasharray: 0 var(--c); }

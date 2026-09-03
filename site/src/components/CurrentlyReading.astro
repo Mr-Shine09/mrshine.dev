@@ -12,12 +12,12 @@ const fmt = (iso?: string) => iso ? new Date(iso + "T00:00:00").toLocaleDateStri
     {books.map(({ data }) => (
       <li class="current__card" data-reveal>
         <div class="current__cover">
-          {data.cover ? <Image src={data.cover} alt={`Cover of ${data.title}`} width={160} densities={[1, 2]} /> : <span class="current__nocover pixel">{data.title}</span>}
+          {data.cover ? <Image src={data.cover} alt={`Cover of ${data.title}`} width={160} densities={[1, 2]} /> : <span class="current__nocover">{data.title}</span>}
         </div>
         <div class="current__body">
           <h3 class="current__title">{data.title}</h3>
           <p class="current__author">{data.author}</p>
-          {data.started && <p class="current__meta pixel">Started {fmt(data.started)}</p>}
+          {data.started && <p class="current__meta">Started {fmt(data.started)}</p>}
           {data.note && <p class="current__note">{data.note}</p>}
         </div>
         {data.progress !== undefined && <ProgressRing value={data.progress} label={`${data.title}: ${data.progress}% read`} />}

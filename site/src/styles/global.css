@@ -23,16 +23,19 @@ body {
 
 ::selection { background: var(--selection); }
 
-/* Headings, labels, chips and counts are the pixel face. There is no bold:
-   hierarchy is a size step, emphasis is the accent colour, labels are
-   uppercase + letterspacing. */
-h1, h2, h3, .pixel {
+/* The pixel face is a display accent only: the hero name, section titles,
+   watermark words, the band, the closing line. Everything else — item titles,
+   labels, nav, chips, buttons — is Geist Sans, so small type stays legible.
+   There is still no bold heavier than 500: hierarchy is size, emphasis is the
+   accent colour, labels are letterspaced small caps. */
+h1, h2, .pixel {
   font-family: var(--font-pixel);
   font-weight: 400;
   line-height: var(--leading-tight);
   margin: 0;
   text-wrap: balance;
 }
+h3 { font-family: var(--font-sans); font-weight: 500; line-height: var(--leading-tight); margin: 0; text-wrap: balance; }
 h1 { font-size: var(--fs-xl); }
 h2 { font-size: var(--fs-lg); }
 h3 { font-size: var(--fs-md); }
@@ -71,7 +74,8 @@ button { font: inherit; color: inherit; }
 .section:first-of-type { border-top: 0; }
 
 .label {
-  font-family: var(--font-pixel);
+  font-family: var(--font-sans);
+  font-weight: 500;
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
@@ -81,9 +85,10 @@ button { font: inherit; color: inherit; }
 
 .chip {
   display: inline-flex; align-items: center; gap: 0.35rem;
-  font-family: var(--font-pixel);
+  font-family: var(--font-sans);
+  font-weight: 500;
   font-size: var(--fs-xs);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.2rem 0.5rem;
   border: var(--border);
@@ -97,7 +102,7 @@ button { font: inherit; color: inherit; }
   padding: 0.55rem 1rem;
   border: 1px solid var(--ink); border-radius: var(--radius);
   background: transparent; color: var(--ink);
-  font-family: var(--font-pixel); font-size: var(--fs-sm); letter-spacing: 0.06em; text-transform: uppercase;
+  font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-sm); letter-spacing: 0.08em; text-transform: uppercase;
   text-decoration: none; cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }

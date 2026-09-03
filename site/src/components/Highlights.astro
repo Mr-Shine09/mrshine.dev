@@ -29,7 +29,7 @@ const columns = [
                   <span class="achievement__glyph" aria-hidden="true"><Icon name={col.icon} size={20} /></span>
                   <span class="achievement__text">
                     <span class="achievement__title">{data.link ? <a href={data.link} rel="noopener">{data.title}</a> : data.title}</span>
-                    <span class="achievement__meta pixel">{[data.org, data.year].filter(Boolean).join(" · ")}</span>
+                    <span class="achievement__meta">{[data.org, data.year].filter(Boolean).join(" · ")}</span>
                   </span>
                 </li>
               ))}

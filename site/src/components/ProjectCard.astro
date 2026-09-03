@@ -33,7 +33,7 @@ const devicon: Record<string, string> = {
         </li>
       ))}
     </ul>
-    {meta && <p class="card__meta pixel">{meta}</p>}
+    {meta && <p class="card__meta">{meta}</p>}
     {data.collaborators.length > 0 && <p class="card__team">Team: {data.collaborators.join(" · ")}</p>}
     <p class="card__links">
       {data.links.github && (

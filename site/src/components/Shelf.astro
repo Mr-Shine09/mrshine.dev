@@ -16,7 +16,7 @@ const { id, title, books, emptyHint } = Astro.props;
       {books.map(({ id: slug, data }) => (
         <li>
           <a class="shelf__book" href={`#book-${slug}`} aria-label={`${data.title} by ${data.author}, finished${data.rating ? `, rated ${data.rating} out of 5` : ""}`}>
-            {data.cover ? <Image src={data.cover} alt="" width={140} densities={[1, 2]} /> : <span class="shelf__nocover pixel">{data.title}</span>}
+            {data.cover ? <Image src={data.cover} alt="" width={140} densities={[1, 2]} /> : <span class="shelf__nocover">{data.title}</span>}
           </a>
         </li>
       ))}
@@ -27,7 +27,7 @@ const { id, title, books, emptyHint } = Astro.props;
 <style>
   .shelf { display: grid; gap: var(--space-s); padding-bottom: var(--space-m); border-bottom: 2px solid var(--ink); }
   .shelf__head { display: flex; align-items: baseline; gap: var(--space-s); }
-  .shelf__title { text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--fs-md); }
+  .shelf__title { font-family: var(--font-pixel); font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--fs-md); }
   .shelf__empty { color: var(--muted); padding: var(--space-m) 0; }
   .shelf__track { display: flex; gap: var(--space-s); padding: var(--space-xs) 0.25rem; }
   .shelf__book { display: block; width: 104px; aspect-ratio: 2 / 3; min-height: var(--tap-min); scroll-snap-align: start; border: var(--border); background: var(--plate); overflow: hidden; }
