@@ -21,7 +21,7 @@ const shelves = [
 ---
 <section id="personal" class="section section--paper" aria-labelledby="personal-title">
   <div class="wrap reading">
-    <AnimatedScene scene="reading-fire" class="reading__scene" />
+    <div class="reading__scene"><AnimatedScene scene="reading-fire" /></div>
     <div class="reading__body">
       <SectionHead id="personal" title="Reading List" label={count} watermark="Reading" />
       <CurrentlyReading books={reading} />
@@ -36,6 +36,7 @@ const shelves = [
 <style>
   .reading { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-l); align-items: start; }
   .reading__body { display: grid; gap: var(--space-l); min-width: 0; }
+  .reading__scene { position: sticky; top: 5rem; }
   .reading__shelves { display: grid; gap: var(--space-l); }
-  @media (max-width: 48rem) { .reading { grid-template-columns: 1fr; } }
+  @media (max-width: 48rem) { .reading { grid-template-columns: 1fr; } .reading__scene { position: static; justify-self: center; } }
 </style>

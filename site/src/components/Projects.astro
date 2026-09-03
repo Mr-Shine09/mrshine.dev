@@ -8,7 +8,7 @@ const projects = (await getCollection("projects", ({ data }) => !data.draft)).so
 <section id="projects" class="section" aria-labelledby="projects-title">
   <div class="wrap projects__head">
     <SectionHead id="projects" title="Projects" label={`${projects.length} projects`} />
-    <AnimatedScene scene="workbench-zap" class="projects__scene" />
+    <div class="projects__scene"><AnimatedScene scene="workbench-zap" /></div>
   </div>
   <ProjectSlider projects={projects} />
 </section>

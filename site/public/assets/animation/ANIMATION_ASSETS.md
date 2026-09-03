@@ -11,11 +11,11 @@ now native APNG animations rather than horizontal sprite strips.
 | Hero welcome | `hero/oak-welcome-atlas.png` + `hero/oak-welcome-static.png` | Home page beside the masonry grid | Native APNG loop; static under reduced motion and while offscreen |
 | Reading by the fire | `scenes/reading-fire-atlas.png` + static companion | `/reading`, beside the shelf introduction | Ambient APNG loop while visible |
 | Computer working | `scenes/computer-working-atlas.png` + static companion | `/projects`, beside the page introduction | Calm APNG loop while visible |
-| Workbench zap | `scenes/workbench-zap-atlas.png` + static companion | `/projects`, beside the project deck | Play once on first reveal and hold its final pose |
+| Workbench zap | `scenes/workbench-zap-atlas.png` + static companion | `/projects`, beside the project deck | Native APNG loop (loop=0 since 2 Sep 2026) |
 | Thinking cloud | `scenes/thinking-cloud-atlas.png` + static companion | `/w-phrases`, beside the introduction | APNG loop while visible; cloud stays blank |
 | Walking | `scenes/walking-atlas.png` + static companion | Short-page scroll traveller | Native APNG loop; flip horizontally for leftward travel |
 | Running | `scenes/run-atlas.png` + static companion | Long-page scroll traveller | Native 12 fps APNG loop; flip horizontally for leftward travel |
-| Trophy lift | `scenes/trophy-lift-atlas.png` + static companion | Achievement section | Play once on reveal, then hold the closed-eye smiling trophy pose |
+| Trophy lift | `scenes/trophy-lift-atlas.png` + static companion | Achievement section | Native APNG loop (loop=0 since 2 Sep 2026; the play-once rule is retired) |
 
 The scene timings, labels, dimensions, public filenames, and IDs come from
 `scenes/scene-contract.json`. The hero uses `hero/oak-welcome-contract.json`.
@@ -33,6 +33,12 @@ The scene timings, labels, dimensions, public filenames, and IDs come from
   Achievement trophy board with the production palette and alpha rules.
 - The retired `run-trip-recover-atlas.png` is preserved outside the public
   runtime at `site/archive/animation/run-trip-recover-atlas.png`.
+- `scripts/fix-scene-outlines.py` (2 Sep 2026) darkened the pale outer rim of
+  `trophy-lift`, `workbench-zap` and `run` to the mascot ink so they sit cleanly
+  on dark backgrounds; pre-fix files are in `site/archive/animation/pre-outline-fix/`.
+  `--check` fails if a light rim reappears.
+- Scene art is stored at 2× native pixels; the site displays scenes at 0.75
+  (288×240) so the figure matches the 160×208 hero.
 
 ## Code rules
 

@@ -18,7 +18,7 @@ const columns = [
   <div class="wrap">
     <SectionHead id="highlights" title="Highlights" emoji="🏆" />
     <div class="highlights">
-      <AnimatedScene scene="trophy-lift" class="highlights__scene" />
+      <div class="highlights__scene"><AnimatedScene scene="trophy-lift" /></div>
       <div class="highlights__columns">
         {columns.map((col, i) => (
           <div class="hl-col" data-reveal style={`--reveal-delay: ${i * 0.1}s`}>

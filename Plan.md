@@ -16,7 +16,7 @@
 | Hosting | Cloudflare Pages connected to the GitHub repo; every push to `main` redeploys. Domain **`mrshine.dev`**, bought through Cloudflare Registrar on 2 Sep 2026. |
 | Type | **Geist Pixel** for headings, nav, labels, chips. **Geist Sans** for all prose. Both self-hosted woff2. |
 | Theme | **Riso C2**, light and dark, toggle persisted in `localStorage`, `prefers-color-scheme` honoured on first visit. |
-| Mascot | Native APNG scenes from `site/public/assets/animation/`. Used: `oak-welcome`, `trophy-lift`, `workbench-zap`, `reading-fire`, `run`. Unused but kept: `computer-working`, `thinking-cloud`, `walking`. |
+| Mascot | Native APNG scenes from `site/public/assets/animation/`. Used: `oak-welcome`, `trophy-lift`, `workbench-zap`, `reading-fire`, `run`. Unused but kept: `computer-working`, `thinking-cloud`, `walking`. **Every scene loops continuously** (owner, 2 Sep 2026); scenes render at 0.75 so the figure matches the hero. |
 | Projects | Coverflow slider, four uniform single-face cards: **PokeDesk, Look-Out, VisionAssist, Echo**. |
 | Reading | Currently-reading cards with progress rings (Dune; The Infinity Machine); shelves of **cover images** for **finished** books only; empty state at launch. |
 | Contact | One business-card block at the end: Website, Email (+ copy), LinkedIn, GitHub. No floating card. No form. |
@@ -203,14 +203,14 @@ Check the lead at 375px: with Geist Sans it wraps to three lines, which is fine;
 
 ### 7.2 Highlights — `#highlights`
 - Trophy emoji 🏆 centred above the heading **HIGHLIGHTS**.
-- `trophy-lift` scene to the left of the heading, `once` mode: plays on first reveal, then holds its authored final pose (closed eyes, broad smile, trophy overhead). Static companion under reduced motion.
-- A list from `src/content/achievements/*.md`, ordered by `order`. Each row: small trophy glyph · title · organisation · year. Rows are ≥ 44px, text in Geist Sans, year in Geist Pixel.
-- When the list has fewer than three entries, render the line *"More achievements coming soon."* in `--muted`. The threshold lives in one constant.
+- `trophy-lift` scene to the left of the columns, **looping** (the owner asked for every animation to run continuously; the play-once-and-hold rule is retired). Static companion under reduced motion.
+- **Two columns** (afig.dev pattern, 2 Sep 2026): **Awards & contests** (every `kind` except `hackathon`) and **Hackathons** (`kind: hackathon`), each headed by an accent-underlined label. Rows: Tabler glyph (trophy / code) · title · `org · year`. `year` is optional so an event with no supplied date renders without one. Rows ≥ 44px.
+- When the awards column has fewer than three entries, render *"More achievements coming soon."* under it. The threshold lives in one constant.
 
-**Launch content:** one entry — **ICPC PacNW Regional, Division I — Participant**, **2025**, kind `competition`.
+**Launch content:** Awards — **ICPC Pacific Northwest Regional, Division I — Participant**, ICPC, **2025**. Hackathons — **DA Hacks** (De Anza College, year `TODO(owner)`), **Hack for Humanity 2026 — built Echo** (Santa Clara University), **UC Berkeley AI Hackathon 2026 — built Look-Out** (UC Berkeley).
 
 ### 7.3 Projects — `#projects`
-- Heading **PROJECTS** at left; `workbench-zap` scene at right, `once` mode (concentrated work → zap → singed recovery, hold final frame; never re-zap on scroll nudges).
+- Centred heading **PROJECTS**; the `workbench-zap` scene sits in the right margin on wide screens (absolutely positioned inside the head, never pushing the title off-centre) and centred below the heading otherwise. It **loops** (owner decision, 2 Sep 2026; the play-once rule is retired).
 - **Coverflow slider.** A horizontal `overflow-x: auto` track with `scroll-snap-type: x mandatory` and centre alignment. The centred card is scale 1.0, full opacity; neighbours scale ≈ 0.82 at ≈ 0.6 opacity. The scale/opacity comes from **CSS scroll-driven animations** (`animation-timeline: view(inline)`), so it needs no JS; browsers without support get a flat snap carousel, still fully usable. Under reduced motion the scale effect is removed.
 - **Controls:** prev/next buttons (JS, `scrollBy` one card), native touch/wheel scroll, and keyboard — each card is focusable and Left/Right arrows move focus and scroll it into view. Edge fade on both sides signals more content. The track never widens the body.
 - **Card (single face, uniform size):**
@@ -262,9 +262,21 @@ A single block styled as a business card, centred, max-width ≈ 36rem.
 - **No decorative mascot here.**
 - `contact.vcf` is a **real file generated at build time** (`src/pages/contact.vcf.ts`) from `src/data/site.ts`, so right-click-save and no-JS work. It carries name, email, URL, GitHub, LinkedIn, Instagram, Facebook, Devpost, and the Santa Clara location. Instagram, Facebook, and Devpost live in `site.ts` for the vCard but do not render on the card.
 
+### 7.5b Visual devices (2 Sep 2026, afig.dev-inspired, kept inside Riso C2)
+
+- **Highlighter marks**: `<mark>` = a 22% coral wash behind key phrases (lead: "Computer Engineering", "transferring in 2027"; tagline: "Hackathon fanatic", "Reader in progress"). Copy stays verbatim; `Marked.astro` only wraps. Text contrast on the wash is asserted ≥ 4.5 in both themes (`mark-contrast`).
+- **Name block**: the first name sits on a `--plate` block inside the single `h1`.
+- **Buttons**: primary = solid ink with an accent icon square (Résumé); outline = quiet border with a ↗ corner arrow for links that leave the page (GitHub, LinkedIn, project repos).
+- **Icons**: inline SVG via `Icon.astro` — **Devicon** for brands and stack chips (GitHub, LinkedIn plain variant, Swift, Python, Flutter, Dart, Kotlin, SQLite, FastAPI, Redis, Vite, Flask, Raspberry Pi, PyTorch, Apple, Xcode), **Tabler** for generic glyphs (mail, world, file-text, address-book, arrow-up-right, trophy, code). No icon request leaves the page. `mono` recolours brand fills to `currentColor` for links; stack chips keep brand colours.
+- **Section heads**: centred pixel-face title, hairline rule, and a ghosted watermark of the section name at ~5% ink behind it; sections use `overflow-x: clip` so the word never widens the body.
+- **Divider band** before Reading: full-bleed ink ground with paper text — "Reader *in progress*." — and a ghosted READING behind it.
+- **Ruled paper** for Reading: `--plate` tint with a `--line` hairline every 28px; the currently-reading cards sit on `--bg` so they lift off the paper. The reading-fire scene is sticky beside the list on wide screens.
+- **Contact card**: 2px ink border with an 8px hard ink offset shadow, Devicon/Tabler row icons, a soft accent wash on row hover.
+- **Motion**: `[data-reveal]` elements fade and rise 18px on first sight (one shared IntersectionObserver in `Base.astro`; `html.js` gates the hidden state so nothing is hidden with JS off); project cards lift on hover; the progress ring draws from 0 to its value on reveal. All disabled under reduced motion; asserted by `reveal`.
+
 ### 7.6 Bottom runner (site-wide, decorative)
 The `run` scene travels along the bottom of the viewport as the visitor scrolls: **parked just off the right edge at scroll 0, arriving at the left edge at the bottom of the page.**
-- Chassis: a fixed `inset: 0` layer, `pointer-events: none`, `contain: strict`, `z-index` below the top bar; the sprite `position: absolute; left: 0; bottom: max(0.65rem, env(safe-area-inset-bottom))`, 192×160 at ×1, `image-rendering: pixelated`.
+- Chassis: a fixed `inset: 0` layer, `pointer-events: none`, `contain: strict`, `z-index` below the top bar; the sprite `position: absolute; left: 0; bottom: max(0.65rem, env(safe-area-inset-bottom))`, **288×240** (0.75) on laptops and **192×160** on phones, `image-rendering: pixelated`.
 - Progress = `scrollY / (scrollHeight − innerHeight)`, clamped 0–1, from a passive scroll listener, rAF-batched, eased with a lerp (`rendered += (target − rendered) × 0.14`, loop exits below 0.0002 delta).
 - Position: `travel = innerWidth + w × 2.4`; `x = innerWidth + w × 0.7 − progress × travel`. The scene is authored running **toward the viewer's right**, so apply `scaleX(−1)` for this leftward travel.
 - **Stride only while scrolling.** APNGs cannot be paused from JS, so: when the lerp settles, swap `src` to `run-static.png`; on the next scroll, swap back to `run-atlas.png` with a `?play=N` cache-buster (restarts the 12-frame, 12 fps loop — acceptable).
@@ -272,7 +284,9 @@ The `run` scene travels along the bottom of the viewport as the visitor scrolls:
 - Never creates layout width or body scroll.
 
 ### 7.7 Scene player rules (all stationary scenes)
-- One component (`AnimatedScene.astro`) reads `public/assets/animation/scenes/scene-contract.json`; an unknown scene id **throws at build time**. Frame size 384×320, hero 160×208. Display at integer scales only.
+- One component (`AnimatedScene.astro`) reads `public/assets/animation/scenes/scene-contract.json`; an unknown scene id **throws at build time**. Frame size 384×320, hero 160×208. **Scene art is stored at 2× its native pixels** (every pixel run is even), so the default display scale is **0.75 → 288×240**: three device pixels per art pixel on Retina and a figure the same height as the hero's. The runner is 288×240 on laptops, 192×160 on phones.
+- **Outline pass (2 Sep 2026):** `trophy-lift`, `workbench-zap` and `run` had a pale rim of edge pixels that haloed on dark backgrounds. `scripts/fix-scene-outlines.py` recolours only fully opaque edge pixels with mean RGB > 150 to the mascot ink (#111219) on every frame; interior colours and alpha are untouched. Originals are in `site/archive/animation/pre-outline-fix/`. `--check` fails if a light rim reappears (harness check `scene-outlines`).
+- Astro does not propagate a parent's style scope to a child component's root, so parents position scenes through a wrapper `<div>` they own, never through a class passed to `AnimatedScene`.
 - Each scene = APNG `*-atlas.png` (animation with embedded timing — never treat as a sprite sheet) + `*-static.png` first-frame companion.
 - Play = set `img.src` to the APNG with a `?play=N` cache-buster (restarts from frame 0). Pause = set `src` to the static PNG.
 - `IntersectionObserver` (`rootMargin: 160px`) toggles visibility; `apply()` also runs immediately after observing so nothing waits on IO (§2.6).
