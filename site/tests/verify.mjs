@@ -287,8 +287,13 @@ check("third-party", async (browser) => {
 
 check("scene-size", async (browser) => {
   const { ctx, p } = await page(browser);
-  const sizes = await p.$$eval(".oak-scene", (els) => els.map((e) => { const r = e.getBoundingClientRect(); return `${Math.round(r.width)}x${Math.round(r.height)}`; }));
-  assert(sizes.length >= 3 && sizes.every((x) => x === "288x240"), `scenes must render at 288x240 (0.75), got ${sizes.join(", ")}`);
+  const sizes = await p.$$eval(".oak-scene", (els) => els.map((e) => { const r = e.getBoundingClientRect(); return [e.getAttribute("aria-label"), `${Math.round(r.width)}x${Math.round(r.height)}`]; }));
+  const want = (label) => (/trophy/.test(label) ? "288x240" : "192x160");
+  const wrong = sizes.filter(([l, s]) => s !== want(l));
+  assert(sizes.length >= 3 && wrong.length === 0, `scene sizes off: ${wrong.map(([l, s]) => `${l.slice(0, 20)}=${s}`).join(", ")}`);
+  const hero = await p.locator(".hero-welcome").evaluate((el) => `${Math.round(el.getBoundingClientRect().width)}x${Math.round(el.getBoundingClientRect().height)}`);
+  assert(hero === "240x312", `hero mascot should be 240x312 on desktop, got ${hero}`);
+  assert(await p.locator("[data-welcome-bubble]").count() === 0, "the WELCOME bubble should be gone");
   const runner = await p.locator("[data-runner]").evaluate((el) => `${Math.round(el.getBoundingClientRect().width)}x${Math.round(el.getBoundingClientRect().height)}`);
   assert(runner === "192x160", `runner should be 192x160 on desktop, got ${runner}`);
   await ctx.close();

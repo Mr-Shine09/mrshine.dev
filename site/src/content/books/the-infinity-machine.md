@@ -9,5 +9,6 @@ language: en
 genre: nonfiction
 status: reading
 started: "2026-08-20"
-# TODO(owner): progress percentage. Omitted, not invented.
+# Chapter 6 of 20.
+progress: 30
 ---
