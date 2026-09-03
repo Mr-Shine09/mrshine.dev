@@ -192,7 +192,7 @@ Three columns on desktop (text · mascot · portrait), stacked on phone.
   "Hackathon fanatic" is singular. "Reader in progress" is deliberate and honest — do not upgrade it to "avid reader". Acceptable shorter alternative if needed: "Becoming a reader."
 - Three icon links **with visible text labels**, each ≥ 44px: **Résumé** (`/resume.pdf`), **GitHub**, **LinkedIn**. Working links — no placeholders.
 
-**Middle column** — `oak-welcome` hero animation (`hero/oak-welcome-atlas.png`, 160×208, contract `hero/oak-welcome-contract.json`). **No border, no box.** Integer scale (×1 on phone, ×2 from 768px). Static companion under reduced motion and while offscreen.
+- Middle: `oak-welcome` hero animation (`hero/oak-welcome-atlas.png`, contract `hero/oak-welcome-contract.json`). **No border, no box.** Rendered at **1.5× (240×312)** on laptops so the figure stands as tall as the portrait (owner, 3 Sep 2026; 3 device pixels per art pixel on Retina), 160×208 on phones. **No speech bubble** — the WELCOME bubble was removed at the owner's request. Static companion under reduced motion and while offscreen.
 
 **Right column** — `portrait.jpg`, **with a visible border**: 2px `--line` on a `--plate` field, square-ish crop. It is a side profile by choice — never substitute a face-forward shot.
 
