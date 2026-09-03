@@ -81,8 +81,8 @@ Written for everyone — friends, recruiters, whoever finds it. Not a résumé, 
 ### 4.1 Two families
 | Face | File | Use | Licence |
 |---|---|---|---|
-| **Geist Pixel** | `site/src/assets/fonts/geist-pixel.woff2` (subsetted from the 3.6 MB TTF in `fonts/source/geist-pixel/`) | Headings, nav, section labels, chips, counts, the name in the hero and on the card | SIL OFL 1.1 — ship `OFL.txt` |
-| **Geist Sans** | `site/src/assets/fonts/geist-sans.woff2` — download from the Vercel `geist-font` GitHub release, subset to Latin (same `pyftsubset` recipe below), weights 400 and 500 only | All prose: tagline, card summaries, book notes, contact rows, empty states | SIL OFL 1.1 — ship `OFL.txt` |
+| **Geist Pixel** | `site/src/assets/fonts/geist-pixel.woff2` (subsetted from the 3.6 MB TTF in `fonts/source/geist-pixel/`) | Display accent only (owner, 3 Sep 2026): hero name, `h2` section titles, shelf titles, watermark words, band, closing line, contact-card name | SIL OFL 1.1 — ship `OFL.txt` |
+| **Geist Sans** | `site/src/assets/fonts/geist-sans.woff2` — download from the Vercel `geist-font` GitHub release, subset to Latin (same `pyftsubset` recipe below), weights 400 and 500 only | Everything else: prose, `h3` item titles, nav, labels, chips, buttons, counts, dates, ring percentage — small type as letterspaced small caps at weight 500 | SIL OFL 1.1 — ship `OFL.txt` |
 
 Subset recipe (both faces):
 ```bash
