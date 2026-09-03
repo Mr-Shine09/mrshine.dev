@@ -8,7 +8,8 @@ collaborators: ["aadityad12", "shahxsheel", "Mr-Shine09"]
 builtAt: "Hack for Humanity 2026 (V3) — SCU"
 links:
   github: https://github.com/aadityad12/Echo
-  # TODO(owner): the H4H Devpost submission URL, if there is one.
+  # Submitted to Devpost under the team's original name, Re3.
+  devpost: https://devpost.com/software/re3-x6kj0r
 draft: false
 image: ../../assets/projects/echo-hero.webp
 imageAlt: Echo's alert list with the MESH ACTIVE badge lit and severity chips down the feed.

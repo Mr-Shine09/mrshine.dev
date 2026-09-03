@@ -207,7 +207,7 @@ Check the lead at 375px: with Geist Sans it wraps to three lines, which is fine;
 - **Two columns** (afig.dev pattern, 2 Sep 2026): **Awards & contests** (every `kind` except `hackathon`) and **Hackathons** (`kind: hackathon`), each headed by an accent-underlined label. Rows: Tabler glyph (trophy / code) · title · `org · year`. `year` is optional so an event with no supplied date renders without one. Rows ≥ 44px.
 - When the awards column has fewer than three entries, render *"More achievements coming soon."* under it. The threshold lives in one constant.
 
-**Launch content:** Awards — **ICPC Pacific Northwest Regional, Division I — Participant**, ICPC, **2025**. Hackathons — **DA Hacks** (De Anza College, year `TODO(owner)`), **Hack for Humanity 2026 — built Echo** (Santa Clara University), **UC Berkeley AI Hackathon 2026 — built Look-Out** (UC Berkeley).
+**Launch content:** Awards — **ICPC Pacific Northwest Regional, Division I — Participant**, ICPC, **2025**. Hackathons — **DA Hacks 3.5** and **DA Hacks 4.0** (De Anza College, 2025), **Hack for Humanity 2026 — built Echo** (Santa Clara University), **UC Berkeley AI Hackathon 2026 — built Look-Out** (UC Berkeley).
 
 ### 7.3 Projects — `#projects`
 - Centred heading **PROJECTS**; the `workbench-zap` scene sits in the right margin on wide screens (absolutely positioned inside the head, never pushing the title off-centre) and centred below the heading otherwise. It **loops** (owner decision, 2 Sep 2026; the play-once rule is retired).
@@ -431,12 +431,12 @@ Draft projects and books with unknown status never render; the build says why.
 
 | Item | Blocks |
 |---|---|
-| Echo Devpost URL | The Devpost link on Echo's card (drops until present) |
 | Look-Out dashboard screenshot + collaborator names | Card image — the eye logo (`lookout-eye-1024.png`) is used until the owner finds a screenshot — and the credits line |
 | VisionAssist team names | Collaborator line |
-| The Infinity Machine: started date and progress % | Its Currently Reading card (renders with cover, title, author and no ring until then) |
+| The Infinity Machine: progress % | Its ring (started 2026-08-20 is set; the card shows no ring until a percentage exists) |
 | Any finished books | Shelves show the empty state until one exists |
 
+Resolved 3 Sep 2026: DA Hacks years (3.5 and 4.0, both 2025); Infinity Machine start date (20 Aug 2026); Echo Devpost (`https://devpost.com/software/re3-x6kj0r`, submitted as Re3); Pages connected to GitHub with `site/.node-version` = 22.
 Resolved 2 Sep 2026: domain (`mrshine.dev`, bought — §14.4 attach step pending); ICPC year (2025); Echo's link (`https://github.com/aadityad12/Echo`, the original repo — confirmed); Dune ISBN; Infinity Machine ISBN; lead and closing lines both in.
 
 ---

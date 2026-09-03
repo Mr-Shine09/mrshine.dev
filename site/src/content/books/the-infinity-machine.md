@@ -8,5 +8,6 @@ cover: ../../assets/books/the-infinity-machine.jpg
 language: en
 genre: nonfiction
 status: reading
-# TODO(owner): started date and progress. Omitted, not invented.
+started: "2026-08-20"
+# TODO(owner): progress percentage. Omitted, not invented.
 ---
