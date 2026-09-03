@@ -295,7 +295,7 @@ check("scene-size", async (browser) => {
   assert(hero === "240x312", `hero mascot should be 240x312 on desktop, got ${hero}`);
   assert(await p.locator("[data-welcome-bubble]").count() === 0, "the WELCOME bubble should be gone");
   const runner = await p.locator("[data-runner]").evaluate((el) => `${Math.round(el.getBoundingClientRect().width)}x${Math.round(el.getBoundingClientRect().height)}`);
-  assert(runner === "192x160", `runner should be 192x160 on desktop, got ${runner}`);
+  assert(runner === "144x120", `runner should be 144x120 on desktop, got ${runner}`);
   await ctx.close();
 });
 

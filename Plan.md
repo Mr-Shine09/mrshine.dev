@@ -164,7 +164,7 @@ Mobile-first. Test at **320, 375, 768, 1280**.
 | Projects slider | Cards ~85vw wide, one centred; neighbours peek at the edges. Scroll-snap. |
 | Shelves | Each shelf scrolls horizontally in its own container with a visible edge fade. Keyboard scrollable. |
 | Contact card | Full width, single column of rows. |
-| Runner | Half size (96×80), bottom above `env(safe-area-inset-bottom)`, never over a control. If it collides with the sticky bar or a button at 320px, hide it below 40rem instead. |
+| Runner | Half size (72×60), bottom above `env(safe-area-inset-bottom)`, never over a control. If it collides with the sticky bar or a button at 320px, hide it below 40rem instead. |
 
 **Absolute rule: no horizontal page scroll at any width.**
 
@@ -277,7 +277,7 @@ A single block styled as a business card, centred, max-width ≈ 36rem.
 
 ### 7.6 Bottom runner (site-wide, decorative)
 The `run` scene travels along the bottom of the viewport as the visitor scrolls: **parked just off the right edge at scroll 0, arriving at the left edge at the bottom of the page.**
-- Chassis: a fixed `inset: 0` layer, `pointer-events: none`, `contain: strict`, `z-index` below the top bar; the sprite `position: absolute; left: 0; bottom: max(0.65rem, env(safe-area-inset-bottom))`, **192×160** on laptops and **96×80** on phones, `image-rendering: pixelated`.
+- Chassis: a fixed `inset: 0` layer, `pointer-events: none`, `contain: strict`, `z-index` below the top bar; the sprite `position: absolute; left: 0; bottom: max(0.65rem, env(safe-area-inset-bottom))`, **144×120** on laptops and **72×60** on phones, `image-rendering: pixelated`.
 - Progress = `scrollY / (scrollHeight − innerHeight)`, clamped 0–1, from a passive scroll listener, rAF-batched, eased with a lerp (`rendered += (target − rendered) × 0.14`, loop exits below 0.0002 delta).
 - Position: `travel = innerWidth + w × 2.4`; `x = innerWidth + w × 0.7 − progress × travel`. The scene is authored running **toward the viewer's right**, so apply `scaleX(−1)` for this leftward travel.
 - **Stride only while scrolling.** APNGs cannot be paused from JS, so: when the lerp settles, swap `src` to `run-static.png`; on the next scroll, swap back to `run-atlas.png` with a `?play=N` cache-buster (restarts the 12-frame, 12 fps loop — acceptable).
