@@ -290,7 +290,7 @@ check("scene-size", async (browser) => {
   const sizes = await p.$$eval(".oak-scene", (els) => els.map((e) => { const r = e.getBoundingClientRect(); return `${Math.round(r.width)}x${Math.round(r.height)}`; }));
   assert(sizes.length >= 3 && sizes.every((x) => x === "288x240"), `scenes must render at 288x240 (0.75), got ${sizes.join(", ")}`);
   const runner = await p.locator("[data-runner]").evaluate((el) => `${Math.round(el.getBoundingClientRect().width)}x${Math.round(el.getBoundingClientRect().height)}`);
-  assert(runner === "288x240", `runner should be 288x240 on desktop, got ${runner}`);
+  assert(runner === "192x160", `runner should be 192x160 on desktop, got ${runner}`);
   await ctx.close();
 });
 

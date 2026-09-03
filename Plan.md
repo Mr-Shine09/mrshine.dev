@@ -276,7 +276,7 @@ A single block styled as a business card, centred, max-width ≈ 36rem.
 
 ### 7.6 Bottom runner (site-wide, decorative)
 The `run` scene travels along the bottom of the viewport as the visitor scrolls: **parked just off the right edge at scroll 0, arriving at the left edge at the bottom of the page.**
-- Chassis: a fixed `inset: 0` layer, `pointer-events: none`, `contain: strict`, `z-index` below the top bar; the sprite `position: absolute; left: 0; bottom: max(0.65rem, env(safe-area-inset-bottom))`, **288×240** (0.75) on laptops and **192×160** on phones, `image-rendering: pixelated`.
+- Chassis: a fixed `inset: 0` layer, `pointer-events: none`, `contain: strict`, `z-index` below the top bar; the sprite `position: absolute; left: 0; bottom: max(0.65rem, env(safe-area-inset-bottom))`, **192×160** on laptops and **96×80** on phones, `image-rendering: pixelated`.
 - Progress = `scrollY / (scrollHeight − innerHeight)`, clamped 0–1, from a passive scroll listener, rAF-batched, eased with a lerp (`rendered += (target − rendered) × 0.14`, loop exits below 0.0002 delta).
 - Position: `travel = innerWidth + w × 2.4`; `x = innerWidth + w × 0.7 − progress × travel`. The scene is authored running **toward the viewer's right**, so apply `scaleX(−1)` for this leftward travel.
 - **Stride only while scrolling.** APNGs cannot be paused from JS, so: when the lerp settles, swap `src` to `run-static.png`; on the next scroll, swap back to `run-atlas.png` with a `?play=N` cache-buster (restarts the 12-frame, 12 fps loop — acceptable).
@@ -284,7 +284,7 @@ The `run` scene travels along the bottom of the viewport as the visitor scrolls:
 - Never creates layout width or body scroll.
 
 ### 7.7 Scene player rules (all stationary scenes)
-- One component (`AnimatedScene.astro`) reads `public/assets/animation/scenes/scene-contract.json`; an unknown scene id **throws at build time**. Frame size 384×320, hero 160×208. **Scene art is stored at 2× its native pixels** (every pixel run is even), so the default display scale is **0.75 → 288×240**: three device pixels per art pixel on Retina and a figure the same height as the hero's. The runner is 288×240 on laptops, 192×160 on phones.
+- One component (`AnimatedScene.astro`) reads `public/assets/animation/scenes/scene-contract.json`; an unknown scene id **throws at build time**. Frame size 384×320, hero 160×208. **Scene art is stored at 2× its native pixels** (every pixel run is even), so the default display scale is **0.75 → 288×240**: three device pixels per art pixel on Retina and a figure the same height as the hero's. The runner is smaller than the stationary scenes — 192×160 on laptops, 96×80 on phones — so it never dominates the viewport (owner, 3 Sep 2026).
 - **Outline pass (2 Sep 2026):** `trophy-lift`, `workbench-zap` and `run` had a pale rim of edge pixels that haloed on dark backgrounds. `scripts/fix-scene-outlines.py` recolours only fully opaque edge pixels with mean RGB > 150 to the mascot ink (#111219) on every frame; interior colours and alpha are untouched. Originals are in `site/archive/animation/pre-outline-fix/`. `--check` fails if a light rim reappears (harness check `scene-outlines`).
 - Astro does not propagate a parent's style scope to a child component's root, so parents position scenes through a wrapper `<div>` they own, never through a class passed to `AnimatedScene`.
 - Each scene = APNG `*-atlas.png` (animation with embedded timing — never treat as a sprite sheet) + `*-static.png` first-frame companion.
